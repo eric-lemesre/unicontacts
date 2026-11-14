@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:4.0
+UID:urn:uuid:5e0c9a52-0000-4000-8000-000000000402
+FN:Sacha Inconnu
+X-PROPRIETAIRE;X-PARAM=1:données propres au serveur\, à rendre à l'octet p
+ rès
+X-AUTRE:seconde propriété inconnue
+NOTE:note initiale
+END:VCARD

@@ -1,0 +1,17 @@
+BEGIN:VCARD
+VERSION:4.0
+UID:urn:uuid:5e0c9a52-0000-4000-8000-000000000401
+FN:Alix Démo
+N:Démo;Alix;;;
+KIND:individual
+TEL;VALUE=uri;TYPE="cell,voice";PREF=1:tel:+33-6-39-98-00-03
+EMAIL;TYPE=work:alix@example.net
+ADR;TYPE=work;LABEL="1 place Fictive\n99999 Démoville":;;1 place Fictive;
+ Démoville;;99999;France
+BDAY:--0517
+ANNIVERSARY:20100612
+RELATED;TYPE=friend:urn:uuid:5e0c9a52-0000-4000-8000-000000000301
+GENDER:N
+LANG;PREF=1:fr
+X-PROPRIETAIRE:valeur 4.0
+END:VCARD
