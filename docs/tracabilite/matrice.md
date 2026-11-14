@@ -228,13 +228,26 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (7) :
+  - `impl` — crates/core/src/fiche.rs:66
+  - `impl` — crates/core/src/fiche.rs:187
+  - `utest` — crates/core/src/fiche.rs:205
+  - `utest` — crates/core/src/fiche.rs:219
+  - `utest` — crates/core/src/fiche.rs:231
+  - `impl` — crates/core/src/identifiants.rs:52
+  - `utest` — crates/core/src/identifiants.rs:70
 
 #### `req~provenance-par-champ~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (6) :
+  - `impl` — crates/core/src/champ.rs:98
+  - `impl` — crates/core/src/fiche.rs:119
+  - `impl` — crates/core/src/fiche.rs:142
+  - `utest` — crates/core/src/fiche.rs:247
+  - `utest` — crates/core/src/fiche.rs:271
+  - `impl` — crates/core/src/temps.rs:11
 
 #### `req~conservation-proprietes-inconnues~1`
 
@@ -252,7 +265,9 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/core/src/lib.rs:8
+  - `utest` — crates/core/src/lib.rs:29
 
 ### spec/02-exigences/relations.md
 
@@ -392,7 +407,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-0/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (0.0 %) — 61 à couvrir.
+3/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (4.9 %) — 58 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 

@@ -1,6 +1,6 @@
 # ToDo-0002 — Lot 1 : cœur Rust
 
-**Statut : ⏳ à venir**
+**Statut : 🚧 en cours**
 
 Modèle, stockage SQLite, vCard 3.0 et 4.0, fusion à trois voies et file de
 décisions, testés sur des jeux de fichiers vCard (spécification v0.1, § 13).
