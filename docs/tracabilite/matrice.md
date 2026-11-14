@@ -353,14 +353,17 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, itest
-- Couvertures réelles (16) :
+- Couvertures réelles (19) :
   - `impl` — crates/carddav/src/client.rs:81
   - `impl` — crates/carddav/src/client.rs:146
   - `impl` — crates/carddav/src/client.rs:163
   - `impl` — crates/carddav/src/client.rs:189
   - `impl` — crates/carddav/src/lib.rs:11
   - `impl` — crates/carddav/src/multistatus.rs:53
-  - `impl` — crates/carddav/src/synchro.rs:60
+  - `impl` — crates/carddav/src/synchro.rs:89
+  - `impl` — crates/carddav/src/synchro.rs:118
+  - `impl` — crates/carddav/src/synchro.rs:176
+  - `impl` — crates/carddav/src/synchro.rs:223
   - `itest` — crates/carddav/src/synchro/tests.rs:4
   - `itest` — crates/carddav/tests/radicale.rs:176
   - `itest` — crates/carddav/tests/radicale.rs:212
