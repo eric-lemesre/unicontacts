@@ -9,12 +9,14 @@
 Miroir de [`spec/02-exigences/synchronisation.md`](../../spec/02-exigences/synchronisation.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
-Exigences du lot 1 (D-2026-11-09), jugées sur le code et les tests du crate
-`crates/core` (ToDo-0002). Les exigences encore proposées n'ont pas de
-ligne : elles ne se jugent pas avant leur lot.
+Exigences des lots 1 (D-2026-11-09) et 2 (D-2026-11-11), jugées sur le code
+et les tests des crates `crates/core` (ToDo-0002) et `crates/carddav`
+(ToDo-0003). Les exigences encore proposées n'ont pas de ligne : elles ne se
+jugent pas avant leur lot.
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
+| `req~source-carddav~1` | écart | à réaliser au lot 2 (ToDo-0003) : aucun code ni test livré |
 | `req~reglages-par-source~1` | conforme | `reglages.rs` : `Reglages::default()` porte les quatre valeurs par défaut, `Sources::ajouter` les applique ; `synchronisation.rs` n'écrit vers une source que si sa direction le permet (lecture seule : base alignée sur la source, écriture seule : recouverte) ; tests des deux critères |
 | `req~autorite-par-champ~1` | conforme | `Sources::qui_fait_foi` : la source désignée pour le champ, à défaut la référence générale ; `fusion.rs` : la source gagnante impose sa valeur ; tests des deux critères (Google pour les téléphones, Nextcloud pour les adresses) |
 | `req~source-de-reference-unique~2` | conforme | `crates/core/src/reglages.rs` : `Sources::regler` et `designer_pour_champ` refusent une seconde référence au même niveau, l'erreur nomme la source en place ; tests des deux critères |
@@ -30,4 +32,4 @@ ligne : elles ne se jugent pas avant leur lot.
 
 ## Écarts ouverts
 
-- Aucun.
+- `req~source-carddav~1` : à réaliser (ToDo-0003).

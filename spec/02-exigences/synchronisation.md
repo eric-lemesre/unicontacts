@@ -7,9 +7,8 @@ du lot 1 sont approuvées ; les autres le seront à l'ouverture de leur lot.
 ## Source CardDAV
 
 `req~source-carddav~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT synchroniser le référentiel avec un carnet d'adresses CardDAV
 (Murena, Nextcloud), dans les deux sens par défaut.
