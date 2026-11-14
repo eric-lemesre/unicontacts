@@ -8,11 +8,15 @@
 // [impl->req~coeur-independant-android~1]
 
 pub mod champ;
+pub mod decisions;
+pub mod doublons;
 pub mod fiche;
 pub mod fusion;
 pub mod identifiants;
 pub mod normalisation;
+pub mod referentiel;
 pub mod reglages;
+pub mod synchronisation;
 pub mod temps;
 pub mod vcard;
 

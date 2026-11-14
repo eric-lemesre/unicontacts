@@ -10,10 +10,10 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | [android](android.md) | 0 | 0 | 0 | 0 |
 | [canaux](canaux.md) | 0 | 0 | 0 | 0 |
 | [dates](dates.md) | 0 | 0 | 0 | 0 |
-| [file-decisions](file-decisions.md) | 6 | 0 | 6 | 0 |
+| [file-decisions](file-decisions.md) | 6 | 6 | 0 | 0 |
 | [groupes](groupes.md) | 0 | 0 | 0 | 0 |
 | [photos](photos.md) | 0 | 0 | 0 | 0 |
 | [referentiel](referentiel.md) | 5 | 5 | 0 | 0 |
 | [relations](relations.md) | 0 | 0 | 0 | 0 |
-| [synchronisation](synchronisation.md) | 12 | 6 | 6 | 0 |
-| **total** | **23** | **11** | **12** | **0** |
+| [synchronisation](synchronisation.md) | 12 | 12 | 0 | 0 |
+| **total** | **23** | **23** | **0** | **0** |

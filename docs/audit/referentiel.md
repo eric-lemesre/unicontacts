@@ -9,9 +9,9 @@
 Miroir de [`spec/02-exigences/referentiel.md`](../../spec/02-exigences/referentiel.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
-Lot 1 ouvert le 2026-11-14 (D-2026-11-09) : chaque exigence approuvée est
-un écart tant que son lot n'a rien livré. Les exigences encore proposées
-n'ont pas de ligne : elles ne se jugent pas avant leur lot.
+Exigences du lot 1 (D-2026-11-09), jugées sur le code et les tests du crate
+`crates/core` (ToDo-0002). Les exigences encore proposées n'ont pas de
+ligne : elles ne se jugent pas avant leur lot.
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
@@ -23,4 +23,4 @@ n'ont pas de ligne : elles ne se jugent pas avant leur lot.
 
 ## Écarts ouverts
 
-- Exigences du lot 1 : à réaliser (ToDo-0002).
+- Aucun.
