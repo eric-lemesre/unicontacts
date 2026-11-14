@@ -34,6 +34,10 @@ pub struct Lien {
     /// Dernière vCard connue de la source, telle quelle : elle porte les
     /// propriétés non interprétées, à renvoyer inchangées à cette source.
     pub carte: Option<String>,
+    /// Vrai si la fiche doit être réécrite sur la source à la prochaine
+    /// synchronisation, après une suppression que l'utilisateur a choisi de
+    /// défaire.
+    pub a_restaurer: bool,
 }
 
 impl Lien {
@@ -46,6 +50,7 @@ impl Lien {
             etag: None,
             base: BTreeMap::new(),
             carte: None,
+            a_restaurer: false,
         }
     }
 }

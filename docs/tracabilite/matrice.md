@@ -102,7 +102,9 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/core/src/decisions.rs:120
+  - `utest` — crates/core/src/decisions.rs:234
 
 #### `req~boite-de-decisions~1`
 
@@ -120,31 +122,53 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (6) :
+  - `impl` — crates/core/src/decisions.rs:170
+  - `utest` — crates/core/src/decisions.rs:261
+  - `utest` — crates/core/src/decisions.rs:279
+  - `impl` — crates/core/src/referentiel.rs:269
+  - `utest` — crates/core/src/referentiel/tests.rs:141
+  - `utest` — crates/core/src/synchronisation/tests.rs:344
 
 #### `req~report-decision~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — crates/core/src/referentiel.rs:188
+  - `utest` — crates/core/src/referentiel/tests.rs:91
+  - `utest` — crates/core/src/referentiel/tests.rs:109
 
 #### `req~resolution-par-lot~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (4) :
+  - `impl` — crates/core/src/referentiel.rs:204
+  - `impl` — crates/core/src/referentiel.rs:251
+  - `utest` — crates/core/src/referentiel/tests.rs:304
+  - `utest` — crates/core/src/referentiel/tests.rs:314
 
 #### `req~issues-suppression-detectee~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (6) :
+  - `impl` — crates/core/src/decisions.rs:171
+  - `utest` — crates/core/src/decisions.rs:298
+  - `impl` — crates/core/src/referentiel.rs:316
+  - `utest` — crates/core/src/referentiel/tests.rs:362
+  - `impl` — crates/core/src/synchronisation.rs:370
+  - `utest` — crates/core/src/synchronisation/tests.rs:403
 
 #### `req~portee-suppression-locale~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — crates/core/src/referentiel.rs:404
+  - `impl` — crates/core/src/referentiel.rs:429
+  - `utest` — crates/core/src/referentiel/tests.rs:451
 
 ### spec/02-exigences/groupes.md
 
@@ -229,11 +253,11 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (7) :
-  - `impl` — crates/core/src/fiche.rs:66
-  - `impl` — crates/core/src/fiche.rs:187
-  - `utest` — crates/core/src/fiche.rs:205
-  - `utest` — crates/core/src/fiche.rs:219
-  - `utest` — crates/core/src/fiche.rs:231
+  - `impl` — crates/core/src/fiche.rs:71
+  - `impl` — crates/core/src/fiche.rs:192
+  - `utest` — crates/core/src/fiche.rs:210
+  - `utest` — crates/core/src/fiche.rs:224
+  - `utest` — crates/core/src/fiche.rs:236
   - `impl` — crates/core/src/identifiants.rs:52
   - `utest` — crates/core/src/identifiants.rs:70
 
@@ -243,10 +267,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (6) :
   - `impl` — crates/core/src/champ.rs:98
-  - `impl` — crates/core/src/fiche.rs:119
-  - `impl` — crates/core/src/fiche.rs:142
-  - `utest` — crates/core/src/fiche.rs:247
-  - `utest` — crates/core/src/fiche.rs:271
+  - `impl` — crates/core/src/fiche.rs:124
+  - `impl` — crates/core/src/fiche.rs:147
+  - `utest` — crates/core/src/fiche.rs:252
+  - `utest` — crates/core/src/fiche.rs:276
   - `impl` — crates/core/src/temps.rs:11
 
 #### `req~conservation-proprietes-inconnues~1`
@@ -277,7 +301,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (2) :
   - `impl` — crates/core/src/lib.rs:8
-  - `utest` — crates/core/src/lib.rs:33
+  - `utest` — crates/core/src/lib.rs:37
 
 ### spec/02-exigences/relations.md
 
@@ -347,10 +371,12 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (3) :
+- Couvertures réelles (5) :
   - `impl` — crates/core/src/reglages.rs:56
   - `impl` — crates/core/src/reglages.rs:133
   - `utest` — crates/core/src/reglages.rs:301
+  - `impl` — crates/core/src/synchronisation.rs:208
+  - `utest` — crates/core/src/synchronisation/tests.rs:244
 
 #### `req~autorite-par-champ~1`
 
@@ -378,12 +404,13 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (5) :
+- Couvertures réelles (6) :
   - `impl` — crates/core/src/fusion.rs:81
   - `utest` — crates/core/src/fusion.rs:452
   - `impl` — crates/core/src/reglages.rs:256
   - `utest` — crates/core/src/reglages.rs:473
   - `utest` — crates/core/src/reglages.rs:484
+  - `utest` — crates/core/src/synchronisation/tests.rs:314
 
 #### `req~fusion-trois-voies~1`
 
@@ -408,9 +435,11 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (4) :
   - `impl` — crates/core/src/fusion.rs:82
   - `utest` — crates/core/src/fusion.rs:339
+  - `impl` — crates/core/src/synchronisation.rs:207
+  - `utest` — crates/core/src/synchronisation/tests.rs:103
 
 #### `req~multivalues-par-valeur-normalisee~1`
 
@@ -426,29 +455,40 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/core/src/synchronisation.rs:100
+  - `utest` — crates/core/src/synchronisation/tests.rs:169
 
 #### `req~suppression-sans-destruction~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/core/src/synchronisation.rs:369
+  - `utest` — crates/core/src/synchronisation/tests.rs:381
 
 #### `req~detection-doublons~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (4) :
+  - `impl` — crates/core/src/doublons.rs:44
+  - `utest` — crates/core/src/doublons.rs:134
+  - `utest` — crates/core/src/doublons.rs:149
+  - `utest` — crates/core/src/synchronisation/tests.rs:560
 
 #### `req~traitement-des-doublons~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — crates/core/src/synchronisation.rs:307
+  - `utest` — crates/core/src/synchronisation/tests.rs:488
+  - `utest` — crates/core/src/synchronisation/tests.rs:541
 
 ### Bilan (couvertures réelles)
 
-13/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (21.3 %) — 48 à couvrir.
+23/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (37.7 %) — 38 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 

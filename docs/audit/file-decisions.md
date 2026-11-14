@@ -9,19 +9,19 @@
 Miroir de [`spec/02-exigences/file-decisions.md`](../../spec/02-exigences/file-decisions.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
-Lot 1 ouvert le 2026-11-14 (D-2026-11-09) : chaque exigence approuvée est
-un écart tant que son lot n'a rien livré. Les exigences encore proposées
-n'ont pas de ligne : elles ne se jugent pas avant leur lot.
+Exigences du lot 1 (D-2026-11-09), jugées sur le code et les tests du crate
+`crates/core` (ToDo-0002). Les exigences encore proposées n'ont pas de
+ligne : elles ne se jugent pas avant leur lot.
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-| `req~contenu-decision~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~actions-de-resolution~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~report-decision~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~resolution-par-lot~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~issues-suppression-detectee~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~portee-suppression-locale~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~contenu-decision~1` | conforme | `crates/core/src/decisions.rs` : `Decision` porte nature (divergence de champ, suppression, doublon probable, nouvelle photo), versions référentiel/source/base, source, date de création et statut ; test du critère |
+| `req~actions-de-resolution~1` | conforme | `Decision::choix` n'offre « garder les deux » que pour un champ multivalué, `admet` le refuse sinon ; `Referentiel::resoudre` applique l'action et aligne la base sur la source vue ; tests des deux critères, la valeur saisie étant écrite à la synchronisation suivante |
+| `req~report-decision~1` | conforme | `Referentiel::reporter` passe la décision « reportée » sans rien modifier ; tests (statut, valeurs et versions inchangées) |
+| `req~resolution-par-lot~1` | conforme | `cas_similaires` annonce les décisions en attente de même nature, champ et source (D-2026-11-10), `resoudre_avec_cas_similaires` leur applique la même résolution ; test du critère (cinq divergences sur l'organisation) |
+| `req~issues-suppression-detectee~1` | conforme | `Decision::choix` offre propager, restaurer, détacher ; `Referentiel::resoudre` les applique (restaurer réécrit la fiche à la synchronisation suivante, propriétés inconnues comprises) ; tests des deux critères |
+| `req~portee-suppression-locale~1` | conforme | `Referentiel::sources_de_suppression` ne propose que les sources liées autorisées en écriture, `supprimer_fiche` refuse toute autre ; les copies non choisies ne sont plus importées ; test du critère |
 
 ## Écarts ouverts
 
-- Exigences du lot 1 : à réaliser (ToDo-0002).
+- Aucun.
