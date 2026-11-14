@@ -16,13 +16,13 @@ n'ont pas de ligne : elles ne se jugent pas avant leur lot.
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
 | `req~reglages-par-source~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~autorite-par-champ~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~source-de-reference-unique~2` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~autorite-de-la-reference~2` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~fusion-trois-voies~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~modification-unilaterale-appliquee~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~autorite-par-champ~1` | conforme | `Sources::qui_fait_foi` : la source désignée pour le champ, à défaut la référence générale ; `fusion.rs` : la source gagnante impose sa valeur ; tests des deux critères (Google pour les téléphones, Nextcloud pour les adresses) |
+| `req~source-de-reference-unique~2` | conforme | `crates/core/src/reglages.rs` : `Sources::regler` et `designer_pour_champ` refusent une seconde référence au même niveau, l'erreur nomme la source en place ; tests des deux critères |
+| `req~autorite-de-la-reference~2` | conforme | `Sources::gagnant` : la source qui fait foi pour le champ l'emporte si ses conflits sont réglés sur « l'autorité gagne », jamais la référence générale sur le champ d'une autre ; `fusionner` retient alors sa valeur sans divergence ; tests des deux critères |
+| `req~fusion-trois-voies~1` | conforme | `crates/core/src/fusion.rs` : `fusionner` compare référentiel, source et base par clés normalisées, champ par champ ; test du critère (téléphone côté source, adresse côté référentiel, sans divergence) |
+| `req~modification-unilaterale-appliquee~1` | conforme | `fusionner` : un seul côté changé s'applique à l'autre, un même changement des deux côtés n'écrit rien ; tests des deux critères |
 | `req~divergence-soumise-a-decision~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
-| `req~multivalues-par-valeur-normalisee~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~multivalues-par-valeur-normalisee~1` | conforme | `normalisation.rs` (clés) et `fusion.rs` (combinaison valeur par valeur ; divergence seulement pour une valeur remplacée différemment des deux côtés) ; tests des deux critères |
 | `req~synchronisation-non-bloquante~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
 | `req~suppression-sans-destruction~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
 | `req~detection-doublons~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |

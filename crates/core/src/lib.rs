@@ -9,8 +9,10 @@
 
 pub mod champ;
 pub mod fiche;
+pub mod fusion;
 pub mod identifiants;
 pub mod normalisation;
+pub mod reglages;
 pub mod temps;
 pub mod vcard;
 
