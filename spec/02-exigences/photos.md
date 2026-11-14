@@ -1,7 +1,7 @@
 # Exigences — domaine photos
 
 **Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 2 et 9) ; passe ACTIVE quand une décision du registre l'acte. Les
+(§ 2 et 9) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Les
 conditions d'accès de chaque fournisseur sont à vérifier à l'implémentation.
 
 ## Fournisseurs désactivés par défaut

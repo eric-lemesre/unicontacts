@@ -1,7 +1,7 @@
 # Exigences — domaine relations
 
 **Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 7) ; passe ACTIVE quand une décision du registre l'acte.
+(§ 7) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre.
 
 ## Fiche « moi »
 

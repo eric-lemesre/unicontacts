@@ -9,7 +9,10 @@ d'accès de chaque API sont à vérifier en tête de lot.
 ## Reste à faire
 
 - Tout : attend le lot 3.
+- À l'ouverture : approuver les exigences du lot par une décision au
+  registre (domaine passé ACTIVE s'il ne l'est pas), cadrer et accepter ses
+  ADR ; reporter « à élever » ou mécaniser ses vérifications manuelles.
 
 ## Renvois
 
-- Exigences : domaine `photos`
+- Exigences : domaine `photos` (proposées)

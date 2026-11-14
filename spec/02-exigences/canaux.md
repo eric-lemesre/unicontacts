@@ -1,8 +1,9 @@
 # Exigences — domaine canaux de communication
 
 **Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 11) ; passe ACTIVE quand une décision du registre l'acte. La
-détermination du contexte pro / perso (OQ-005) reste à trancher.
+(§ 11) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Pas de
+contexte pro / perso global : chaque fiche porte une préférence pro et une
+préférence perso (OQ-005, tranchée le 2026-11-14).
 
 ## Canaux rattachés à un identifiant de la fiche
 
@@ -26,21 +27,27 @@ Covers:
 
 Needs: impl, utest
 
-## Classements pro et perso
+## Préférences pro et perso par fiche
 
-`req~classements-pro-perso~1`
+`req~classements-pro-perso~2`
 Status: proposed
 
 **Statut : proposée**
 
-Le système DOIT tenir pour chaque fiche deux classements des canaux par
-préférence, l'un pro et l'un perso ; si un seul est renseigné, il DOIT valoir
-pour les deux contextes.
+Le système DOIT tenir pour chaque fiche deux classements de ses canaux par
+préférence, l'un pour les communications pro, l'autre pour les
+communications perso ; si un seul est renseigné, il DOIT valoir pour les
+deux.
+
+Rationale:
+Révision 2 (2026-11-14) : OQ-005 écarte tout contexte pro / perso global ;
+la préférence est propre à chaque contact.
 
 Critères d'acceptation :
 
-- Étant donné une fiche dont seul le classement perso est renseigné, quand le
-  contexte est pro, alors le classement perso s'applique.
+- Étant donné une fiche dont seul le classement perso est renseigné, quand
+  son canal préféré pour une communication pro est demandé, alors c'est le
+  premier canal du classement perso.
 
 Covers:
 
@@ -81,16 +88,21 @@ Covers:
 
 Needs: impl, mtest
 
-## Actions triées selon la préférence
+## Actions selon les préférences pro et perso
 
-`req~actions-triees-par-preference~1`
+`req~actions-triees-par-preference~2`
 Status: proposed
 
 **Statut : proposée**
 
 Quand une fiche est affichée, le système DOIT présenter un bouton d'action
-par canal disponible, dans l'ordre du classement du contexte courant, chaque
-bouton ouvrant l'application concernée.
+par canal disponible, en distinguant le canal préféré pour une communication
+pro et celui pour une communication perso, chaque bouton ouvrant
+l'application concernée, sans dépendre d'aucun mode pro / perso global.
+
+Rationale:
+Révision 2 (2026-11-14) : OQ-005 — c'est l'utilisateur qui sait, à chaque
+communication, si elle est pro ou perso.
 
 Covers:
 

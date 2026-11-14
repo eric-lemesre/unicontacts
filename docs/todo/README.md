@@ -4,7 +4,7 @@
 
 | Fiche | Statut | Titre |
 | --- | --- | --- |
-| [todo-0001-arbitrer-la-specification.md](todo-0001-arbitrer-la-specification.md) | 🚧 en cours | ToDo-0001 — Arbitrer la spécification v0.1 |
+| [todo-0001-arbitrer-la-specification.md](todo-0001-arbitrer-la-specification.md) | ✅ soldé | ToDo-0001 — Arbitrer la spécification v0.1 |
 | [todo-0002-lot-1-coeur-rust.md](todo-0002-lot-1-coeur-rust.md) | ⏳ à venir | ToDo-0002 — Lot 1 : cœur Rust |
 | [todo-0003-lot-2-connecteur-carddav.md](todo-0003-lot-2-connecteur-carddav.md) | ⏳ à venir | ToDo-0003 — Lot 2 : connecteur CardDAV |
 | [todo-0004-lot-3-application-android.md](todo-0004-lot-3-application-android.md) | ⏳ à venir | ToDo-0004 — Lot 3 : application Android |

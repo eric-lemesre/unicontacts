@@ -1,9 +1,8 @@
 # ADR-0005 — Fusionner à trois voies, champ par champ, et différer les divergences
 
-**Statut** : Proposé
+**Statut** : Accepté
 **Date** : 2026-11-14
-**Décideur** : Eric Lemesre — seul (porteur) ; à accepter à l'arbitrage des
-domaines synchronisation et file de décisions
+**Décideur** : Eric Lemesre — seul (porteur), D-2026-11-09 au registre
 **Portée** : durable
 
 ## Contexte

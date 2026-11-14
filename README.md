@@ -16,8 +16,8 @@ synchronisation. Toute divergence non triviale est soumise à l'utilisateur.
 - [Spécification v0.1](spec/01-besoins/sources/2026-11-14-specification-v0.1.md)
   (2026-11-14) — document source, conservé tel quel.
 - Découpée en [besoins](spec/01-besoins/besoins.md), en
-  [exigences EARS](spec/02-exigences/README.md) par domaine (toutes en
-  proposition, à arbitrer), en [décisions](docs/adr/README.md) et en
+  [exigences EARS](spec/02-exigences/README.md) par domaine (approuvées lot
+  par lot, à l'ouverture de chaque lot), en [décisions](docs/adr/README.md) et en
   [questions ouvertes](spec/open-questions.md).
 
 ## Méthode
@@ -35,8 +35,9 @@ local et en CI.
 
 ## État
 
-**Conception** — aucun code métier pour l'instant : squelette du workspace
-Cargo, spécification et outillage de la méthode.
+**Spécification arbitrée, réalisation à venir** — aucun code métier pour
+l'instant ; prochain chantier : le lot 1, cœur Rust
+([feuille de route](docs/todo/README.md)).
 
 ## Structure
 

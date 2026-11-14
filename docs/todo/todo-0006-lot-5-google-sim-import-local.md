@@ -9,8 +9,11 @@ de lot.
 ## Reste à faire
 
 - Tout : attend les lots 2 et 3.
+- À l'ouverture : approuver les exigences du lot par une décision au
+  registre (domaine passé ACTIVE s'il ne l'est pas), cadrer et accepter ses
+  ADR ; reporter « à élever » ou mécaniser ses vérifications manuelles.
 
 ## Renvois
 
 - Exigences : `req~source-google~1`, `req~source-sim-lecture-seule~1`,
-  `req~import-stockage-local~1`
+  `req~import-stockage-local~1` (proposées)

@@ -9,11 +9,19 @@
 Miroir de [`spec/02-exigences/file-decisions.md`](../../spec/02-exigences/file-decisions.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
+Lot 1 ouvert le 2026-11-14 (D-2026-11-09) : chaque exigence approuvée est
+un écart tant que son lot n'a rien livré. Les exigences encore proposées
+n'ont pas de ligne : elles ne se jugent pas avant leur lot.
+
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-
-Aucune exigence approuvée à ce jour : le domaine est en proposition.
+| `req~contenu-decision~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~actions-de-resolution~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~report-decision~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~resolution-par-lot~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~issues-suppression-detectee~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
+| `req~portee-suppression-locale~1` | écart | à réaliser au lot 1 (ToDo-0002) : aucun code ni test livré |
 
 ## Écarts ouverts
 
-- Aucun.
+- Exigences du lot 1 : à réaliser (ToDo-0002).

@@ -1,14 +1,14 @@
 # Exigences — domaine file de décisions
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 6) ; passe ACTIVE quand une décision du registre l'acte.
+**Statut : ACTIVE** — domaine acté le 2026-11-14 (D-2026-11-09) à l'ouverture
+du lot 1, rédigé depuis la spécification v0.1 (§ 6). Seules les exigences
+du lot 1 sont approuvées ; les autres le seront à l'ouverture de leur lot.
 
 ## Contenu d'une décision
 
 `req~contenu-decision~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT présenter, pour chaque décision, son type (divergence de
 champ, suppression, doublon probable, nouvelle photo), les versions en
@@ -67,9 +67,8 @@ Needs: impl, mtest
 ## Actions de résolution
 
 `req~actions-de-resolution~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur résout une décision de divergence, le système DOIT lui
 offrir : garder la valeur du référentiel, garder celle de la source, garder
@@ -93,9 +92,8 @@ Needs: impl, utest
 ## Report d'une décision
 
 `req~report-decision~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur reporte une décision, le système DOIT la conserver avec
 le statut « reportée », sans rien modifier des valeurs en présence.
@@ -109,9 +107,8 @@ Needs: impl, utest
 ## Résolution en lot des cas similaires
 
 `req~resolution-par-lot~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur résout une décision en demandant de l'appliquer aux cas
 similaires, le système DOIT appliquer la même action à toutes les décisions
@@ -137,9 +134,8 @@ Needs: impl, utest
 ## Issues d'une suppression détectée
 
 `req~issues-suppression-detectee~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur résout une décision de suppression détectée sur une
 source, le système DOIT lui offrir trois issues et appliquer celle choisie :
@@ -163,9 +159,8 @@ Needs: impl, utest
 ## Portée d'une suppression demandée dans l'application
 
 `req~portee-suppression-locale~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur supprime une fiche dans l'application, le système DOIT
 lui faire choisir explicitement les sources où la suppression s'applique,

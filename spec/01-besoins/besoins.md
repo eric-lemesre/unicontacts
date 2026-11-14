@@ -4,13 +4,13 @@ Porteur : Eric Lemesre, qui arbitre les questions ouvertes
 (`spec/open-questions.md`).
 Source : [spécification v0.1 du 2026-11-14](sources/2026-11-14-specification-v0.1.md),
 découpée ici en besoins (items feat) et dans `spec/02-exigences/` en
-exigences. Tous les besoins sont en brouillon tant qu'aucune de leurs
-exigences n'est approuvée.
+exigences, approuvées lot par lot à l'ouverture de chaque lot (lot 1 :
+D-2026-11-09). Un besoin reste en brouillon tant qu'aucune de ses exigences
+n'est approuvée.
 
 ## Un carnet unique, géré comme un seul bloc
 
 `feat~referentiel-unique~1`
-Status: draft
 
 En tant que propriétaire d'un téléphone Android, je veux que mes contacts
 forment un seul référentiel maître, quelle que soit leur source (compte
@@ -30,7 +30,6 @@ Needs: req
 ## Une synchronisation qui ne bloque jamais
 
 `feat~synchronisation-sans-blocage~1`
-Status: draft
 
 Je veux synchroniser le référentiel avec toutes mes sources, dans l'ordre
 CardDAV, Google, stockage local, SIM, en réglant chacune (direction,
@@ -47,7 +46,6 @@ Needs: req
 ## Trancher les divergences en connaissance de cause, éventuellement plus tard
 
 `feat~arbitrage-differe~1`
-Status: draft
 
 Je veux voir dans une file chaque divergence non triviale (valeurs
 différentes, suppression, doublon probable, nouvelle photo), avec les
@@ -100,7 +98,7 @@ et filtrer la liste par groupes.
 
 Rationale:
 Les groupes structurent un carnet de plusieurs centaines de fiches
-(spécification v0.1, § 8) ; leur hiérarchie reste à confirmer (OQ-006).
+(spécification v0.1, § 8) ; ils sont hiérarchiques (OQ-006).
 
 Needs: req
 
@@ -128,7 +126,8 @@ Je veux noter les anniversaires, fêtes, anniversaires de mariage et dates
 personnalisées de mes contacts, et voir celles qui approchent.
 
 Rationale:
-Spécification v0.1, § 10 ; la forme des rappels reste à trancher (OQ-004).
+Spécification v0.1, § 10 ; les rappels sont confiés à l'agenda
+(OQ-004).
 
 Needs: req
 
@@ -138,11 +137,11 @@ Needs: req
 Status: draft
 
 Je veux savoir, pour chaque contact, par quels canaux le joindre (appel, SMS,
-e-mail, messageries) et dans quel ordre de préférence, en contexte pro et en
-contexte perso.
+e-mail, messageries) et lequel il préfère pour une communication pro et pour
+une communication perso.
 
 Rationale:
-Spécification v0.1, § 11 ; la détermination du contexte reste à trancher
-(OQ-005).
+Spécification v0.1, § 11 ; la préférence est propre à chaque contact, sans
+contexte global (OQ-005).
 
 Needs: req

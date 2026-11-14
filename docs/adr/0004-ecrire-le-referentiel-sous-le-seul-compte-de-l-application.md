@@ -2,8 +2,8 @@
 
 **Statut** : Proposé
 **Date** : 2026-11-14
-**Décideur** : Eric Lemesre — seul (porteur) ; à accepter à l'arbitrage du
-domaine intégration Android
+**Décideur** : Eric Lemesre — seul (porteur) ; à accepter à l'ouverture du
+lot 3 (application Android)
 **Portée** : durable
 
 ## Contexte
@@ -53,4 +53,4 @@ contacts réapparaissent en parallèle du bloc.
 
 - Spécification v0.1, § 3.2 et 3.3 (`spec/01-besoins/sources/`).
 - `req~compte-systeme-dedie~1`, `req~ecriture-sous-compte-unique~1`,
-  `req~synchronisation-directe~1`, OQ-001.
+  `req~synchronisation-directe~1`, ADR-0006.

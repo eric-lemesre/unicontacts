@@ -1,7 +1,8 @@
 # Exigences — domaine synchronisation
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 2 et 5) ; passe ACTIVE quand une décision du registre l'acte.
+**Statut : ACTIVE** — domaine acté le 2026-11-14 (D-2026-11-09) à l'ouverture
+du lot 1, rédigé depuis la spécification v0.1 (§ 2 et 5). Seules les exigences
+du lot 1 sont approuvées ; les autres le seront à l'ouverture de leur lot.
 
 ## Source CardDAV
 
@@ -112,9 +113,8 @@ Needs: impl, mtest
 ## Réglages par source
 
 `req~reglages-par-source~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT permettre de régler, pour chaque source, sa direction
 (bidirectionnelle, lecture seule, écriture seule), son autorité (référentiel
@@ -123,8 +123,8 @@ ignorer) et celui des conflits (demander, l'autorité gagne), avec pour
 valeurs par défaut : bidirectionnelle, référentiel, demander, demander.
 
 Rationale:
-§ 5.2. Le modèle doit permettre un réglage d'autorité par champ ultérieur
-(OQ-002).
+§ 5.2. L'autorité se règle aussi champ par champ : OQ-002 et
+l'exigence `req~autorite-par-champ~1`.
 
 Critères d'acceptation :
 
@@ -139,21 +139,28 @@ Covers:
 
 Needs: impl, utest
 
-## Une seule source de référence
+## Autorité réglée par champ
 
-`req~source-de-reference-unique~1`
-Status: proposed
+`req~autorite-par-champ~1`
 
-**Statut : proposée**
+**Statut : approuvée**
 
-Si l'utilisateur désigne une source comme référence alors qu'une autre l'est
-déjà, alors le système DOIT refuser le réglage en nommant la source qui est
-déjà référence.
+Le système DOIT permettre de désigner, pour un champ donné (par exemple les
+téléphones ou les adresses), la source qui fait foi pour ce champ, et cette
+désignation DOIT l'emporter, pour ce champ, sur la source de référence
+générale.
+
+Rationale:
+OQ-002, tranchée le 2026-11-14 : « Google fait foi pour les téléphones,
+Nextcloud pour les adresses » doit pouvoir se dire.
 
 Critères d'acceptation :
 
-- Étant donné une source A de référence, quand la source B est désignée
-  comme référence, alors le réglage est refusé et le message nomme A.
+- Étant donné Nextcloud source de référence et Google désignée pour les
+  téléphones, quand un téléphone diverge entre Google et le référentiel,
+  alors c'est Google qui fait foi pour ce téléphone.
+- Étant donné la même configuration, quand une adresse diverge, alors c'est
+  Nextcloud qui fait foi.
 
 Covers:
 
@@ -161,23 +168,56 @@ Covers:
 
 Needs: impl, utest
 
-## Conflits résolus en faveur de la référence
+## Une seule source de référence à chaque niveau
 
-`req~autorite-de-la-reference~1`
-Status: proposed
+`req~source-de-reference-unique~2`
 
-**Statut : proposée**
+**Statut : approuvée**
 
-Là où une source est désignée comme référence et ses conflits réglés sur
-« l'autorité gagne », quand un champ diverge entre elle et le référentiel, le
-système DOIT retenir la valeur de cette source sans créer de décision.
+Si l'utilisateur désigne une source comme référence, générale ou pour un
+champ, alors qu'une autre l'est déjà au même niveau, alors le système DOIT
+refuser le réglage en nommant la source qui l'est déjà.
+
+Rationale:
+Révision 2 (2026-11-14) : l'autorité se règle aussi par champ (OQ-002).
 
 Critères d'acceptation :
 
-- Étant donné une source de référence dont un champ et celui du référentiel
-  ont changé avec des valeurs différentes, quand elle est synchronisée, alors
-  le référentiel prend la valeur de la source et la file de décisions est
-  inchangée.
+- Étant donné une source A de référence générale, quand la source B est
+  désignée comme référence générale, alors le réglage est refusé et le
+  message nomme A.
+- Étant donné A désignée pour les téléphones, quand B est désignée pour les
+  téléphones, alors le réglage est refusé ; désigner B pour les adresses est
+  accepté.
+
+Covers:
+
+- feat~synchronisation-sans-blocage~1
+
+Needs: impl, utest
+
+## Conflits résolus en faveur de la source qui fait foi
+
+`req~autorite-de-la-reference~2`
+
+**Statut : approuvée**
+
+Là où une source fait foi pour un champ — désignée pour ce champ, ou à
+défaut source de référence générale — et que ses conflits sont réglés sur
+« l'autorité gagne », quand ce champ diverge entre elle et le référentiel, le
+système DOIT retenir la valeur de cette source sans créer de décision.
+
+Rationale:
+Révision 2 (2026-11-14) : l'autorité se règle aussi par champ (OQ-002).
+
+Critères d'acceptation :
+
+- Étant donné une source de référence générale dont un champ et celui du
+  référentiel ont changé avec des valeurs différentes, quand elle est
+  synchronisée, alors le référentiel prend la valeur de la source et la file
+  de décisions est inchangée.
+- Étant donné une autre source désignée pour ce champ, quand la source de
+  référence générale diverge sur ce champ, alors elle ne l'emporte pas.
 
 Covers:
 
@@ -188,9 +228,8 @@ Needs: impl, utest
 ## Comparaison à trois voies, champ par champ
 
 `req~fusion-trois-voies~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une source est synchronisée, le système DOIT comparer chaque champ
 selon trois valeurs : celle du référentiel, celle de la source et celle du
@@ -216,9 +255,8 @@ Needs: impl, utest
 ## Modification d'un seul côté appliquée
 
 `req~modification-unilaterale-appliquee~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand un champ n'a changé que d'un côté depuis le dernier état synchronisé,
 le système DOIT appliquer la modification à l'autre côté sans créer de
@@ -242,9 +280,8 @@ Needs: impl, utest
 ## Divergence soumise à décision
 
 `req~divergence-soumise-a-decision~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Si un champ a changé des deux côtés avec des valeurs différentes, et que les
 réglages de la source ne désignent pas d'autorité qui l'emporte, alors le
@@ -266,9 +303,8 @@ Needs: impl, utest
 ## Champs multivalués comparés par valeur normalisée
 
 `req~multivalues-par-valeur-normalisee~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand un champ multivalué (téléphones, e-mails) est comparé, le système DOIT
 comparer ses valeurs sous forme normalisée et fusionner sans décision une
@@ -290,9 +326,8 @@ Needs: impl, utest
 ## Synchronisation jamais suspendue par une décision
 
 `req~synchronisation-non-bloquante~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Tant qu'une décision est en attente, le système DOIT poursuivre la
 synchronisation des autres champs et des autres fiches.
@@ -315,9 +350,8 @@ Needs: impl, utest
 ## Aucune suppression sans décision
 
 `req~suppression-sans-destruction~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Si une suppression est détectée sur une source dont les suppressions sont
 réglées sur « demander », alors le système DOIT créer une décision de
@@ -341,9 +375,8 @@ Needs: impl, utest
 ## Détection des doublons à l'import
 
 `req~detection-doublons~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand des contacts sont importés d'une source, le système DOIT détecter les
 doublons avec les fiches existantes par numéro de téléphone normalisé, par
@@ -366,9 +399,8 @@ Needs: impl, utest
 ## Doublons certains fusionnés, probables soumis
 
 `req~traitement-des-doublons~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand un doublon est détecté, le système DOIT fusionner sans décision un
 doublon certain et créer une décision pour un doublon probable.

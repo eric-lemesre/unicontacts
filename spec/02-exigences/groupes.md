@@ -1,8 +1,8 @@
 # Exigences — domaine groupes
 
 **Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 8) ; passe ACTIVE quand une décision du registre l'acte. La hiérarchie des
-groupes (OQ-006) et l'opérateur du filtre (OQ-003) restent à trancher.
+(§ 8) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Hiérarchie des
+groupes : OQ-006 ; opérateur du filtre : OQ-003 (tranchées le 2026-11-14).
 
 ## Appartenance à plusieurs groupes
 
@@ -30,7 +30,7 @@ Le système DOIT permettre de donner à un groupe un groupe parent facultatif,
 sans cycle.
 
 Rationale:
-Orientation de la spécification v0.1, à confirmer : OQ-006.
+Orientation de la spécification v0.1, confirmée par OQ-006 (2026-11-14).
 
 Critères d'acceptation :
 
@@ -45,18 +45,26 @@ Needs: impl, utest
 
 ## Filtrage par groupes
 
-`req~filtre-par-groupes~1`
+`req~filtre-par-groupes~2`
 Status: proposed
 
 **Statut : proposée**
 
 Quand l'utilisateur filtre la liste par un ou plusieurs groupes, le système
-DOIT n'afficher que les fiches de ces groupes, sous-groupes compris par
-défaut, et permettre de combiner ce filtre avec la recherche.
+DOIT n'afficher que les fiches de l'un de ces groupes (union, par défaut) ou
+de tous ces groupes (intersection), au choix de l'utilisateur, sous-groupes
+compris par défaut, et permettre de combiner ce filtre avec la recherche.
 
 Rationale:
-L'opérateur entre plusieurs groupes (« et », « ou », au choix) est l'objet
-d'OQ-003.
+Révision 2 (2026-11-14) : l'opérateur est tranché par OQ-003.
+
+Critères d'acceptation :
+
+- Étant donné les groupes « Famille » et « Voisins » sélectionnés sans autre
+  réglage, quand le filtre s'applique, alors les fiches de l'un ou l'autre
+  groupe sont affichées.
+- Étant donné la même sélection en intersection, quand le filtre s'applique,
+  alors seules les fiches des deux groupes à la fois sont affichées.
 
 Covers:
 

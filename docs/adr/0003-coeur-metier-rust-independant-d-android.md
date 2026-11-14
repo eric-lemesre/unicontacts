@@ -1,9 +1,8 @@
 # ADR-0003 — Écrire le cœur métier en Rust, indépendant d'Android, sur SQLite
 
-**Statut** : Proposé
+**Statut** : Accepté
 **Date** : 2026-11-14
-**Décideur** : Eric Lemesre — seul (porteur) ; à accepter à l'arbitrage des
-domaines référentiel et synchronisation
+**Décideur** : Eric Lemesre — seul (porteur), D-2026-11-09 au registre
 **Portée** : durable
 
 ## Contexte
@@ -22,7 +21,7 @@ doublons, vCard, connecteurs de sources et fournisseurs de photos derrière
 des traits — est écrit en Rust, dans le workspace Cargo (`crates/`), sans
 aucune dépendance à Android. Le stockage du référentiel est une base SQLite
 locale au téléphone. La couche Android y accède par une interface étrangère
-(crate `ffi` à venir, technologie selon OQ-001).
+(crate `ffi` à venir, par UniFFI : ADR-0006).
 
 ## Alternatives écartées
 
@@ -55,4 +54,4 @@ spécification deviennent impossibles.
 ## Références
 
 - Spécification v0.1, § 2 et 3.1 (`spec/01-besoins/sources/`).
-- `req~coeur-independant-android~1`, OQ-001.
+- `req~coeur-independant-android~1`, ADR-0006.

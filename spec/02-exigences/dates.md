@@ -1,8 +1,8 @@
 # Exigences — domaine dates
 
 **Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 10) ; passe ACTIVE quand une décision du registre l'acte. La forme des
-rappels (OQ-004) reste à trancher ; le modèle n'en dépend pas.
+(§ 10) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Les rappels sont
+confiés à l'agenda du téléphone (OQ-004, tranchée le 2026-11-14).
 
 ## Types de dates, année facultative
 
@@ -77,3 +77,32 @@ Covers:
 - feat~dates-a-retenir~1
 
 Needs: impl, utest
+
+## Dates reportées dans l'agenda
+
+`req~dates-dans-l-agenda~1`
+Status: proposed
+
+**Statut : proposée**
+
+Quand une date d'une fiche est créée, modifiée ou supprimée, le système DOIT
+reporter le changement sur un événement annuel récurrent d'un agenda du
+téléphone choisi par l'utilisateur, et laisser à cet agenda l'émission des
+rappels.
+
+Rationale:
+OQ-004, tranchée le 2026-11-14 : l'agenda sait déjà rappeler et se
+synchronise ; l'application n'émet pas ses propres notifications de date.
+
+Critères d'acceptation :
+
+- Étant donné un agenda choisi, quand un anniversaire est ajouté à une fiche,
+  alors un événement annuel récurrent apparaît dans cet agenda.
+- Étant donné cet événement, quand l'anniversaire est supprimé de la fiche,
+  alors l'événement disparaît de l'agenda.
+
+Covers:
+
+- feat~dates-a-retenir~1
+
+Needs: impl, mtest

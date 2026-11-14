@@ -28,8 +28,8 @@ recommandation ; sinon, la recommandation est celle de la rédaction du
 - **Recommandation** : A (hypothèse par défaut de la spécification) — le
   cœur du produit est l'intégration système d'Android, que B ne dispense pas
   d'écrire en Kotlin.
-- **Décision** : —
-- **Statut** : open
+- **Décision** : A — Kotlin / Jetpack Compose relié au cœur par UniFFI (Eric Lemesre, 2026-11-14, D-2026-11-07) ; acté par ADR-0006.
+- **Statut** : resolved
 
 ## OQ-002 — Autorité réglée par source ou par champ
 
@@ -43,8 +43,8 @@ recommandation ; sinon, la recommandation est celle de la rédaction du
   - B) Par source et par champ dès la première version : plus souple, plus
     de réglages à expliquer et à tester.
 - **Recommandation** : A (hypothèse par défaut de la spécification).
-- **Décision** : —
-- **Statut** : open
+- **Décision** : B — l'autorité se règle par source et par champ dès la première version (Eric Lemesre, 2026-11-14, D-2026-11-08) : `req~autorite-par-champ~1`, `req~source-de-reference-unique~2`, `req~autorite-de-la-reference~2`.
+- **Statut** : resolved
 
 ## OQ-003 — Opérateur du filtre multi-groupes
 
@@ -58,8 +58,8 @@ recommandation ; sinon, la recommandation est celle de la rédaction du
 - **Recommandation** : C, de la rédaction (la spécification ne tranchait
   pas) — l'union est la lecture la plus courante d'une sélection multiple,
   l'intersection reste accessible.
-- **Décision** : —
-- **Statut** : open
+- **Décision** : C — au choix de l'utilisateur, union par défaut (Eric Lemesre, 2026-11-14, D-2026-11-08) : `req~filtre-par-groupes~2`.
+- **Statut** : resolved
 
 ## OQ-004 — Rappels des dates : par l'application ou par l'agenda
 
@@ -75,8 +75,8 @@ recommandation ; sinon, la recommandation est celle de la rédaction du
 - **Recommandation** : B, de la rédaction (la spécification ne tranchait
   pas) — l'agenda sait déjà rappeler et se synchronise ; à confirmer selon
   l'agenda utilisé sous /e/OS.
-- **Décision** : —
-- **Statut** : open
+- **Décision** : B — l'application alimente un agenda du téléphone, qui émet les rappels (Eric Lemesre, 2026-11-14, D-2026-11-08) : `req~dates-dans-l-agenda~1`.
+- **Statut** : resolved
 
 ## OQ-005 — Détermination du contexte pro / perso
 
@@ -89,8 +89,8 @@ recommandation ; sinon, la recommandation est celle de la rédaction du
   - C) Manuelle d'abord, automatique en option plus tard.
 - **Recommandation** : A (hypothèse par défaut de la spécification),
   extensible vers C.
-- **Décision** : —
-- **Statut** : open
+- **Décision** : Aucune des options : il n'y a pas de contexte pro / perso global. « Ce n'est pas général, mais un contact peut avoir une préférence de canal pour les communications pro et une pour le perso » (Eric Lemesre, 2026-11-14, D-2026-11-08) : `req~classements-pro-perso~2`, `req~actions-triees-par-preference~2`.
+- **Statut** : resolved
 
 ## OQ-006 — Groupes hiérarchiques
 
@@ -103,8 +103,8 @@ recommandation ; sinon, la recommandation est celle de la rédaction du
   - A) Groupes hiérarchiques, chemin encodé dans le libellé.
   - B) Groupes à plat.
 - **Recommandation** : A (orientation de la spécification, à confirmer).
-- **Décision** : —
-- **Statut** : open
+- **Décision** : A — groupes hiérarchiques, chemin encodé dans `CATEGORIES` (Eric Lemesre, 2026-11-14, D-2026-11-08).
+- **Statut** : resolved
 
 ## OQ-007 — Nom définitif du projet
 

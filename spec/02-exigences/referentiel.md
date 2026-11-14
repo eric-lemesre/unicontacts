@@ -1,14 +1,14 @@
 # Exigences — domaine référentiel
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 2 à 4) ; passe ACTIVE quand une décision du registre l'acte.
+**Statut : ACTIVE** — domaine acté le 2026-11-14 (D-2026-11-09) à l'ouverture
+du lot 1, rédigé depuis la spécification v0.1 (§ 2 à 4). Seules les exigences
+du lot 1 sont approuvées ; les autres le seront à l'ouverture de leur lot.
 
 ## Identifiant stable de la fiche maître
 
 `req~fiche-maitre-identifiant-stable~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT attribuer à chaque fiche maître un identifiant stable,
 indépendant de toute source, qui ne change ni à la modification de la fiche
@@ -34,9 +34,8 @@ Needs: impl, utest
 ## Provenance de chaque valeur
 
 `req~provenance-par-champ~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT conserver, pour chaque valeur d'un champ de fiche, la source
 dont elle provient et la date de sa dernière modification.
@@ -63,9 +62,8 @@ Needs: impl, utest
 ## Conservation des propriétés vCard non interprétées
 
 `req~conservation-proprietes-inconnues~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une vCard reçue d'une source contient une propriété que le système
 n'interprète pas, le système DOIT la conserver telle quelle pour cette source
@@ -92,9 +90,8 @@ Needs: impl, utest
 ## Lecture et écriture vCard 3.0 et 4.0
 
 `req~vcard-3-et-4~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT lire et écrire les vCard des versions 3.0 et 4.0, et écrire
 vers chaque source dans la version qu'elle utilise.
@@ -116,9 +113,8 @@ Needs: impl, utest
 ## Cœur métier indépendant d'Android
 
 `req~coeur-independant-android~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le cœur métier (modèle, stockage, fusion, décisions, vCard) DOIT se compiler
 et passer ses tests sur un poste de développement Linux, sans SDK Android ni

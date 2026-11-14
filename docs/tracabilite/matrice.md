@@ -34,7 +34,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles : — À COUVRIR
 
-#### `req~classements-pro-perso~1`
+#### `req~classements-pro-perso~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
@@ -52,7 +52,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, mtest
 - Couvertures réelles : — À COUVRIR
 
-#### `req~actions-triees-par-preference~1`
+#### `req~actions-triees-par-preference~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
@@ -88,6 +88,12 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~dates-dans-l-agenda~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
 - Couvertures réelles : — À COUVRIR
 
 ### spec/02-exigences/file-decisions.md
@@ -154,7 +160,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles : — À COUVRIR
 
-#### `req~filtre-par-groupes~1`
+#### `req~filtre-par-groupes~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
@@ -318,13 +324,19 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles : — À COUVRIR
 
-#### `req~source-de-reference-unique~1`
+#### `req~autorite-par-champ~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles : — À COUVRIR
 
-#### `req~autorite-de-la-reference~1`
+#### `req~source-de-reference-unique~2`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~autorite-de-la-reference~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
@@ -380,7 +392,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-0/59 exigence(s) testable(s) couverte(s) par au moins une trace réelle (0.0 %) — 59 à couvrir.
+0/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (0.0 %) — 61 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
