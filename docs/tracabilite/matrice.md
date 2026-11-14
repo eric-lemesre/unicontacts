@@ -353,7 +353,23 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, itest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (16) :
+  - `impl` — crates/carddav/src/client.rs:81
+  - `impl` — crates/carddav/src/client.rs:146
+  - `impl` — crates/carddav/src/client.rs:163
+  - `impl` — crates/carddav/src/client.rs:189
+  - `impl` — crates/carddav/src/lib.rs:11
+  - `impl` — crates/carddav/src/multistatus.rs:53
+  - `impl` — crates/carddav/src/synchro.rs:60
+  - `itest` — crates/carddav/src/synchro/tests.rs:4
+  - `itest` — crates/carddav/tests/radicale.rs:176
+  - `itest` — crates/carddav/tests/radicale.rs:212
+  - `itest` — crates/carddav/tests/radicale.rs:237
+  - `itest` — crates/carddav/tests/radicale.rs:296
+  - `itest` — crates/carddav/tests/radicale.rs:324
+  - `itest` — crates/carddav/tests/radicale.rs:348
+  - `itest` — tools/bootstrap.d/60-python.sh:3
+  - `itest` — tools/radicale.sh:3
 
 #### `req~source-google~1`
 
@@ -494,7 +510,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-23/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (37.7 %) — 38 à couvrir.
+24/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (39.3 %) — 37 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
@@ -522,7 +538,7 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `.github/workflows/ci.yml`
 - `.github/workflows/security.yml`
 
-### `tools` (51)
+### `tools` (52)
 
 - `tools/adr-new.sh`
 - `tools/audit.sh`
@@ -562,6 +578,7 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `tools/paralleles.sh`
 - `tools/perimetre-test.sh`
 - `tools/perimetre.sh`
+- `tools/radicale-requirements.txt`
 - `tools/rattachement-herites.txt`
 - `tools/rattachement-test.sh`
 - `tools/releves.sh`
@@ -587,5 +604,5 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `tools/hooks/commit-msg.sh`
 - `tools/hooks/pre-commit.sh`
 
-**Total : 66/71 fichier(s) d'outillage sans trace de traçabilité.**
+**Total : 67/74 fichier(s) d'outillage sans trace de traçabilité.**
 
