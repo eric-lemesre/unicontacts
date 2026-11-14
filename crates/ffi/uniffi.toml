@@ -1,0 +1,4 @@
+# Liaisons Kotlin générées par UniFFI (ADR-0009).
+[bindings.kotlin]
+package_name = "fr.lemesre.unicontacts.coeur"
+cdylib_name = "unicontacts_ffi"

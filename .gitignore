@@ -55,3 +55,8 @@ target
 # Systèmes
 .DS_Store
 Thumbs.db
+
+# Projet Android (ADR-0009) : caches Gradle et Kotlin, chemin local du SDK.
+android/.gradle/
+android/.kotlin/
+android/local.properties

@@ -16,8 +16,8 @@ se jugent pas avant leur lot.
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-| `req~boite-de-decisions~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
-| `req~vue-comparee~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
+| `req~boite-de-decisions~1` | écart | réalisée, vérification sur l'appareil à exécuter : `nombre_decisions` du crate `ffi` ; compteur de l'écran principal ouvrant la liste (`ui/`) ; `mtest~compteur-de-decisions~1` |
+| `req~vue-comparee~1` | écart | réalisée, vérification sur l'appareil à exécuter : `DecisionFfi` porte valeurs, origine et date de chaque côté ; `ui/EcransDecisions.kt` les affiche côte à côte avec la base et les choix ; `mtest~vue-comparee-sur-l-appareil~1` |
 | `req~contenu-decision~1` | conforme | `crates/core/src/decisions.rs` : `Decision` porte nature (divergence de champ, suppression, doublon probable, nouvelle photo), versions référentiel/source/base, source, date de création et statut ; test du critère |
 | `req~actions-de-resolution~1` | conforme | `Decision::choix` n'offre « garder les deux » que pour un champ multivalué, `admet` le refuse sinon ; `Referentiel::resoudre` applique l'action et aligne la base sur la source vue ; tests des deux critères, la valeur saisie étant écrite à la synchronisation suivante |
 | `req~report-decision~1` | conforme | `Referentiel::reporter` passe la décision « reportée » sans rien modifier ; tests (statut, valeurs et versions inchangées) |
@@ -27,4 +27,4 @@ se jugent pas avant leur lot.
 
 ## Écarts ouverts
 
-- Écrans du lot 3 : à réaliser (ToDo-0004).
+- Écrans du lot 3 : réalisés, à vérifier sur le Fairphone (`docs/verification-manuelle/android.md`, ToDo-0004).

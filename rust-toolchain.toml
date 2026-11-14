@@ -5,3 +5,5 @@
 [toolchain]
 channel = "1.100.0"
 components = ["rustfmt", "clippy"]
+# Cibles de la bibliothèque embarquée dans l'application Android (ADR-0009).
+targets = ["aarch64-linux-android", "x86_64-linux-android"]

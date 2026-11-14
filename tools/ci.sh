@@ -160,6 +160,9 @@ etape "rust — tests"       sh tools/rust.sh test
 # Tests d'intégration du connecteur CardDAV contre Radicale épinglé
 # (ADR-0008) : le script démarre et arrête le serveur.
 etape "rust — intégration CardDAV" sh tools/radicale.sh test
+# Application Android (ADR-0009) : bibliothèque native et liaisons, lint aux
+# avertissements bloquants, tests JVM, APK de débogage.
+etape "android — lint, tests JVM, APK" sh tools/android.sh verifier
 
 # --- Tests d'outillage (voie complète) --------------------------------------
 # Chaque porte se teste sur son cas d'échec (R3). Ces tests créent des dépôts

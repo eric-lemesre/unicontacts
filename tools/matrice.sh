@@ -113,7 +113,7 @@ else
     # couvrir — une citation qui compterait comme preuve fabriquerait de la
     # couverture. Le reste de docs/ porte des items réels (docs/methode est
     # l'implémentation même de la méthode).
-    SCAN_FILES="$(git ls-files spec docs examples src crates tools .github .gitlab \
+    SCAN_FILES="$(git ls-files spec docs examples src crates android tools .github .gitlab \
                      .gitlab-ci.yml AGENTS.md README.md README.en.md \
                      CONTRIBUTING.md CHANGELOG.md Taskfile.yml 2>/dev/null | \
                   grep -v '^docs/revues/\|^docs/todo/' || true)"

@@ -60,12 +60,21 @@ jobs:
           path: |
             ~/.cargo/bin/cargo-nextest
             ~/.cargo/bin/cargo-sweep
-          key: outillage-rust-nextest-0.9.143-sweep-0.8.0
+            ~/.cargo/bin/cargo-ndk
+          key: outillage-rust-nextest-0.9.143-sweep-0.8.0-ndk-4.1.2
 
       - name: Outillage Rust
         run: |
           command -v cargo-nextest >/dev/null || cargo install --locked cargo-nextest --version 0.9.143
           command -v cargo-sweep >/dev/null || cargo install --locked cargo-sweep --version 0.8.0
+          command -v cargo-ndk >/dev/null || cargo install --locked cargo-ndk --version 4.1.2
+
+      # Outillage Android exigé par tools/bootstrap.d/70-android.sh
+      # (ADR-0009) : plateforme 37 et NDK épinglé, ajoutés au SDK du runner.
+      - name: Outillage Android
+        run: |
+          yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --install \
+            "platforms;android-37.0" "build-tools;37.0.0" "ndk;28.2.13676358" > /dev/null
 
       # Point d'entrée UNIQUE : la CI n'a pas sa propre liste d'étapes.
       # tools/ci.sh constate le périmètre et emprunte la voie qui convient
