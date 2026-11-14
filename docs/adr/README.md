@@ -56,6 +56,7 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | ADR | Titre | Statut |
 | --- | --- | --- |
 | [ADR-0001](0001-publier-sous-gpl-3-0-ou-ulterieure.md) | Publier unicontacts sous GPL-3.0 ou ultérieure | Accepté |
+| [ADR-0002](0002-adopter-just-comme-facade-d-orchestration.md) | Adopter just comme façade d'orchestration | Accepté |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.

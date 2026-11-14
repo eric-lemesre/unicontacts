@@ -31,7 +31,7 @@
 4. Écrire ou réviser l'exigence (EARS, critères d'acceptation, Covers, Needs).
 5. Implémenter, taguer chaque site (`[impl->req~…~n]`).
 6. Écrire les tests du niveau déclaré, tagués (`[utest->…]`, `[itest->…]`…).
-7. `task ci` en local — tout doit passer avant de proposer. Le hook
+7. `just ci` en local — tout doit passer avant de proposer. Le hook
    pre-commit ne joue que la voie documentaire : la voie complète, tests
    d'outillage compris, reste due.
 8. Commit conventionnel portant l'identifiant d'exigence et les trailers de
@@ -65,26 +65,26 @@ lorsque c'est pertinent, pour préserver le contexte de la session
 L'orchestrateur est une façade interchangeable (ADR-0007) : la logique vit
 dans `tools/*.sh`, appelables directement sans aucun runner.
 
-| Commande (façade Task) | Équivalent direct | Effet |
+| Commande (façade just, ADR-0002) | Équivalent direct | Effet |
 | --- | --- | --- |
-| `task` | — | liste des tâches |
-| `task ci` | `sh tools/ci.sh` | **tout ce que la CI exécute**, voie constatée (`--complet`, `--rapide`) |
-| `task trace` | `sh tools/oft.sh trace` | traçabilité complète (échoue si un maillon manque) |
-| `task report` | `sh tools/oft.sh report` | rapport HTML dans `build/tracabilite.html` |
-| `task check` | `sh tools/checks.sh` | contrôles de cohérence (ADR, templates, version) |
-| `task secrets` | `sh tools/secrets.sh scan` | porte anti-secrets (gitleaks épinglé, ADR-0012) |
-| `task liens` | `sh tools/liens.sh` | intégrité des liens internes de la documentation |
-| `task audit` | `sh tools/audit.sh` | périmètre de l'audit de réalisation (`--squelette <domaine>`) |
-| `task derive` | `sh tools/derive.sh` | anti-dérive des artefacts générés |
-| `task matrice` | `sh tools/matrice.sh` | matrice de traçabilité (**informative**, absente de `task ci`) dans `docs/tracabilite/matrice.md` |
-| `task regen` | — | régénère feuille de route, suivi de revue, audit, badges, avancement, matrice |
-| `task issues` | `sh tools/issues.sh` | conformité des issues (**hors porte** : réseau requis) |
-| `task hooks` | `git config core.hooksPath .githooks` | installe les hooks git du dépôt |
-| `task setup` | `sh tools/setup.sh` | accueil après clone : bootstrap + hooks + portes |
-| `task bootstrap` | `sh tools/bootstrap.sh` | dépendances, flux consenti : socle + modules du projet (`tools/bootstrap.d/`) |
-| `task clean` (`-- --all` : cache inclus) | `sh tools/clean.sh` | nettoie les artefacts locaux (chemins déclarés uniquement) |
-| `task adr-new -- titre` | `sh tools/adr-new.sh titre` | crée l'ADR suivant depuis le modèle |
-| `task bump -- X.Y.Z` | `sh tools/bump.sh X.Y.Z` | met à jour VERSION (journal à compléter à la main) |
+| `just` | — | liste des recettes |
+| `just ci` | `sh tools/ci.sh` | **tout ce que la CI exécute**, voie constatée (`--complet`, `--rapide`) |
+| `just trace` | `sh tools/oft.sh trace` | traçabilité complète (échoue si un maillon manque) |
+| `just report` | `sh tools/oft.sh report` | rapport HTML dans `build/tracabilite.html` |
+| `just check` | `sh tools/checks.sh` | contrôles de cohérence (ADR, templates, version) |
+| `just secrets` | `sh tools/secrets.sh scan` | porte anti-secrets (gitleaks épinglé, ADR-0012) |
+| `just liens` | `sh tools/liens.sh` | intégrité des liens internes de la documentation |
+| `just audit` | `sh tools/audit.sh` | périmètre de l'audit de réalisation (`--squelette <domaine>`) |
+| `just derive` | `sh tools/derive.sh` | anti-dérive des artefacts générés |
+| `just matrice` | `sh tools/matrice.sh` | matrice de traçabilité (**informative**, absente de `just ci`) dans `docs/tracabilite/matrice.md` |
+| `just regen` | — | régénère feuille de route, suivi de revue, audit, badges, avancement, matrice |
+| `just issues` | `sh tools/issues.sh` | conformité des issues (**hors porte** : réseau requis) |
+| `just hooks` | `git config core.hooksPath .githooks` | installe les hooks git du dépôt |
+| `just setup` | `sh tools/setup.sh` | accueil après clone : bootstrap + hooks + portes |
+| `just bootstrap` | `sh tools/bootstrap.sh` | dépendances, flux consenti : socle + modules du projet (`tools/bootstrap.d/`) |
+| `just clean` (`--all` : cache inclus) | `sh tools/clean.sh` | nettoie les artefacts locaux (chemins déclarés uniquement) |
+| `just adr-new titre` | `sh tools/adr-new.sh titre` | crée l'ADR suivant depuis le modèle |
+| `just bump X.Y.Z` | `sh tools/bump.sh X.Y.Z` | met à jour VERSION (journal à compléter à la main) |
 
 ## 4. Interdits explicites
 
@@ -94,8 +94,8 @@ dans `tools/*.sh`, appelables directement sans aucun runner.
 - Modifier un ADR accepté, un relevé figé ou une question ouverte résolue
   (l'addendum daté est la seule voie).
 - Introduire une dépendance d'outillage sans ADR (le gabarit n'exige que git,
-  un shell `sh` POSIX, curl et Java 17+ ; la façade d'orchestration — Task par
-  défaut — est un confort optionnel, ADR-0007).
+  un shell `sh` POSIX, curl et Java 17+ ; la façade d'orchestration — just
+  ici, ADR-0002 — est un confort optionnel, ADR-0007 du gabarit).
 - Placer de la logique dans une façade d'orchestration (Taskfile, justfile…)
   ou dans une façade CI : la logique vit dans `tools/`, la façade délègue.
 - Écrire en dur, dans une porte, un terme que le lexique déclare : la porte
