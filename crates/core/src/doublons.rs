@@ -5,11 +5,17 @@
 //! noms sont proches : égaux une fois retirés casse, accents, ponctuation et
 //! ordre des mots.
 //!
-//! - **Certain** : un téléphone ou un e-mail commun, et des noms proches ou
-//!   l'un des deux absent.
+//! - **Certain** : un téléphone ou un e-mail commun, et des noms proches,
+//!   présents des deux côtés.
 //! - **Probable** : un téléphone ou un e-mail commun avec des noms
-//!   différents (une ligne partagée, un e-mail de service), ou des noms
-//!   proches sans autre donnée commune (deux homonymes).
+//!   différents ou absents (une ligne partagée, un e-mail de service, une
+//!   carte sans nom), ou des noms proches sans autre donnée commune (deux
+//!   homonymes).
+//!
+//! Un doublon certain se fusionne sans décision, et la fiche réunie est
+//! ensuite écrite vers la nouvelle source. Une seule coordonnée commune ne
+//! suffit donc pas : une carte sans nom qui reprendrait l'e-mail d'un
+//! contact recevrait sinon tout le contenu de sa fiche.
 
 use std::collections::BTreeSet;
 
@@ -74,14 +80,11 @@ pub fn certitude(a: &Fiche, b: &Fiche) -> Option<Certitude> {
     let coordonnee_commune = [Champ::Telephone, Champ::Email]
         .into_iter()
         .any(|champ| !cles(a, champ).is_disjoint(&cles(b, champ)));
-    let noms = (nom_plie(a), nom_plie(b));
-    let noms_proches = matches!(&noms, (Some(x), Some(y)) if x == y);
-    let un_nom_absent = noms.0.is_none() || noms.1.is_none();
-    match (coordonnee_commune, noms_proches || un_nom_absent) {
+    let noms_proches = matches!((nom_plie(a), nom_plie(b)), (Some(x), Some(y)) if x == y);
+    match (coordonnee_commune, noms_proches) {
         (true, true) => Some(Certitude::Certain),
-        (true, false) => Some(Certitude::Probable),
-        (false, _) if noms_proches => Some(Certitude::Probable),
-        (false, _) => None,
+        (true, false) | (false, true) => Some(Certitude::Probable),
+        (false, false) => None,
     }
 }
 
@@ -184,6 +187,18 @@ mod tests {
             (Champ::NomAffiche, "Accueil Société"),
             (Champ::Telephone, "0199000001"),
         ])?;
+
+        assert_eq!(certitude(&importee, &existante), Some(Certitude::Probable));
+        Ok(())
+    }
+
+    #[test]
+    fn un_meme_email_sans_nom_d_un_cote_est_seulement_probable() -> Result<(), ErreurFiche> {
+        let existante = fiche(&[
+            (Champ::NomAffiche, "Camille Exemple"),
+            (Champ::Email, "camille@example.org"),
+        ])?;
+        let importee = fiche(&[(Champ::Email, "camille@example.org")])?;
 
         assert_eq!(certitude(&importee, &existante), Some(Certitude::Probable));
         Ok(())

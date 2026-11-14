@@ -478,9 +478,9 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (4) :
-  - `impl` — crates/core/src/doublons.rs:44
-  - `utest` — crates/core/src/doublons.rs:134
-  - `utest` — crates/core/src/doublons.rs:149
+  - `impl` — crates/core/src/doublons.rs:50
+  - `utest` — crates/core/src/doublons.rs:137
+  - `utest` — crates/core/src/doublons.rs:152
   - `utest` — crates/core/src/synchronisation/tests.rs:560
 
 #### `req~traitement-des-doublons~1`
