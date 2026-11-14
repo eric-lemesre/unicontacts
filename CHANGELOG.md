@@ -27,6 +27,11 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   (divergences, suppressions, doublons probables) ; détection des doublons à
   l'import (D-2026-11-10) ; stockage SQLite. Les 23 exigences du lot sont
   réalisées, testées et jugées conformes.
+- Lot 2, connecteur CardDAV (`crates/carddav`, ToDo-0003, ADR-0007) :
+  synchronisation bidirectionnelle avec un carnet Murena ou Nextcloud,
+  écritures sous précondition `If-Match`, écriture refusée annulée et
+  reprise au tour suivant ; tests d'intégration contre Radicale 3.9.1
+  épinglé (`sh tools/radicale.sh test`, ADR-0008).
 
 ## [0.1.0] - 2026-11-14
 
