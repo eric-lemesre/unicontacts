@@ -20,6 +20,13 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   acceptés ; le reste demeure proposé jusqu'à son lot.
 - ADR-0002 : just comme façade ; `AGENTS.md` et `CONTRIBUTING.md` citent ses
   recettes.
+- Lot 1, cœur Rust (`crates/core`, ToDo-0002) : fiche maître à identifiant
+  stable et provenance par valeur ; lecture et écriture vCard 3.0 et 4.0
+  sans perte des propriétés non interprétées ; fusion à trois voies champ
+  par champ, autorité réglée par source et par champ ; file de décisions
+  (divergences, suppressions, doublons probables) ; détection des doublons à
+  l'import (D-2026-11-10) ; stockage SQLite. Les 23 exigences du lot sont
+  réalisées, testées et jugées conformes.
 
 ## [0.1.0] - 2026-11-14
 

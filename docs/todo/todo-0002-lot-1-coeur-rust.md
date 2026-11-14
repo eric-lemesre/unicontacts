@@ -1,6 +1,6 @@
 # ToDo-0002 — Lot 1 : cœur Rust
 
-**Statut : 🚧 en cours**
+**Statut : ✅ soldé**
 
 Modèle, stockage SQLite, vCard 3.0 et 4.0, fusion à trois voies et file de
 décisions, testés sur des jeux de fichiers vCard (spécification v0.1, § 13).
@@ -10,12 +10,17 @@ approuvées (D-2026-11-09).
 
 ## Reste à faire
 
-- Constituer les jeux de vCard de référence (3.0, 4.0, propriétés inconnues).
-- Réaliser et tester les exigences approuvées des domaines référentiel,
-  synchronisation (hors sources) et file de décisions (hors écrans).
-- Porter le verdict d'audit de chacune à la livraison.
-- Retirer `crates/core/src/lib.rs` de `tools/rattachement-herites.txt` dès
-  qu'il porte la trace d'une exigence.
+- Rien : lot livré le 2026-11-14. Le crate `crates/core` réalise et teste
+  les 23 exigences, toutes jugées conformes à l'audit ; jeux de vCard de
+  référence dans `crates/core/tests/vcard/` ; critères des doublons actés
+  (D-2026-11-10).
+- Limites assumées, reportées à leur lot :
+  - le moteur attend la liste complète des copies d'une source : la
+    synchronisation incrémentale relève du connecteur (lot 2, ToDo-0003) ;
+  - les numéros nationaux se rapportent à l'indicatif +33, faute de réglage
+    du pays de l'utilisateur ;
+  - le stockage réécrit le référentiel entier à chaque enregistrement, en
+    une transaction : à revoir si la taille des carnets l'exige.
 
 ## Renvois
 
