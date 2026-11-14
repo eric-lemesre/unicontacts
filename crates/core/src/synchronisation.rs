@@ -60,6 +60,9 @@ pub struct Rapport {
     /// Copies illisibles, laissées en l'état : identifiant et motif. Elles
     /// ne valent pas suppression.
     pub illisibles: Vec<(String, String)>,
+    /// Lien de chaque copie écrite tel qu'il était avant l'écriture, pour
+    /// l'annuler si la source la refuse.
+    avant_ecriture: BTreeMap<String, (FicheId, Lien)>,
 }
 
 /// Erreur de synchronisation.
@@ -181,6 +184,24 @@ impl Referentiel {
         }
     }
 
+    /// Annule une écriture que la source a refusée ou n'a pu recevoir : le
+    /// lien de la copie redevient ce qu'il était avant la synchronisation.
+    /// Le référentiel garde ses valeurs ; la synchronisation suivante
+    /// retrouvera l'écart et le fusionnera de nouveau, sans rien perdre.
+    pub fn annuler_ecriture(&mut self, rapport: &Rapport, uid: &str) {
+        if let Some((fiche, lien)) = rapport.avant_ecriture.get(uid)
+            && let Some(fiche) = self.fiches.get_mut(fiche)
+        {
+            fiche.lier(lien.clone());
+        }
+    }
+
+    /// Reprogramme une suppression que la source n'a pu recevoir : elle
+    /// repartira à la synchronisation suivante.
+    pub fn reprogrammer_suppression(&mut self, source: SourceId, uid: &str) {
+        self.a_supprimer.insert((source, uid.to_owned()));
+    }
+
     fn contexte(
         &self,
         source: SourceId,
@@ -275,6 +296,9 @@ impl Referentiel {
                 uid: copie.uid.clone(),
                 contenu: contenu.clone(),
             });
+            rapport
+                .avant_ecriture
+                .insert(copie.uid.clone(), (id, lien.clone()));
             contenu
         } else {
             copie.contenu.clone()
@@ -397,6 +421,9 @@ impl Referentiel {
                     uid: lien.uid.clone(),
                     contenu: contenu.clone(),
                 });
+                rapport
+                    .avant_ecriture
+                    .insert(lien.uid.clone(), (id, lien.clone()));
                 let base = valeurs_en_textes(fiche);
                 if let Some(lien) = fiche.lien_mut(source) {
                     lien.carte = Some(contenu);

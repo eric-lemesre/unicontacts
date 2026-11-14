@@ -158,7 +158,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/decisions.rs:298
   - `impl` — crates/core/src/referentiel.rs:320
   - `utest` — crates/core/src/referentiel/tests.rs:362
-  - `impl` — crates/core/src/synchronisation.rs:370
+  - `impl` — crates/core/src/synchronisation.rs:394
   - `utest` — crates/core/src/synchronisation/tests.rs:403
 
 #### `req~portee-suppression-locale~1`
@@ -381,7 +381,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/reglages.rs:56
   - `impl` — crates/core/src/reglages.rs:133
   - `utest` — crates/core/src/reglages.rs:301
-  - `impl` — crates/core/src/synchronisation.rs:208
+  - `impl` — crates/core/src/synchronisation.rs:229
   - `utest` — crates/core/src/synchronisation/tests.rs:244
 
 #### `req~autorite-par-champ~1`
@@ -444,7 +444,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (4) :
   - `impl` — crates/core/src/fusion.rs:82
   - `utest` — crates/core/src/fusion.rs:339
-  - `impl` — crates/core/src/synchronisation.rs:207
+  - `impl` — crates/core/src/synchronisation.rs:228
   - `utest` — crates/core/src/synchronisation/tests.rs:103
 
 #### `req~multivalues-par-valeur-normalisee~1`
@@ -462,7 +462,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (2) :
-  - `impl` — crates/core/src/synchronisation.rs:100
+  - `impl` — crates/core/src/synchronisation.rs:103
   - `utest` — crates/core/src/synchronisation/tests.rs:169
 
 #### `req~suppression-sans-destruction~1`
@@ -470,7 +470,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (2) :
-  - `impl` — crates/core/src/synchronisation.rs:369
+  - `impl` — crates/core/src/synchronisation.rs:393
   - `utest` — crates/core/src/synchronisation/tests.rs:381
 
 #### `req~detection-doublons~1`
@@ -488,7 +488,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (3) :
-  - `impl` — crates/core/src/synchronisation.rs:307
+  - `impl` — crates/core/src/synchronisation.rs:331
   - `utest` — crates/core/src/synchronisation/tests.rs:488
   - `utest` — crates/core/src/synchronisation/tests.rs:541
 
