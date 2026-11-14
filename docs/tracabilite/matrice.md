@@ -156,7 +156,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (6) :
   - `impl` — crates/core/src/decisions.rs:171
   - `utest` — crates/core/src/decisions.rs:298
-  - `impl` — crates/core/src/referentiel.rs:316
+  - `impl` — crates/core/src/referentiel.rs:320
   - `utest` — crates/core/src/referentiel/tests.rs:362
   - `impl` — crates/core/src/synchronisation.rs:370
   - `utest` — crates/core/src/synchronisation/tests.rs:403
@@ -166,8 +166,8 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (3) :
-  - `impl` — crates/core/src/referentiel.rs:404
-  - `impl` — crates/core/src/referentiel.rs:429
+  - `impl` — crates/core/src/referentiel.rs:408
+  - `impl` — crates/core/src/referentiel.rs:433
   - `utest` — crates/core/src/referentiel/tests.rs:451
 
 ### spec/02-exigences/groupes.md
@@ -252,7 +252,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (7) :
+- Couvertures réelles (9) :
   - `impl` — crates/core/src/fiche.rs:71
   - `impl` — crates/core/src/fiche.rs:192
   - `utest` — crates/core/src/fiche.rs:210
@@ -260,24 +260,30 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/fiche.rs:236
   - `impl` — crates/core/src/identifiants.rs:52
   - `utest` — crates/core/src/identifiants.rs:70
+  - `impl` — crates/core/src/stockage.rs:178
+  - `utest` — crates/core/src/stockage/tests.rs:131
 
 #### `req~provenance-par-champ~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (6) :
+- Couvertures réelles (8) :
   - `impl` — crates/core/src/champ.rs:98
   - `impl` — crates/core/src/fiche.rs:124
   - `impl` — crates/core/src/fiche.rs:147
   - `utest` — crates/core/src/fiche.rs:252
   - `utest` — crates/core/src/fiche.rs:276
+  - `impl` — crates/core/src/stockage.rs:179
+  - `utest` — crates/core/src/stockage/tests.rs:132
   - `impl` — crates/core/src/temps.rs:11
 
 #### `req~conservation-proprietes-inconnues~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (3) :
+- Couvertures réelles (5) :
+  - `impl` — crates/core/src/stockage.rs:180
+  - `utest` — crates/core/src/stockage/tests.rs:133
   - `impl` — crates/core/src/vcard/ecriture.rs:170
   - `utest` — crates/core/src/vcard/tests.rs:363
   - `utest` — crates/core/src/vcard/tests.rs:381
@@ -301,7 +307,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (2) :
   - `impl` — crates/core/src/lib.rs:8
-  - `utest` — crates/core/src/lib.rs:37
+  - `utest` — crates/core/src/lib.rs:38
 
 ### spec/02-exigences/relations.md
 

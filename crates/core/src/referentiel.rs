@@ -307,7 +307,11 @@ impl Referentiel {
             }
         }
         if let Some(lien) = fiche.lien_mut(decision.source) {
-            lien.base.insert(champ, decision.versions.source.clone());
+            if decision.versions.source.is_empty() {
+                lien.base.remove(&champ);
+            } else {
+                lien.base.insert(champ, decision.versions.source.clone());
+            }
         }
         Ok(())
     }
