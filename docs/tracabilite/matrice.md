@@ -277,7 +277,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (2) :
   - `impl` — crates/core/src/lib.rs:8
-  - `utest` — crates/core/src/lib.rs:31
+  - `utest` — crates/core/src/lib.rs:33
 
 ### spec/02-exigences/relations.md
 
@@ -347,49 +347,78 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — crates/core/src/reglages.rs:56
+  - `impl` — crates/core/src/reglages.rs:133
+  - `utest` — crates/core/src/reglages.rs:301
 
 #### `req~autorite-par-champ~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (5) :
+  - `utest` — crates/core/src/fusion.rs:453
+  - `impl` — crates/core/src/reglages.rs:207
+  - `impl` — crates/core/src/reglages.rs:233
+  - `utest` — crates/core/src/reglages.rs:420
+  - `utest` — crates/core/src/reglages.rs:432
 
 #### `req~source-de-reference-unique~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (5) :
+  - `impl` — crates/core/src/reglages.rs:179
+  - `impl` — crates/core/src/reglages.rs:208
+  - `utest` — crates/core/src/reglages.rs:335
+  - `utest` — crates/core/src/reglages.rs:371
+  - `utest` — crates/core/src/reglages.rs:392
 
 #### `req~autorite-de-la-reference~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (5) :
+  - `impl` — crates/core/src/fusion.rs:81
+  - `utest` — crates/core/src/fusion.rs:452
+  - `impl` — crates/core/src/reglages.rs:256
+  - `utest` — crates/core/src/reglages.rs:473
+  - `utest` — crates/core/src/reglages.rs:484
 
 #### `req~fusion-trois-voies~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (4) :
+  - `impl` — crates/core/src/fusion.rs:45
+  - `utest` — crates/core/src/fusion.rs:222
+  - `utest` — crates/core/src/fusion.rs:235
+  - `utest` — crates/core/src/fusion.rs:248
 
 #### `req~modification-unilaterale-appliquee~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — crates/core/src/fusion.rs:60
+  - `utest` — crates/core/src/fusion.rs:278
+  - `utest` — crates/core/src/fusion.rs:294
 
 #### `req~divergence-soumise-a-decision~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/core/src/fusion.rs:82
+  - `utest` — crates/core/src/fusion.rs:339
 
 #### `req~multivalues-par-valeur-normalisee~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (4) :
+  - `impl` — crates/core/src/fusion.rs:140
+  - `utest` — crates/core/src/fusion.rs:375
   - `impl` — crates/core/src/normalisation.rs:15
   - `utest` — crates/core/src/normalisation.rs:120
 
@@ -419,7 +448,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-6/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (9.8 %) — 55 à couvrir.
+13/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (21.3 %) — 48 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
