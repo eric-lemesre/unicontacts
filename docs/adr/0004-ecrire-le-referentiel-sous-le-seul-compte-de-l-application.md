@@ -1,9 +1,8 @@
 # ADR-0004 — Écrire le référentiel sous le seul compte de l'application, synchroniser en direct
 
-**Statut** : Proposé
+**Statut** : Accepté
 **Date** : 2026-11-14
-**Décideur** : Eric Lemesre — seul (porteur) ; à accepter à l'ouverture du
-lot 3 (application Android)
+**Décideur** : Eric Lemesre — seul (porteur), D-2026-11-12 au registre
 **Portée** : durable
 
 ## Contexte

@@ -1,6 +1,6 @@
 # ToDo-0004 — Lot 3 : application Android
 
-**Statut : ⏳ à venir**
+**Statut : 🚧 en cours**
 
 Compte système, écriture dans `ContactsContract`, écrans de liste, d'édition
 et de résolution, en Kotlin / Compose relié au cœur par UniFFI (spécification
@@ -9,15 +9,29 @@ au reste du téléphone.
 
 ## Reste à faire
 
-- Tout : attend les lots 1 et 2.
-- À l'ouverture : approuver les exigences du lot par une décision au
-  registre (domaine passé ACTIVE s'il ne l'est pas), cadrer et accepter ses
-  ADR ; reporter « à élever » ou mécaniser ses vérifications manuelles.
-- Créer le crate `ffi` (UniFFI) et le projet Gradle ; câbler leurs portes
-  (construction, lint, tests instrumentés) — ADR d'outillage à l'appui.
+- Lot ouvert le 2026-11-14 (D-2026-11-12) : cinq exigences approuvées,
+  ADR-0004, ADR-0009 et ADR-0010 acceptés.
+- Crate `ffi` (UniFFI) et projet Gradle ; porte « android » (construction,
+  lint, tests JVM) en voie complète et en CI.
+- Compte système et adaptateur de synchronisation ; écriture des fiches dans
+  `ContactsContract`, un seul contact brut par fiche, en lecture seule.
+- Écrans : liste des fiches et compteur de décisions, fiche et édition,
+  sources (ajout CardDAV, synchronisation), décisions et vue comparée.
+- Identifiants des sources chiffrés par le Keystore (ADR-0010).
+- Exécuter une première fois les procédures de
+  `docs/verification-manuelle/android.md` sur le Fairphone.
+
+## Vérifications manuelles à élever
+
+- `req~compte-systeme-dedie~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~ecriture-sous-compte-unique~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~synchronisation-directe~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~boite-de-decisions~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~vue-comparee~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
 
 ## Renvois
 
-- Exigences : domaine `android`, écrans du domaine `file-decisions`
-  (proposées)
-- Décisions : ADR-0004 (proposé), ADR-0006
+- Exigences (approuvées, D-2026-11-12) : `req~compte-systeme-dedie~1`,
+  `req~ecriture-sous-compte-unique~1`, `req~synchronisation-directe~1`,
+  `req~boite-de-decisions~1`, `req~vue-comparee~1`
+- Décisions : ADR-0004, ADR-0006, ADR-0009, ADR-0010

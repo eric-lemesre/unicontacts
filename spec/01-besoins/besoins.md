@@ -61,7 +61,6 @@ Needs: req
 ## Le téléphone ne voit qu'un carnet
 
 `feat~integration-android~1`
-Status: draft
 
 Je veux que le téléphone, les SMS et les messageries voient mes contacts
 comme un seul bloc, sans doublons venus des sources.

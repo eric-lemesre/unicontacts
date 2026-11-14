@@ -9,12 +9,15 @@
 Miroir de [`spec/02-exigences/file-decisions.md`](../../spec/02-exigences/file-decisions.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
-Exigences du lot 1 (D-2026-11-09), jugées sur le code et les tests du crate
-`crates/core` (ToDo-0002). Les exigences encore proposées n'ont pas de
-ligne : elles ne se jugent pas avant leur lot.
+Exigences des lots 1 (D-2026-11-09) et 3 (D-2026-11-12), jugées sur le code
+et les tests de `crates/core` (ToDo-0002), et sur l'application Android
+(ToDo-0004). Les exigences encore proposées n'ont pas de ligne : elles ne
+se jugent pas avant leur lot.
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
+| `req~boite-de-decisions~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
+| `req~vue-comparee~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
 | `req~contenu-decision~1` | conforme | `crates/core/src/decisions.rs` : `Decision` porte nature (divergence de champ, suppression, doublon probable, nouvelle photo), versions référentiel/source/base, source, date de création et statut ; test du critère |
 | `req~actions-de-resolution~1` | conforme | `Decision::choix` n'offre « garder les deux » que pour un champ multivalué, `admet` le refuse sinon ; `Referentiel::resoudre` applique l'action et aligne la base sur la source vue ; tests des deux critères, la valeur saisie étant écrite à la synchronisation suivante |
 | `req~report-decision~1` | conforme | `Referentiel::reporter` passe la décision « reportée » sans rien modifier ; tests (statut, valeurs et versions inchangées) |
@@ -24,4 +27,4 @@ ligne : elles ne se jugent pas avant leur lot.
 
 ## Écarts ouverts
 
-- Aucun.
+- Écrans du lot 3 : à réaliser (ToDo-0004).

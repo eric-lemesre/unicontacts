@@ -58,11 +58,13 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | [ADR-0001](0001-publier-sous-gpl-3-0-ou-ulterieure.md) | Publier unicontacts sous GPL-3.0 ou ultérieure | Accepté |
 | [ADR-0002](0002-adopter-just-comme-facade-d-orchestration.md) | Adopter just comme façade d'orchestration | Accepté |
 | [ADR-0003](0003-coeur-metier-rust-independant-d-android.md) | Écrire le cœur métier en Rust, indépendant d'Android, sur SQLite | Accepté |
-| [ADR-0004](0004-ecrire-le-referentiel-sous-le-seul-compte-de-l-application.md) | Écrire le référentiel sous le seul compte de l'application, synchroniser en direct | Proposé |
+| [ADR-0004](0004-ecrire-le-referentiel-sous-le-seul-compte-de-l-application.md) | Écrire le référentiel sous le seul compte de l'application, synchroniser en direct | Accepté |
 | [ADR-0005](0005-fusionner-a-trois-voies-champ-par-champ.md) | Fusionner à trois voies, champ par champ, et différer les divergences | Accepté |
 | [ADR-0006](0006-ecrire-l-interface-android-en-kotlin-compose-avec-uniffi.md) | Écrire l'interface Android en Kotlin / Compose, reliée au cœur par UniFFI | Accepté |
 | [ADR-0007](0007-parler-http-par-un-client-bloquant-ureq.md) | Parler HTTP par un client bloquant, ureq | Accepté |
 | [ADR-0008](0008-eprouver-le-connecteur-carddav-contre-radicale.md) | Éprouver le connecteur CardDAV contre Radicale | Accepté |
+| [ADR-0009](0009-construire-l-application-android-avec-gradle-cargo-ndk-et-uniffi.md) | Construire l'application Android avec Gradle, cargo-ndk et UniFFI | Accepté |
+| [ADR-0010](0010-chiffrer-les-identifiants-des-sources-par-le-keystore-android.md) | Chiffrer les identifiants des sources par le Keystore Android | Accepté |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.
