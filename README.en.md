@@ -10,7 +10,7 @@ The project is instantiated from the
 [alm-forge](https://github.com/eric-lemesre/alm-forge) ALM template: traced
 requirements from need to mechanized tests, ADRs, quality gates enforced
 locally and in CI. Normative documentation is in French: see README.md,
-docs/SPEC.md and docs/methode/.
+spec/ (needs, requirements, open questions) and docs/methode/.
 
 Getting started: `just setup`, then `just ci` before proposing a change.
 

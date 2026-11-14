@@ -6,8 +6,381 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ## 1. Exigences → couvertures
 
-Aucune spécification trouvée sous `spec/02-exigences/`.
+### spec/02-exigences/android.md
 
+#### `req~compte-systeme-dedie~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~ecriture-sous-compte-unique~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~synchronisation-directe~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/canaux.md
+
+#### `req~canaux-par-identifiant~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~classements-pro-perso~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~note-par-canal~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~detection-assistee-canaux~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~actions-triees-par-preference~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~filtre-par-canal~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/dates.md
+
+#### `req~types-de-dates~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~fete-du-prenom-proposee~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~vue-a-venir~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~synchronisation-dates~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/file-decisions.md
+
+#### `req~contenu-decision~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~boite-de-decisions~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~vue-comparee~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~actions-de-resolution~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~report-decision~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~resolution-par-lot~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~issues-suppression-detectee~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~portee-suppression-locale~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/groupes.md
+
+#### `req~appartenance-multiple~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~groupes-hierarchiques~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~filtre-par-groupes~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~groupes-en-categories~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~renommage-groupe-operation-unique~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/photos.md
+
+#### `req~fournisseurs-desactives-par-defaut~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~recuperation-a-la-demande~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~lancement-recuperation~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~revue-des-photos-recuperees~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~photos-candidates~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~photo-poussee-redimensionnee~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~photo-manuelle~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/referentiel.md
+
+#### `req~fiche-maitre-identifiant-stable~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~provenance-par-champ~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~conservation-proprietes-inconnues~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~vcard-3-et-4~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~coeur-independant-android~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/relations.md
+
+#### `req~fiche-moi~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~liens-types~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~reciproques-automatiques~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~lien-par-identifiant-maitre~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~section-proches~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~synchronisation-relations~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### spec/02-exigences/synchronisation.md
+
+#### `req~source-carddav~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, itest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~source-google~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, itest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~import-stockage-local~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~source-sim-lecture-seule~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, mtest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~reglages-par-source~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~source-de-reference-unique~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~autorite-de-la-reference~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~fusion-trois-voies~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~modification-unilaterale-appliquee~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~divergence-soumise-a-decision~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~multivalues-par-valeur-normalisee~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~synchronisation-non-bloquante~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~suppression-sans-destruction~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~detection-doublons~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+#### `req~traitement-des-doublons~1`
+
+- Niveau normatif : DOIT
+- Needs: impl, utest
+- Couvertures réelles : — À COUVRIR
+
+### Bilan (couvertures réelles)
+
+0/59 exigence(s) testable(s) couverte(s) par au moins une trace réelle (0.0 %) — 59 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 

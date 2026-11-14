@@ -13,10 +13,12 @@ synchronisation. Toute divergence non triviale est soumise à l'utilisateur.
 
 ## Spécification
 
-- [docs/SPEC.md](docs/SPEC.md) — spécification fonctionnelle et technique
-  v0.1 (2026-11-14), en cours de découpage dans la chaîne tracée ci-dessous.
-- `spec/01-besoins/` (besoins), `spec/02-exigences/` (exigences EARS),
-  `docs/adr/` (décisions), `spec/open-questions.md` (points à arbitrer).
+- [Spécification v0.1](spec/01-besoins/sources/2026-11-14-specification-v0.1.md)
+  (2026-11-14) — document source, conservé tel quel.
+- Découpée en [besoins](spec/01-besoins/besoins.md), en
+  [exigences EARS](spec/02-exigences/README.md) par domaine (toutes en
+  proposition, à arbitrer), en [décisions](docs/adr/README.md) et en
+  [questions ouvertes](spec/open-questions.md).
 
 ## Méthode
 
@@ -42,7 +44,7 @@ Cargo, spécification et outillage de la méthode.
 | --- | --- |
 | `crates/core/` | `unicontacts-core` : modèle, stockage, fusion, décisions |
 | `spec/` | Besoins, exigences, questions ouvertes |
-| `docs/` | Spécification v0.1, méthode, ADR, audit, revues |
+| `docs/` | Méthode, ADR, registre des décisions, audit, revues |
 | `tools/` | Portes qualité (scripts POSIX) — point d'entrée `ci.sh` |
 | `rust-toolchain.toml` | Chaîne Rust épinglée (version exacte) |
 

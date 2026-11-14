@@ -57,6 +57,9 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | --- | --- | --- |
 | [ADR-0001](0001-publier-sous-gpl-3-0-ou-ulterieure.md) | Publier unicontacts sous GPL-3.0 ou ultérieure | Accepté |
 | [ADR-0002](0002-adopter-just-comme-facade-d-orchestration.md) | Adopter just comme façade d'orchestration | Accepté |
+| [ADR-0003](0003-coeur-metier-rust-independant-d-android.md) | Écrire le cœur métier en Rust, indépendant d'Android, sur SQLite | Proposé |
+| [ADR-0004](0004-ecrire-le-referentiel-sous-le-seul-compte-de-l-application.md) | Écrire le référentiel sous le seul compte de l'application, synchroniser en direct | Proposé |
+| [ADR-0005](0005-fusionner-a-trois-voies-champ-par-champ.md) | Fusionner à trois voies, champ par champ, et différer les divergences | Proposé |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.
