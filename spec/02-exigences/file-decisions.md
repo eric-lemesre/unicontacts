@@ -30,9 +30,8 @@ Needs: impl, utest
 ## Boîte de réception avec compteur
 
 `req~boite-de-decisions~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Tant qu'au moins une décision est en attente ou reportée, le système DOIT en
 afficher le nombre et donner accès à la liste des décisions.
@@ -51,9 +50,8 @@ Needs: impl, mtest
 ## Vue comparée champ par champ
 
 `req~vue-comparee~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur ouvre une décision, le système DOIT afficher côte à côte,
 champ par champ, les valeurs en présence avec la source et la date de chacune.

@@ -1,14 +1,13 @@
 # Exigences — domaine intégration Android
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 3.2 et 3.3) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre.
+**Statut : ACTIVE** — domaine acté le 2026-11-14 (D-2026-11-12) à l'ouverture
+du lot 3, rédigé depuis la spécification v0.1 (§ 3.2 et 3.3).
 
 ## Compte système dédié
 
 `req~compte-systeme-dedie~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT déclarer auprès d'Android un compte qui lui est propre et
 synchroniser le référentiel avec Android sous ce compte.
@@ -27,9 +26,8 @@ Needs: impl, mtest
 ## Un seul bloc dans les contacts du téléphone
 
 `req~ecriture-sous-compte-unique~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT écrire chaque fiche maître une seule fois dans les contacts
 Android (`ContactsContract`), sous le seul compte de l'application, quel que
@@ -53,9 +51,8 @@ Needs: impl, mtest
 ## Synchronisation directe avec les serveurs
 
 `req~synchronisation-directe~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT synchroniser chaque source directement avec son serveur, sans
 passer par un autre synchroniseur du téléphone (DAVx5, synchronisation
