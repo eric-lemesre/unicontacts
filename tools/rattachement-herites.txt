@@ -2,7 +2,6 @@
 # dressée par l'instanciation, un chemin par ligne. Retirer une ligne dès que
 # le fichier disparaît ou porte sa propre trace — tools/rattachement.sh
 # l'impose.
-crates/core/src/lib.rs
 templates/bootstrap.d/30-node.sh
 templates/bootstrap.d/40-markdown-npm.sh
 templates/bootstrap.d/50-rust.sh
