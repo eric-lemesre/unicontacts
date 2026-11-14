@@ -563,13 +563,32 @@ mod doublons {
         let (mut referentiel, _) = camille_importee()?;
         let google = referentiel.sources_mut().ajouter("Google", Version::V3);
 
-        referentiel.synchroniser(
+        let rapport = referentiel.synchroniser(
             google,
             &[copie("g-1", &["EMAIL:camille@example.org"])],
             date(2),
         )?;
 
-        assert_eq!(referentiel.fiches().count(), 1);
+        assert_eq!(rapport.decisions.len(), 1);
+        Ok(())
+    }
+
+    #[test]
+    fn une_carte_sans_nom_ne_recoit_rien_de_la_fiche_dont_elle_reprend_l_email() -> Resultat {
+        let (mut referentiel, nextcloud) = camille_importee()?;
+        let fiche = fiche_de(&referentiel, nextcloud, "nc-1")?;
+        if let Some(f) = referentiel.fiche_mut(fiche) {
+            f.modifier(Champ::Note, &["note privée"], date(2))?;
+        }
+        let google = referentiel.sources_mut().ajouter("Google", Version::V3);
+
+        let rapport = referentiel.synchroniser(
+            google,
+            &[copie("g-1", &["EMAIL:camille@example.org"])],
+            date(3),
+        )?;
+
+        assert_eq!(rapport.ecritures, []);
         Ok(())
     }
 }
