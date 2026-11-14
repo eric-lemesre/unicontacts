@@ -1,0 +1,18 @@
+[package]
+name = "unicontacts-carddav"
+description = "Connecteur CardDAV d'unicontacts : relie le référentiel à un carnet Murena ou Nextcloud"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+quick-xml = "0.42.0"
+thiserror = "2.0.21"
+unicontacts-core = { version = "0.1.0", path = "../core" }
+ureq = "3.5.2"
+
+[lints]
+workspace = true

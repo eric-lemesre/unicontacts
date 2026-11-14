@@ -16,7 +16,7 @@ jugent pas avant leur lot.
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-| `req~source-carddav~1` | écart | à réaliser au lot 2 (ToDo-0003) : aucun code ni test livré |
+| `req~source-carddav~1` | conforme | `crates/carddav` : REPORT addressbook-query, PUT sous `If-Match` (ou `If-None-Match: *`), DELETE ; carte désignée par son UID ; écriture refusée annulée dans le référentiel (`annuler_ecriture`), suppression reprogrammée ; mot de passe masqué au `Debug`, URL à identifiants refusée ; `tests/radicale.rs` (`sh tools/radicale.sh test`, Radicale 3.9.1 épinglé, ADR-0008) éprouve les deux critères, la conservation des propriétés inconnues, la modification concurrente et les suppressions |
 | `req~reglages-par-source~1` | conforme | `reglages.rs` : `Reglages::default()` porte les quatre valeurs par défaut, `Sources::ajouter` les applique ; `synchronisation.rs` n'écrit vers une source que si sa direction le permet (lecture seule : base alignée sur la source, écriture seule : recouverte) ; tests des deux critères |
 | `req~autorite-par-champ~1` | conforme | `Sources::qui_fait_foi` : la source désignée pour le champ, à défaut la référence générale ; `fusion.rs` : la source gagnante impose sa valeur ; tests des deux critères (Google pour les téléphones, Nextcloud pour les adresses) |
 | `req~source-de-reference-unique~2` | conforme | `crates/core/src/reglages.rs` : `Sources::regler` et `designer_pour_champ` refusent une seconde référence au même niveau, l'erreur nomme la source en place ; tests des deux critères |
@@ -32,4 +32,4 @@ jugent pas avant leur lot.
 
 ## Écarts ouverts
 
-- `req~source-carddav~1` : à réaliser (ToDo-0003).
+- Aucun.
