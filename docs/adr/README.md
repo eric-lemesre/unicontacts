@@ -30,7 +30,7 @@ compte-rendu d'une séance (il vit dans `docs/decisions/`).
   remplace ; l'ancien passe au statut « Remplacé par ADR-XXXX ».
 - La section **Vérification** est obligatoire pour tout ADR accepté : une
   décision qu'aucun mécanisme ne protège dérivera. Ce point est contrôlé par
-  les portes qualité (`task check`).
+  les portes qualité (`just check`).
 - Quand la décision répond à une exigence tracée, l'ADR porte un item de
   conception OpenFastTrace (type dsn) qui couvre l'exigence : la décision entre
   ainsi dans la matrice de traçabilité.
