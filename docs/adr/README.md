@@ -61,6 +61,8 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | [ADR-0004](0004-ecrire-le-referentiel-sous-le-seul-compte-de-l-application.md) | Écrire le référentiel sous le seul compte de l'application, synchroniser en direct | Proposé |
 | [ADR-0005](0005-fusionner-a-trois-voies-champ-par-champ.md) | Fusionner à trois voies, champ par champ, et différer les divergences | Accepté |
 | [ADR-0006](0006-ecrire-l-interface-android-en-kotlin-compose-avec-uniffi.md) | Écrire l'interface Android en Kotlin / Compose, reliée au cœur par UniFFI | Accepté |
+| [ADR-0007](0007-parler-http-par-un-client-bloquant-ureq.md) | Parler HTTP par un client bloquant, ureq | Accepté |
+| [ADR-0008](0008-eprouver-le-connecteur-carddav-contre-radicale.md) | Éprouver le connecteur CardDAV contre Radicale | Accepté |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.
