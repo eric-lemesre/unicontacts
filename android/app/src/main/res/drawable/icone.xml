@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icône provisoire : un carnet stylisé, en attendant le nom définitif (OQ-007). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#2E5E8C"
+        android:pathData="M8,4h30a2,2 0,0 1,2 2v36a2,2 0,0 1,-2 2H8z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,14a6,6 0,1 1,0 12a6,6 0,1 1,0 -12zM14,36c0,-6 4.5,-8 10,-8s10,2 10,8z" />
+</vector>

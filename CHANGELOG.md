@@ -32,6 +32,12 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   écritures sous précondition `If-Match`, écriture refusée annulée et
   reprise au tour suivant ; tests d'intégration contre Radicale 3.9.1
   épinglé (`sh tools/radicale.sh test`, ADR-0008).
+- Lot 3, application Android (`android/`, `crates/ffi`, ToDo-0004,
+  ADR-0004, ADR-0009, ADR-0010) : compte système et adaptateur de
+  synchronisation, un contact par fiche sous le seul compte d'unicontacts,
+  écrans des fiches, des sources et des décisions avec vue comparée ;
+  mots de passe chiffrés par le Keystore. Vérification sur l'appareil à
+  exécuter.
 
 ## [0.1.0] - 2026-11-14
 

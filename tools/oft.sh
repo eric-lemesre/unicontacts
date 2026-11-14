@@ -26,8 +26,10 @@ STATUTS_TRACES="approved"
 # pourquoi. Manque constaté sur un projet instancié.
 # « tests » porte les tests d'intégration d'un projet Rust (tags itest), que
 # cargo range hors de src (constaté sur un projet instancié).
-# « crates » porte les crates du workspace Cargo d'unicontacts.
-INPUTS="spec docs examples src crates tests tools .github .gitlab .gitlab-ci.yml AGENTS.md README.md README.en.md CONTRIBUTING.md CHANGELOG.md Taskfile.yml"
+# « crates » porte les crates du workspace Cargo d'unicontacts ; les sources
+# et scripts Gradle de l'application Android sont nommés un à un, pour ne
+# jamais balayer ses dossiers de construction (ADR-0009).
+INPUTS="spec docs examples src crates android/app/src android/app/build.gradle.kts android/build.gradle.kts android/settings.gradle.kts tests tools .github .gitlab .gitlab-ci.yml AGENTS.md README.md README.en.md CONTRIBUTING.md CHANGELOG.md Taskfile.yml"
 
 scan_inputs() {
     SCAN=""

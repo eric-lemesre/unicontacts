@@ -7,3 +7,5 @@
 *.jar binary
 # Jeux de vCard de référence : CRLF exigé par la RFC, gardé tel quel.
 *.vcf -text
+# Lanceur Gradle pour Windows : fins de ligne CRLF, comme le produit Gradle.
+*.bat text eol=crlf

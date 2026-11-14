@@ -9,17 +9,20 @@ au reste du téléphone.
 
 ## Reste à faire
 
-- Lot ouvert le 2026-11-14 (D-2026-11-12) : cinq exigences approuvées,
-  ADR-0004, ADR-0009 et ADR-0010 acceptés.
-- Crate `ffi` (UniFFI) et projet Gradle ; porte « android » (construction,
-  lint, tests JVM) en voie complète et en CI.
-- Compte système et adaptateur de synchronisation ; écriture des fiches dans
-  `ContactsContract`, un seul contact brut par fiche, en lecture seule.
-- Écrans : liste des fiches et compteur de décisions, fiche et édition,
-  sources (ajout CardDAV, synchronisation), décisions et vue comparée.
-- Identifiants des sources chiffrés par le Keystore (ADR-0010).
 - Exécuter une première fois les procédures de
-  `docs/verification-manuelle/android.md` sur le Fairphone.
+  `docs/verification-manuelle/android.md` sur le Fairphone, consigner le
+  journal des exécutions et porter les verdicts d'audit.
+- Fait le 2026-11-14 : crate `ffi` (UniFFI) ; projet Gradle et porte
+  « android » (lint aux avertissements bloquants, tests JVM, APK) en voie
+  complète et en CI ; compte système et adaptateur de synchronisation ;
+  écriture des fiches dans les contacts Android ; écrans (liste et
+  compteur, fiche, sources, décisions et vue comparée) ; mots de passe au
+  Keystore (ADR-0010).
+- Limites assumées : l'application n'a pas encore tourné sur un appareil
+  (l'émulateur ne démarre pas dans l'environnement de développement de
+  l'agent) ; réglages des sources (direction, autorité, suppressions,
+  conflits) non exposés dans les écrans ; icône et nom provisoires
+  (OQ-007).
 
 ## Vérifications manuelles à élever
 

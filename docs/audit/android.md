@@ -15,10 +15,10 @@ Exigences du lot 3 (D-2026-11-12), jugées sur le code de `crates/ffi` et
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-| `req~compte-systeme-dedie~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
-| `req~ecriture-sous-compte-unique~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
-| `req~synchronisation-directe~1` | écart | à réaliser au lot 3 (ToDo-0004) : aucun code ni test livré |
+| `req~compte-systeme-dedie~1` | écart | réalisée, vérification sur l'appareil à exécuter : `compte/` (authentificateur, compte créé au lancement, synchronisable et périodique) ; `mtest~compte-unicontacts-visible~1` |
+| `req~ecriture-sous-compte-unique~1` | écart | réalisée, vérification sur l'appareil à exécuter : `synchro/EcrivainContacts.kt` : un contact brut par fiche (`SOURCE_ID` = identifiant de la fiche), sous le seul compte, en lecture seule ; traduction testée sur la JVM (`LignesContactsTest`) ; `mtest~un-seul-bloc-dans-contacts~1` |
+| `req~synchronisation-directe~1` | écart | réalisée, vérification sur l'appareil à exécuter : `synchro/AdaptateurSynchro.kt` appelle `synchroniser_carddav` du crate `ffi` pour chaque source (connecteur éprouvé contre Radicale) ; mots de passe au Keystore (ADR-0010) ; `mtest~synchronisation-directe-sur-l-appareil~1` |
 
 ## Écarts ouverts
 
-- Exigences du lot 3 : à réaliser (ToDo-0004).
+- Exigences du lot 3 : réalisées, à vérifier sur le Fairphone (`docs/verification-manuelle/android.md`, ToDo-0004).

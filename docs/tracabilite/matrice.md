@@ -12,19 +12,40 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (8) :
+  - `impl` — android/app/build.gradle.kts:2
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/UnicontactsApp.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/compte/Authentificateur.kt:4
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/compte/Compte.kt:3
+  - `impl` — android/build.gradle.kts:2
+  - `impl` — android/settings.gradle.kts:2
+  - `impl` — tools/android.sh:3
+  - `impl` — tools/bootstrap.d/70-android.sh:3
 
 #### `req~ecriture-sous-compte-unique~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/EcrivainContacts.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/LignesContacts.kt:4
+  - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/synchro/LignesContactsTest.kt:2
+  - `impl` — crates/ffi/src/lib.rs:11
+  - `impl` — crates/ffi/src/lib.rs:126
 
 #### `req~synchronisation-directe~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (8) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/Coffre.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/ConfigurationsSources.kt:4
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:4
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranSources.kt:3
+  - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/sources/ConfigurationsSourcesTest.kt:2
+  - `impl` — crates/ffi/src/bin/uniffi-bindgen.rs:4
+  - `impl` — crates/ffi/src/lib.rs:10
+  - `impl` — crates/ffi/src/lib.rs:355
 
 ### spec/02-exigences/canaux.md
 
@@ -110,13 +131,21 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/ActivitePrincipale.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransDecisions.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:3
+  - `impl` — crates/ffi/src/lib.rs:264
+  - `impl` — crates/ffi/src/lib.rs:276
 
 #### `req~vue-comparee~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransDecisions.kt:4
+  - `impl` — crates/ffi/src/lib.rs:277
+  - `impl` — crates/ffi/src/modele.rs:2
 
 #### `req~actions-de-resolution~1`
 
@@ -513,7 +542,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-24/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (39.3 %) — 37 à couvrir.
+29/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (47.5 %) — 32 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
@@ -607,5 +636,5 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `tools/hooks/commit-msg.sh`
 - `tools/hooks/pre-commit.sh`
 
-**Total : 67/74 fichier(s) d'outillage sans trace de traçabilité.**
+**Total : 67/76 fichier(s) d'outillage sans trace de traçabilité.**
 
