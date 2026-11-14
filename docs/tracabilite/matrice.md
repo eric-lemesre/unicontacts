@@ -253,13 +253,23 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (3) :
+  - `impl` — crates/core/src/vcard/ecriture.rs:170
+  - `utest` — crates/core/src/vcard/tests.rs:363
+  - `utest` — crates/core/src/vcard/tests.rs:381
 
 #### `req~vcard-3-et-4~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (7) :
+  - `impl` — crates/core/src/vcard/ecriture.rs:145
+  - `impl` — crates/core/src/vcard/ecriture.rs:171
+  - `impl` — crates/core/src/vcard/lecture.rs:25
+  - `impl` — crates/core/src/vcard/mod.rs:8
+  - `utest` — crates/core/src/vcard/tests.rs:249
+  - `utest` — crates/core/tests/vcard_reference.rs:35
+  - `utest` — crates/core/tests/vcard_reference.rs:55
 
 #### `req~coeur-independant-android~1`
 
@@ -267,7 +277,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (2) :
   - `impl` — crates/core/src/lib.rs:8
-  - `utest` — crates/core/src/lib.rs:30
+  - `utest` — crates/core/src/lib.rs:31
 
 ### spec/02-exigences/relations.md
 
@@ -409,7 +419,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-4/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (6.6 %) — 57 à couvrir.
+6/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (9.8 %) — 55 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 

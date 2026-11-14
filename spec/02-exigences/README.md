@@ -6,7 +6,7 @@ Covers vers le besoin, Needs vers la couverture attendue).
 
 | Domaine | Statut | Avancement | Objet |
 | --- | --- | --- | --- |
-| [referentiel](referentiel.md) | ACTIVE | en cours | fiche maître, provenance, vCard, aucune perte, cœur hors Android |
+| [referentiel](referentiel.md) | ACTIVE | implémentée | fiche maître, provenance, vCard, aucune perte, cœur hors Android |
 | [synchronisation](synchronisation.md) | ACTIVE | en cours | sources, réglages, fusion à trois voies, suppressions, doublons |
 | [file-decisions](file-decisions.md) | ACTIVE | planifiée | contenu, résolution, report, lot, suppressions |
 | [android](android.md) | PROPOSITION | — | compte système, un seul bloc dans ContactsContract, synchronisation directe |

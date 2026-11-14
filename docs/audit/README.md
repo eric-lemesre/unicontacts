@@ -13,7 +13,7 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | [file-decisions](file-decisions.md) | 6 | 0 | 6 | 0 |
 | [groupes](groupes.md) | 0 | 0 | 0 | 0 |
 | [photos](photos.md) | 0 | 0 | 0 | 0 |
-| [referentiel](referentiel.md) | 5 | 3 | 2 | 0 |
+| [referentiel](referentiel.md) | 5 | 5 | 0 | 0 |
 | [relations](relations.md) | 0 | 0 | 0 | 0 |
 | [synchronisation](synchronisation.md) | 12 | 0 | 12 | 0 |
-| **total** | **23** | **3** | **20** | **0** |
+| **total** | **23** | **5** | **18** | **0** |

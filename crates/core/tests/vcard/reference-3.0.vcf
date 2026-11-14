@@ -1,0 +1,30 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//unicontacts//Jeu de reference vCard 3.0//FR
+UID:urn:uuid:5e0c9a52-0000-4000-8000-000000000301
+FN:Camille Exemple
+N:Exemple;Camille;Marie;Dr;
+ORG:Société Fictive;Service Essais
+TITLE:Responsable\, essais
+TEL;TYPE=CELL:06 39 98 00 01
+TEL;TYPE=WORK,VOICE:+33 1 99 00 00 01
+EMAIL;TYPE=INTERNET,HOME:camille@example.org
+EMAIL;TYPE=INTERNET;TYPE=WORK:c.exemple@example.com
+ADR;TYPE=HOME:;;12 rue de l'Exemple;Exempleville;;99999;France
+URL:https://example.org/camille
+BDAY:1980-05-17
+NOTE:Première ligne\nSeconde ligne\, avec une virgule et un point-virgule\;
+  suivie d'une suite repliée sur la ligne physique suivante.
+CATEGORIES:Famille,Amis
+item1.X-ABLABEL:Collègue
+X-PROPRIETAIRE;X-PARAM="a:b;c":valeur conservée telle quelle
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+UID:urn:uuid:5e0c9a52-0000-4000-8000-000000000302
+FN:Dominique Fictif
+N:Fictif;Dominique;;;
+TEL;CELL:0639980002
+NOTE:première note
+NOTE:seconde note, non interprétée mais conservée
+END:VCARD

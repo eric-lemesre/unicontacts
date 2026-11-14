@@ -12,6 +12,7 @@ pub mod fiche;
 pub mod identifiants;
 pub mod normalisation;
 pub mod temps;
+pub mod vcard;
 
 pub use champ::{Champ, Origine, Provenance, Valeur};
 pub use fiche::{ErreurFiche, Fiche, Lien};
