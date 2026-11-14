@@ -16,7 +16,9 @@ mod synchro;
 
 pub use client::{ClientCardDav, Compte, MotDePasse};
 pub use multistatus::Ressource;
-pub use synchro::{Bilan, ErreurConnecteur, Refus, synchroniser};
+pub use synchro::{
+    Bilan, ErreurConnecteur, Issue, Lecture, Refus, envoyer, lire_carnet, reporter, synchroniser,
+};
 
 /// Erreur d'échange avec un carnet CardDAV.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
