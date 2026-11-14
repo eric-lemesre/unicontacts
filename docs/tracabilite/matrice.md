@@ -267,7 +267,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (2) :
   - `impl` — crates/core/src/lib.rs:8
-  - `utest` — crates/core/src/lib.rs:29
+  - `utest` — crates/core/src/lib.rs:30
 
 ### spec/02-exigences/relations.md
 
@@ -379,7 +379,9 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/core/src/normalisation.rs:15
+  - `utest` — crates/core/src/normalisation.rs:120
 
 #### `req~synchronisation-non-bloquante~1`
 
@@ -407,7 +409,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-3/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (4.9 %) — 58 à couvrir.
+4/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (6.6 %) — 57 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 

@@ -10,6 +10,7 @@
 pub mod champ;
 pub mod fiche;
 pub mod identifiants;
+pub mod normalisation;
 pub mod temps;
 
 pub use champ::{Champ, Origine, Provenance, Valeur};
