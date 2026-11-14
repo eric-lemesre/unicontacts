@@ -1,19 +1,57 @@
-# Rust / Cargo
-target/
-**/target/
-Cargo.lock
+# Artefacts générés (rapports de traçabilité, distributions)
+build/
 
-# IDE / éditeurs
+# Cache d'outillage (jar OpenFastTrace téléchargé par tools/oft.sh)
+.cache/
+
+# Éditeurs et environnements locaux
 .idea/
 .vscode/
 *.swp
-*.swo
-*~
 
-# OS
-.DS_Store
-Thumbs.db
+# --- Données -----------------------------------------------------------------
+# RÈGLE : le dépôt porte le MODÈLE des données, jamais les données. Seuls les
+# schémas peuvent y figurer.
+#
+# Ces motifs ne protègent que du geste distrait : ils n'empêchent ni un
+# « git add -f », ni le suivi d'un fichier déjà versionné, et ils ne disent
+# rien de ce qu'un fichier porte. C'est tools/donnees.sh qui tient la porte,
+# en lisant le CONTENU.
+/dumps/
+/data/
+*.zip
+*.gz
+*.tgz
+*.dump
+*.bak
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.xlsm
 
-# Fichiers locaux
+# Un export de table porte le nom « schema.table.sql » ; le SQL d'un dépôt n'a
+# normalement pas de point dans son nom de fichier. La règle les distingue
+# sans liste à tenir à jour.
+*.*.sql
+# Sauf le schéma, qui est admis : un DDL ne porte aucune donnée.
+!*_ddl.sql
+!*.ddl.sql
+
+# Fichiers d'état d'agents locaux (jamais versionnés)
+.hermes/
+.codewhale/
+.deepseek/
+
+# Artefacts de compilation Rust. Sans barre finale : couvre aussi un lien
+# symbolique target vers un cache cargo-target-<worktree>. Cargo.lock est
+# versionné (application : constructions reproductibles).
+target
+
+# Fichiers locaux (identifiants, réglages du poste)
 *.local
 .env
+
+# Systèmes
+.DS_Store
+Thumbs.db

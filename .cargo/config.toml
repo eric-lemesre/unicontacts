@@ -1,0 +1,5 @@
+# Incrémental coupé pour tout le dépôt (porte d'hygiène de compilation) :
+# il n'accélère qu'une boucle d'édition et écrit dans target/*/incremental,
+# que rien ne purge.
+[build]
+incremental = false

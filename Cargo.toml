@@ -1,3 +1,25 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = ["crates/core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.100"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/eric-lemesre/unicontacts"
+publish = false
+
+# Le cœur tourne sur un téléphone : aucune panique hors tests, aucune
+# documentation publique manquante, aucun code unsafe.
+[workspace.lints.rust]
+missing_docs = "deny"
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+indexing_slicing = "deny"
+todo = "deny"
+unimplemented = "deny"

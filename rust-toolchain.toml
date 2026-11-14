@@ -1,0 +1,7 @@
+# Chaîne épinglée à une version exacte (porte d'hygiène de compilation) :
+# stable 1.100.0, publiée le 2026-11-12. Monter de version est un commit à
+# part : « sh tools/rust.sh epingler » (seule la ligne channel change), CI
+# verte, commit. Jamais « stable », qui n'épingle rien.
+[toolchain]
+channel = "1.100.0"
+components = ["rustfmt", "clippy"]
