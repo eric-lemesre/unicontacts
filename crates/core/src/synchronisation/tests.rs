@@ -592,3 +592,92 @@ mod doublons {
         Ok(())
     }
 }
+
+mod echec_d_ecriture {
+    use super::*;
+
+    #[test]
+    fn une_ecriture_annulee_rend_au_lien_son_etat_d_avant() -> Resultat {
+        let (mut referentiel, source) =
+            importe(Reglages::default(), &[copie("a", &["FN:Camille Exemple"])])?;
+        let fiche = fiche_de(&referentiel, source, "a")?;
+        if let Some(f) = referentiel.fiche_mut(fiche) {
+            f.modifier(Champ::Fonction, &["Responsable"], date(2))?;
+        }
+        let avant = referentiel
+            .fiche(fiche)
+            .and_then(|f| f.lien(source))
+            .cloned();
+        let rapport =
+            referentiel.synchroniser(source, &[copie("a", &["FN:Camille Exemple"])], date(3))?;
+
+        referentiel.annuler_ecriture(&rapport, "a");
+
+        assert_eq!(
+            referentiel
+                .fiche(fiche)
+                .and_then(|f| f.lien(source))
+                .cloned(),
+            avant
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn apres_une_ecriture_annulee_la_modification_repart_au_tour_suivant() -> Resultat {
+        let (mut referentiel, source) =
+            importe(Reglages::default(), &[copie("a", &["FN:Camille Exemple"])])?;
+        let fiche = fiche_de(&referentiel, source, "a")?;
+        if let Some(f) = referentiel.fiche_mut(fiche) {
+            f.modifier(Champ::Fonction, &["Responsable"], date(2))?;
+        }
+        let rapport =
+            referentiel.synchroniser(source, &[copie("a", &["FN:Camille Exemple"])], date(3))?;
+        referentiel.annuler_ecriture(&rapport, "a");
+
+        let rapport =
+            referentiel.synchroniser(source, &[copie("a", &["FN:Camille Exemple"])], date(4))?;
+
+        let ecrite = ecrit(&rapport, "a").unwrap_or_default();
+        assert!(ecrite.contains("TITLE:Responsable\r\n"), "{ecrite}");
+        Ok(())
+    }
+
+    #[test]
+    fn sans_annulation_la_modification_serait_perdue() -> Resultat {
+        // Témoin de la nécessité de l'annulation : si l'écriture échoue sans
+        // être annulée, la base croit la source à jour, et le tour suivant
+        // prend l'ancienne valeur de la source pour une modification.
+        let (mut referentiel, source) =
+            importe(Reglages::default(), &[copie("a", &["FN:Camille Exemple"])])?;
+        let fiche = fiche_de(&referentiel, source, "a")?;
+        if let Some(f) = referentiel.fiche_mut(fiche) {
+            f.modifier(Champ::Fonction, &["Responsable"], date(2))?;
+        }
+        referentiel.synchroniser(source, &[copie("a", &["FN:Camille Exemple"])], date(3))?;
+
+        referentiel.synchroniser(source, &[copie("a", &["FN:Camille Exemple"])], date(4))?;
+
+        assert_eq!(
+            textes(&referentiel, fiche, Champ::Fonction),
+            Vec::<String>::new()
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn une_suppression_reprogrammee_repart_au_tour_suivant() -> Resultat {
+        let (mut referentiel, source) =
+            importe(Reglages::default(), &[copie("a", &["FN:Camille Exemple"])])?;
+
+        referentiel.reprogrammer_suppression(source, "a");
+
+        assert_eq!(
+            referentiel
+                .suppressions_en_attente(source)
+                .collect::<Vec<_>>(),
+            ["a"]
+        );
+        Ok(())
+    }
+}
