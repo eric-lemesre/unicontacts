@@ -19,6 +19,28 @@ approuvées (D-2026-11-09).
 
 ## Renvois
 
-- Exigences : approuvées des domaines `referentiel`, `synchronisation`,
-  `file-decisions`
+- Exigences (approuvées, D-2026-11-09) :
+  - `req~fiche-maitre-identifiant-stable~1`
+  - `req~provenance-par-champ~1`
+  - `req~conservation-proprietes-inconnues~1`
+  - `req~vcard-3-et-4~1`
+  - `req~coeur-independant-android~1`
+  - `req~reglages-par-source~1`
+  - `req~autorite-par-champ~1`
+  - `req~source-de-reference-unique~2`
+  - `req~autorite-de-la-reference~2`
+  - `req~fusion-trois-voies~1`
+  - `req~modification-unilaterale-appliquee~1`
+  - `req~divergence-soumise-a-decision~1`
+  - `req~multivalues-par-valeur-normalisee~1`
+  - `req~synchronisation-non-bloquante~1`
+  - `req~suppression-sans-destruction~1`
+  - `req~detection-doublons~1`
+  - `req~traitement-des-doublons~1`
+  - `req~contenu-decision~1`
+  - `req~actions-de-resolution~1`
+  - `req~report-decision~1`
+  - `req~resolution-par-lot~1`
+  - `req~issues-suppression-detectee~1`
+  - `req~portee-suppression-locale~1`
 - Décisions : ADR-0003, ADR-0005

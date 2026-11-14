@@ -420,7 +420,7 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `.github/workflows/ci.yml`
 - `.github/workflows/security.yml`
 
-### `tools` (52)
+### `tools` (51)
 
 - `tools/adr-new.sh`
 - `tools/audit.sh`
@@ -440,7 +440,6 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `tools/derive.sh`
 - `tools/donnees-test.sh`
 - `tools/donnees.sh`
-- `tools/gouvernance-test.sh`
 - `tools/hygiene-compilation-test.sh`
 - `tools/hygiene-compilation.sh`
 - `tools/install-git.ps1`
@@ -486,5 +485,5 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `tools/hooks/commit-msg.sh`
 - `tools/hooks/pre-commit.sh`
 
-**Total : 67/71 fichier(s) d'outillage sans trace de traçabilité.**
+**Total : 66/71 fichier(s) d'outillage sans trace de traçabilité.**
 
