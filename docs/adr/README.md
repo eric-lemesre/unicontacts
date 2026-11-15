@@ -67,6 +67,7 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | [ADR-0010](0010-chiffrer-les-identifiants-des-sources-par-le-keystore-android.md) | Chiffrer les identifiants des sources par le Keystore Android | Accepté |
 | [ADR-0011](0011-porter-relations-et-dates-dans-les-vcard.md) | Porter relations et dates dans les vCard : RELATED en 4.0, convention Apple en 3.0 | Accepté |
 | [ADR-0012](0012-designer-un-groupe-par-son-chemin.md) | Désigner un groupe par son chemin | Accepté |
+| [ADR-0013](0013-tirer-le-calendrier-des-fetes-de-wikidata.md) | Tirer le calendrier des fêtes de Wikidata | Accepté |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.

@@ -1,15 +1,14 @@
 # Exigences — domaine dates
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 10) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Les rappels sont
-confiés à l'agenda du téléphone (OQ-004, tranchée le 2026-11-14).
+**Statut : ACTIVE** — domaine acté le 2026-11-15 (D-2026-11-13) au lot 4,
+rédigé depuis la spécification v0.1 (§ 10). Les rappels sont confiés à
+l'agenda du téléphone (OQ-004, tranchée le 2026-11-14). Portage vCard :
+ADR-0011 ; calendrier des fêtes : ADR-0013.
 
 ## Types de dates, année facultative
 
 `req~types-de-dates~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT permettre d'associer à une fiche des dates de type
 anniversaire, fête du prénom, anniversaire de mariage ou personnalisé avec
@@ -29,9 +28,7 @@ Needs: impl, utest
 ## Fête du prénom proposée
 
 `req~fete-du-prenom-proposee~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une fiche a un prénom figurant au calendrier des fêtes et pas de fête
 du prénom, le système DOIT proposer la date correspondante, que l'utilisateur
@@ -46,9 +43,7 @@ Needs: impl, utest
 ## Vue « À venir »
 
 `req~vue-a-venir~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT présenter les dates à venir dans l'ordre chronologique,
 filtrables par groupe.
@@ -62,9 +57,7 @@ Needs: impl, mtest
 ## Synchronisation des dates
 
 `req~synchronisation-dates~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une fiche est écrite vers une source ou vers Android, le système DOIT
 porter l'anniversaire dans `BDAY`, l'anniversaire de mariage dans
@@ -81,9 +74,7 @@ Needs: impl, utest
 ## Dates reportées dans l'agenda
 
 `req~dates-dans-l-agenda~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une date d'une fiche est créée, modifiée ou supprimée, le système DOIT
 reporter le changement sur un événement annuel récurrent d'un agenda du
