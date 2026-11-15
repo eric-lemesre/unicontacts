@@ -69,6 +69,11 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
 - Lot 5, carte SIM (ToDo-0006, ADR-0016) : la SIM devient une source en
   lecture seule ; nom et numéro de chaque entrée relus à chaque
   synchronisation, jamais écrits ; sans SIM lisible, la source est sautée.
+- Lot 5, Google (ToDo-0006, ADR-0017) : synchronisation d'un compte Google
+  par CardDAV sous OAuth 2.0 (PKCE, schéma d'URI propre), sans services
+  Play ; jeton de renouvellement chiffré par le Keystore ; carnet lu par
+  PROPFIND puis `addressbook-multiget` ; autorisation révoquée signalée
+  sans rien modifier.
 
 ## [0.1.0] - 2026-11-14
 
