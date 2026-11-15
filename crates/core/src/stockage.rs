@@ -13,7 +13,7 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use rusqlite::{Connection, Transaction, TransactionBehavior, params};
+use rusqlite::{Connection, OptionalExtension, Transaction, TransactionBehavior, params};
 
 use crate::champ::{Champ, Origine, Provenance, Valeur};
 use crate::decisions::{
@@ -23,13 +23,18 @@ use crate::fiche::{Fiche, Lien};
 use crate::identifiants::{DecisionId, FicheId, SourceId};
 use crate::referentiel::Referentiel;
 use crate::reglages::{Autorite, Conflits, Direction, Reglages, Source, Suppressions};
+use crate::relations::TypeRelation;
 use crate::temps::Horodatage;
 use crate::vcard::Version;
 
 /// Version du schéma que ce code écrit et sait lire.
-const VERSION_SCHEMA: i64 = 1;
+const VERSION_SCHEMA: i64 = 2;
 
-const SCHEMA: &str = "
+/// Migrations du schéma : chacune mène de la version précédente à la sienne.
+const MIGRATIONS: [(i64, &str); 2] = [(1, SCHEMA_1), (2, SCHEMA_2)];
+
+/// Schéma d'origine.
+const SCHEMA_1: &str = "
 CREATE TABLE sources (
     id           TEXT PRIMARY KEY,
     nom          TEXT NOT NULL,
@@ -106,6 +111,27 @@ CREATE TABLE ignorees (
 ) STRICT;
 ";
 
+/// Version 2 : relations (lot 4) — mémoire des relations par lien, fiche
+/// « moi », inverses déclarés des types de relation.
+const SCHEMA_2: &str = "
+CREATE TABLE memoires (
+    fiche_id  TEXT NOT NULL,
+    source_id TEXT NOT NULL,
+    rendu     TEXT NOT NULL,
+    texte     TEXT NOT NULL,
+    PRIMARY KEY (fiche_id, source_id, rendu),
+    FOREIGN KEY (fiche_id, source_id) REFERENCES liens (fiche_id, source_id) ON DELETE CASCADE
+) STRICT;
+CREATE TABLE moi (
+    seule    INTEGER PRIMARY KEY CHECK (seule = 1),
+    fiche_id TEXT    NOT NULL REFERENCES fiches (id) ON DELETE CASCADE
+) STRICT;
+CREATE TABLE inverses (
+    type    TEXT PRIMARY KEY,
+    inverse TEXT NOT NULL
+) STRICT;
+";
+
 /// Erreur de stockage.
 #[derive(Debug, thiserror::Error)]
 pub enum ErreurStockage {
@@ -153,18 +179,26 @@ impl Stockage {
         Self::preparer(Connection::open_in_memory()?)
     }
 
-    fn preparer(connexion: Connection) -> Resultat<Self> {
+    fn preparer(mut connexion: Connection) -> Resultat<Self> {
         connexion.pragma_update(None, "foreign_keys", true)?;
         connexion.pragma_update(None, "journal_mode", "WAL")?;
         connexion.busy_timeout(std::time::Duration::from_secs(5))?;
         let version: i64 = connexion.pragma_query_value(None, "user_version", |l| l.get(0))?;
-        match version {
-            0 => {
-                connexion.execute_batch(SCHEMA)?;
-                connexion.pragma_update(None, "user_version", VERSION_SCHEMA)?;
+        if version > VERSION_SCHEMA {
+            return Err(ErreurStockage::SchemaInconnu(version));
+        }
+        if version < VERSION_SCHEMA {
+            // Toutes les migrations dues en une transaction : la base passe
+            // à la version courante, ou reste où elle était.
+            let transaction =
+                connexion.transaction_with_behavior(TransactionBehavior::Immediate)?;
+            for (cible, schema) in MIGRATIONS {
+                if cible > version {
+                    transaction.execute_batch(schema)?;
+                }
             }
-            VERSION_SCHEMA => {}
-            autre => return Err(ErreurStockage::SchemaInconnu(autre)),
+            transaction.pragma_update(None, "user_version", VERSION_SCHEMA)?;
+            transaction.commit()?;
         }
         Ok(Self { connexion })
     }
@@ -212,7 +246,10 @@ impl Stockage {
 
 fn vider(transaction: &Transaction<'_>) -> Resultat<()> {
     transaction.execute_batch(
-        "DELETE FROM ignorees;
+        "DELETE FROM inverses;
+         DELETE FROM moi;
+         DELETE FROM memoires;
+         DELETE FROM ignorees;
          DELETE FROM a_supprimer;
          DELETE FROM decision_textes;
          DELETE FROM decisions;
@@ -264,6 +301,9 @@ fn ecrire_fiches(transaction: &Transaction<'_>, referentiel: &Referentiel) -> Re
     let mut base = transaction.prepare_cached(
         "INSERT INTO bases (fiche_id, source_id, champ, rang, texte) VALUES (?1, ?2, ?3, ?4, ?5)",
     )?;
+    let mut memoire = transaction.prepare_cached(
+        "INSERT INTO memoires (fiche_id, source_id, rendu, texte) VALUES (?1, ?2, ?3, ?4)",
+    )?;
     for f in referentiel.fiches() {
         let id = f.id().to_string();
         fiche.execute(params![id])?;
@@ -298,7 +338,21 @@ fn ecrire_fiches(transaction: &Transaction<'_>, referentiel: &Referentiel) -> Re
                     ])?;
                 }
             }
+            for (rendu, texte) in &l.memoire {
+                memoire.execute(params![id, source, rendu, texte])?;
+            }
         }
+    }
+    if let Some(moi) = referentiel.moi() {
+        transaction.execute(
+            "INSERT INTO moi (seule, fiche_id) VALUES (1, ?1)",
+            params![moi.to_string()],
+        )?;
+    }
+    let mut inverse =
+        transaction.prepare_cached("INSERT INTO inverses (type, inverse) VALUES (?1, ?2)")?;
+    for (a, b) in referentiel.inverses().couples() {
+        inverse.execute(params![a, b])?;
     }
     Ok(())
 }
@@ -475,6 +529,28 @@ fn lire_fiches(connexion: &Connection, referentiel: &mut Referentiel) -> Resulta
             .push(texte);
     }
 
+    let mut memoires: BTreeMap<(FicheId, SourceId), BTreeMap<String, String>> = BTreeMap::new();
+    let mut requete =
+        connexion.prepare("SELECT fiche_id, source_id, rendu, texte FROM memoires")?;
+    let lignes = requete.query_map([], |l| {
+        Ok((
+            l.get::<_, String>(0)?,
+            l.get::<_, String>(1)?,
+            l.get::<_, String>(2)?,
+            l.get::<_, String>(3)?,
+        ))
+    })?;
+    for ligne in lignes {
+        let (fiche, source, rendu, texte) = ligne?;
+        memoires
+            .entry((
+                identifiant(&fiche, "memoires.fiche_id")?,
+                identifiant(&source, "memoires.source_id")?,
+            ))
+            .or_default()
+            .insert(rendu, texte);
+    }
+
     let mut liens: BTreeMap<FicheId, Vec<Lien>> = BTreeMap::new();
     let mut requete = connexion
         .prepare("SELECT fiche_id, source_id, uid, etag, carte, a_restaurer FROM liens")?;
@@ -499,12 +575,35 @@ fn lire_fiches(connexion: &Connection, referentiel: &mut Referentiel) -> Resulta
         lien.carte = carte;
         lien.a_restaurer = a_restaurer;
         lien.base = bases.remove(&(fiche, source)).unwrap_or_default();
+        lien.memoire = memoires.remove(&(fiche, source)).unwrap_or_default();
         liens.entry(fiche).or_default().push(lien);
     }
 
     for (id, champs) in valeurs {
         let fiche = Fiche::restaurer(id, champs, liens.remove(&id).unwrap_or_default());
         referentiel.ajouter(fiche);
+    }
+
+    let moi: Option<String> = connexion
+        .query_row("SELECT fiche_id FROM moi", [], |l| l.get(0))
+        .optional()?;
+    if let Some(moi) = moi {
+        let moi = identifiant(&moi, "moi.fiche_id")?;
+        referentiel
+            .designer_moi(Some(moi))
+            .map_err(|_| illisible("moi.fiche_id", &moi.to_string()))?;
+    }
+    let mut requete = connexion.prepare("SELECT type, inverse FROM inverses")?;
+    let lignes = requete.query_map([], |l| Ok((l.get::<_, String>(0)?, l.get::<_, String>(1)?)))?;
+    for ligne in lignes {
+        let (a, b) = ligne?;
+        referentiel
+            .inverses_mut()
+            .declarer(
+                &TypeRelation::depuis_texte(&a),
+                &TypeRelation::depuis_texte(&b),
+            )
+            .map_err(|_| illisible("inverses.type", &a))?;
     }
     Ok(())
 }

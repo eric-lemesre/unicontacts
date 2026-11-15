@@ -1,6 +1,7 @@
 //! Types échangés avec Kotlin, et leur traduction depuis le cœur.
 // [impl->req~vue-comparee~1]
 
+use std::collections::BTreeSet;
 use unicontacts_carddav::Bilan;
 use unicontacts_core::decisions::{
     Action, Choix, Decision, IssueDoublon, IssueSuppression, Nature, Resolution, Statut,
@@ -8,6 +9,8 @@ use unicontacts_core::decisions::{
 use unicontacts_core::referentiel::Referentiel;
 use unicontacts_core::reglages::{Source, Sources};
 use unicontacts_core::vcard::Version;
+
+use unicontacts_core::relations::{Relation, TypeRelation};
 use unicontacts_core::{Champ, Fiche, Origine, Valeur};
 
 /// Nom de l'origine « référentiel », tel que l'affiche l'application.
@@ -36,6 +39,9 @@ pub enum ChampFfi {
     Adresse,
     /// Adresses web.
     Url,
+    /// Relations : présentées à part ([`FicheFfi::relations`]), jamais
+    /// éditées comme un champ.
+    Relation,
 }
 
 impl From<ChampFfi> for Champ {
@@ -51,6 +57,7 @@ impl From<ChampFfi> for Champ {
             ChampFfi::Email => Self::Email,
             ChampFfi::Adresse => Self::Adresse,
             ChampFfi::Url => Self::Url,
+            ChampFfi::Relation => Self::Relation,
         }
     }
 }
@@ -68,6 +75,7 @@ impl From<Champ> for ChampFfi {
             Champ::Email => Self::Email,
             Champ::Adresse => Self::Adresse,
             Champ::Url => Self::Url,
+            Champ::Relation => Self::Relation,
         }
     }
 }
@@ -105,6 +113,36 @@ pub struct FicheFfi {
     pub champs: Vec<ChampValeursFfi>,
     /// Noms des sources auxquelles la fiche est liée.
     pub sources: Vec<String>,
+    /// Relations vers d'autres fiches, dans leur ordre.
+    pub relations: Vec<RelationFfi>,
+    /// Vrai pour la fiche du propriétaire.
+    pub est_moi: bool,
+}
+
+/// Relation d'une fiche vers une autre.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct RelationFfi {
+    /// Code du type : mot fixe d'un type prédéfini, ou libellé.
+    pub code: String,
+    /// Libellé du type.
+    pub libelle: String,
+    /// Identifiant de la fiche liée.
+    pub fiche_id: String,
+    /// Nom de la fiche liée.
+    pub nom: String,
+}
+
+/// Type de relation proposé à l'utilisateur.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct TypeRelationFfi {
+    /// Code du type : mot fixe d'un type prédéfini, ou libellé.
+    pub code: String,
+    /// Libellé du type.
+    pub libelle: String,
+    /// Libellé de son inverse, s'il en a un.
+    pub inverse: Option<String>,
+    /// Vrai pour un type prédéfini.
+    pub predefini: bool,
 }
 
 /// Résumé d'une fiche, pour une liste.
@@ -337,12 +375,14 @@ pub(crate) fn resume(fiche: &Fiche) -> ResumeFicheFfi {
     }
 }
 
-pub(crate) fn fiche(fiche: &Fiche, sources: &Sources) -> FicheFfi {
+pub(crate) fn fiche(fiche: &Fiche, referentiel: &Referentiel) -> FicheFfi {
+    let sources = referentiel.sources();
     FicheFfi {
         id: fiche.id().to_string(),
         nom: nom(fiche),
         champs: fiche
             .champs()
+            .filter(|(champ, _)| *champ != Champ::Relation)
             .map(|(champ, valeurs)| ChampValeursFfi {
                 champ: champ.into(),
                 valeurs: valeurs.iter().map(|v| valeur(v, sources)).collect(),
@@ -353,7 +393,68 @@ pub(crate) fn fiche(fiche: &Fiche, sources: &Sources) -> FicheFfi {
             .filter_map(|l| sources.source(l.source))
             .map(|s| s.nom.clone())
             .collect(),
+        relations: referentiel
+            .relations(fiche.id())
+            .iter()
+            .map(|r| relation(r, referentiel))
+            .collect(),
+        est_moi: referentiel.moi() == Some(fiche.id()),
     }
+}
+
+/// Relation traduite, avec le nom de la fiche liée.
+// [impl->req~synchronisation-relations~1]
+pub(crate) fn relation(relation: &Relation, referentiel: &Referentiel) -> RelationFfi {
+    RelationFfi {
+        code: relation.type_relation.jeton().to_owned(),
+        libelle: relation.type_relation.libelle().to_owned(),
+        fiche_id: relation.fiche.to_string(),
+        nom: referentiel
+            .fiche(relation.fiche)
+            .map_or_else(|| "(fiche disparue)".to_owned(), nom),
+    }
+}
+
+/// Texte lisible d'une valeur de relation : « Parent : Basile ».
+fn relation_lisible(texte: &str, referentiel: &Referentiel) -> String {
+    Relation::depuis_texte(texte).map_or_else(
+        || texte.to_owned(),
+        |r| {
+            let lue = relation(&r, referentiel);
+            format!("{} : {}", lue.libelle, lue.nom)
+        },
+    )
+}
+
+/// Types de relation à proposer : les prédéfinis, puis les personnalisés
+/// déjà employés ou dotés d'un inverse, par ordre alphabétique.
+pub(crate) fn types_relation(referentiel: &Referentiel) -> Vec<TypeRelationFfi> {
+    let inverses = referentiel.inverses();
+    let mut personnalises: BTreeSet<String> = inverses
+        .couples()
+        .flat_map(|(a, b)| [a.to_owned(), b.to_owned()])
+        .collect();
+    for fiche in referentiel.fiches() {
+        for r in referentiel.relations(fiche.id()) {
+            if let TypeRelation::Personnalise(libelle) = r.type_relation {
+                personnalises.insert(libelle);
+            }
+        }
+    }
+    let predefinis = TypeRelation::PREDEFINIS.into_iter();
+    let autres = personnalises
+        .iter()
+        .map(|l| TypeRelation::depuis_texte(l))
+        .filter(|t| matches!(t, TypeRelation::Personnalise(_)));
+    predefinis
+        .chain(autres)
+        .map(|t| TypeRelationFfi {
+            code: t.jeton().to_owned(),
+            libelle: t.libelle().to_owned(),
+            inverse: inverses.inverse(&t).map(|i| i.libelle().to_owned()),
+            predefini: !matches!(t, TypeRelation::Personnalise(_)),
+        })
+        .collect()
 }
 
 pub(crate) fn source(source: &Source) -> SourceFfi {
@@ -389,11 +490,24 @@ pub(crate) fn decision(decision: &Decision, referentiel: &Referentiel) -> Decisi
         .source(decision.source)
         .map_or_else(|| decision.source.to_string(), |s| s.nom.clone());
     let fiche = referentiel.fiche(decision.fiche);
+    let relations = matches!(
+        decision.nature,
+        Nature::Divergence {
+            champ: Champ::Relation
+        }
+    );
+    let lisible = |texte: &str| {
+        if relations {
+            relation_lisible(texte, referentiel)
+        } else {
+            texte.to_owned()
+        }
+    };
     let recu = |textes: &[String], origine: &str| -> Vec<ValeurFfi> {
         textes
             .iter()
             .map(|t| ValeurFfi {
-                texte: t.clone(),
+                texte: lisible(t),
                 types: Vec::new(),
                 origine: origine.to_owned(),
                 date_millis: decision.creee_le.millis(),
@@ -415,7 +529,10 @@ pub(crate) fn decision(decision: &Decision, referentiel: &Referentiel) -> Decisi
         (Nature::Divergence { champ }, Some(fiche)) => fiche
             .valeurs(champ)
             .iter()
-            .map(|v| valeur(v, sources))
+            .map(|v| ValeurFfi {
+                texte: lisible(&v.texte),
+                ..valeur(v, sources)
+            })
             .collect(),
         _ => recu(&decision.versions.referentiel, REFERENTIEL),
     };
@@ -431,9 +548,16 @@ pub(crate) fn decision(decision: &Decision, referentiel: &Referentiel) -> Decisi
             Statut::Reportee => StatutFfi::Reportee,
             Statut::Resolue => StatutFfi::Resolue,
         },
-        choix: decision.choix().into_iter().map(choix).collect(),
+        // Une relation se choisit, elle ne se saisit pas : sa valeur désigne
+        // une fiche par son identifiant.
+        choix: decision
+            .choix()
+            .into_iter()
+            .filter(|c| !(relations && *c == Choix::Saisir))
+            .map(choix)
+            .collect(),
         referentiel: referentiel_valeurs,
         source: recu(&decision.versions.source, &source_nom),
-        base: decision.versions.base.clone(),
+        base: decision.versions.base.iter().map(|t| lisible(t)).collect(),
     }
 }

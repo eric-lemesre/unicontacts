@@ -1,10 +1,12 @@
 // Traduction des fiches en lignes de contacts Android, éprouvée sur la JVM.
 // [impl->req~ecriture-sous-compte-unique~1]
+// [utest->req~synchronisation-relations~1]
 package fr.lemesre.unicontacts.synchro
 
 import fr.lemesre.unicontacts.coeur.ChampFfi
 import fr.lemesre.unicontacts.coeur.ChampValeursFfi
 import fr.lemesre.unicontacts.coeur.FicheFfi
+import fr.lemesre.unicontacts.coeur.RelationFfi
 import fr.lemesre.unicontacts.coeur.ValeurFfi
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -18,7 +20,28 @@ class LignesContactsTest {
         nom = "Camille Exemple",
         champs = champs.map { ChampValeursFfi(it.first, it.second) },
         sources = listOf("Nextcloud", "Google"),
+        relations = emptyList(),
+        estMoi = false,
     )
+
+    @Test
+    fun unConjointSEcritParSonNomEtLeTypeAndroidConjoint() {
+        val lignes = LignesContacts.lignes(
+            fiche().copy(relations = listOf(RelationFfi("conjoint", "Conjoint", "f2", "Dominique Fictif"))),
+        )
+
+        assertEquals(
+            mapOf("data1" to "Dominique Fictif", "data2" to "14"),
+            lignes.first { it.mimetype == Mime.RELATION }.colonnes,
+        )
+    }
+
+    @Test
+    fun unMedecinSEcritEnTypePersonnaliseAvecSonLibelle() {
+        val colonnes = LignesContacts.relation(RelationFfi("medecin", "Médecin", "f3", "Docteur Martin")).colonnes
+
+        assertEquals(mapOf("data1" to "Docteur Martin", "data2" to "0", "data3" to "Médecin"), colonnes)
+    }
 
     @Test
     fun uneFicheDeDeuxSourcesNaQuUneLigneDeNom() {

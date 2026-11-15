@@ -346,21 +346,39 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranRelations.kt:4
+  - `impl` — crates/core/src/relations.rs:247
+  - `utest` — crates/core/src/relations/tests.rs:31
+  - `utest` — crates/core/src/relations/tests.rs:46
   - `impl` — crates/ffi/src/lib.rs:241
 
 #### `req~liens-types~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (6) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranRelations.kt:5
+  - `impl` — crates/core/src/relations.rs:8
+  - `impl` — crates/core/src/relations.rs:305
+  - `utest` — crates/core/src/relations/tests.rs:74
+  - `utest` — crates/core/src/relations/tests.rs:94
   - `impl` — crates/ffi/src/lib.rs:205
 
 #### `req~reciproques-automatiques~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (11) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranRelations.kt:6
+  - `impl` — crates/core/src/relations.rs:100
+  - `impl` — crates/core/src/relations.rs:195
+  - `impl` — crates/core/src/relations.rs:306
+  - `impl` — crates/core/src/relations.rs:328
+  - `utest` — crates/core/src/relations/tests.rs:179
+  - `utest` — crates/core/src/relations/tests.rs:199
+  - `utest` — crates/core/src/relations/tests.rs:219
+  - `utest` — crates/core/src/relations/tests.rs:238
   - `impl` — crates/ffi/src/lib.rs:206
   - `impl` — crates/ffi/src/lib.rs:283
 
@@ -368,22 +386,26 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (4) :
+  - `impl` — crates/core/src/relations.rs:9
+  - `utest` — crates/core/src/relations/tests.rs:315
+  - `utest` — crates/core/src/relations/tests.rs:335
   - `utest` — crates/core/src/synchronisation/tests.rs:853
 
 #### `req~section-proches~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles (2) :
+- Couvertures réelles (3) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:5
+  - `impl` — crates/core/src/relations.rs:283
   - `impl` — crates/ffi/src/lib.rs:256
 
 #### `req~synchronisation-relations~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (13) :
+- Couvertures réelles (14) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/LignesContacts.kt:5
   - `utest` — android/app/src/test/java/fr/lemesre/unicontacts/synchro/LignesContactsTest.kt:3
   - `impl` — crates/core/src/synchronisation.rs:516
@@ -396,6 +418,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/synchronisation/tests.rs:886
   - `utest` — crates/core/src/synchronisation/tests.rs:909
   - `impl` — crates/core/src/vcard/ecriture.rs:190
+  - `impl` — crates/core/src/vcard/relations.rs:3
   - `impl` — crates/ffi/src/modele.rs:406
 
 ### spec/02-exigences/synchronisation.md

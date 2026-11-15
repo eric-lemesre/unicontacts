@@ -62,7 +62,7 @@ private fun Navigation(app: UnicontactsApp) {
     BackHandler(enabled = pile.size > 1, onBack = retour)
     when (val ecran = pile.last()) {
         Ecran.Liste -> EcranListe(app, ouvrir)
-        is Ecran.Fiche -> EcranFiche(app, ecran.id, retour)
+        is Ecran.Fiche -> EcranFiche(app, ecran.id, ouvrir, retour)
         Ecran.Sources -> EcranSources(app, retour)
         Ecran.Decisions -> EcranDecisions(app, ouvrir, retour)
         is Ecran.Decision -> EcranDecision(app, ecran.id, retour)

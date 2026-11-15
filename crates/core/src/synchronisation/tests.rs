@@ -681,3 +681,248 @@ mod echec_d_ecriture {
         Ok(())
     }
 }
+
+mod relations {
+    use super::*;
+    use crate::relations::{Relation, TypeRelation};
+
+    /// Copie d'une vCard de la version donnée portant les lignes données.
+    fn copie_en(version: Version, uid: &str, lignes: &[&str]) -> CopieDistante {
+        let mut copie = copie(uid, lignes);
+        copie.contenu = copie
+            .contenu
+            .replace("VERSION:3.0", &format!("VERSION:{}", version.texte()));
+        copie
+    }
+
+    /// Source de la version donnée, et premier import de ses copies.
+    fn source_en(
+        version: Version,
+        copies: &[CopieDistante],
+    ) -> Result<(Referentiel, SourceId), Box<dyn std::error::Error>> {
+        let mut referentiel = Referentiel::new();
+        let source = referentiel.sources_mut().ajouter("Nextcloud", version);
+        referentiel.synchroniser(source, copies, date(1))?;
+        Ok((referentiel, source))
+    }
+
+    fn relations(referentiel: &Referentiel, fiche: FicheId) -> Vec<Relation> {
+        referentiel.relations(fiche)
+    }
+
+    /// Copie telle que la source la sert après une écriture rendue.
+    fn apres_ecriture(rapport: &Rapport, uid: &str) -> Result<CopieDistante, String> {
+        let contenu = ecrit(rapport, uid).ok_or_else(|| format!("aucune écriture de {uid}"))?;
+        Ok(CopieDistante {
+            uid: uid.to_owned(),
+            etag: Some(format!("etag-{uid}-ecrit")),
+            contenu,
+        })
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn en_4_0_une_relation_designe_la_copie_liee_par_son_uid() -> Resultat {
+        let copies = [
+            copie_en(Version::V4, "a", &["FN:Alix"]),
+            copie_en(Version::V4, "b", &["FN:Basile"]),
+        ];
+        let (mut referentiel, source) = source_en(Version::V4, &copies)?;
+        let (a, b) = (
+            fiche_de(&referentiel, source, "a")?,
+            fiche_de(&referentiel, source, "b")?,
+        );
+        referentiel.lier(a, TypeRelation::Parent, b, date(2))?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(
+            carte.contains("RELATED;TYPE=parent:urn:uuid:b\r\n"),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn en_4_0_une_relation_vers_une_fiche_hors_source_s_ecrit_par_son_nom() -> Resultat {
+        let copies = [copie_en(Version::V4, "a", &["FN:Alix"])];
+        let (mut referentiel, source) = source_en(Version::V4, &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        let mut hors = Fiche::nouvelle();
+        hors.modifier(Champ::NomAffiche, &["Docteur Martin"], date(1))?;
+        let martin = referentiel.ajouter(hors);
+        referentiel.lier(a, TypeRelation::Medecin, martin, date(2))?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(
+            carte.contains("RELATED;TYPE=contact;X-ABLABEL=Médecin;VALUE=text:Docteur Martin\r\n"),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn en_4_0_une_relation_recue_se_resout_par_l_uid_de_la_copie() -> Resultat {
+        let copies = [
+            copie_en(
+                Version::V4,
+                "a",
+                &["FN:Alix", "RELATED;TYPE=sibling:urn:uuid:b"],
+            ),
+            copie_en(Version::V4, "b", &["FN:Basile"]),
+        ];
+        let (mut referentiel, source) = source_en(Version::V4, &copies)?;
+
+        // La copie liée n'était pas encore connue au premier passage : la
+        // relation se résout au suivant.
+        referentiel.synchroniser(source, &copies, date(2))?;
+
+        let (a, b) = (
+            fiche_de(&referentiel, source, "a")?,
+            fiche_de(&referentiel, source, "b")?,
+        );
+        assert_eq!(
+            relations(&referentiel, a),
+            [Relation {
+                type_relation: TypeRelation::FrereSoeur,
+                fiche: b
+            }]
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn en_3_0_une_relation_suit_la_convention_apple() -> Resultat {
+        let copies = [copie("a", &["FN:Alix"]), copie("b", &["FN:Basile"])];
+        let (mut referentiel, source) = source_en(Version::V3, &copies)?;
+        let (a, b) = (
+            fiche_de(&referentiel, source, "a")?,
+            fiche_de(&referentiel, source, "b")?,
+        );
+        referentiel.lier(a, TypeRelation::Ami, b, date(2))?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(
+            carte.contains("item1.X-ABRELATEDNAMES:Basile\r\nitem1.X-ABLABEL:_$!<Friend>!$_\r\n"),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn en_3_0_une_relation_apple_recue_se_resout_par_le_nom() -> Resultat {
+        let copies = [
+            copie(
+                "a",
+                &[
+                    "FN:Alix",
+                    "item7.X-ABRELATEDNAMES:Basile",
+                    "item7.X-ABLabel:_$!<Mother>!$_",
+                ],
+            ),
+            copie("b", &["FN:Basile"]),
+        ];
+        let (mut referentiel, source) = source_en(Version::V3, &copies)?;
+
+        referentiel.synchroniser(source, &copies, date(2))?;
+
+        let (a, b) = (
+            fiche_de(&referentiel, source, "a")?,
+            fiche_de(&referentiel, source, "b")?,
+        );
+        assert_eq!(
+            relations(&referentiel, a),
+            [Relation {
+                type_relation: TypeRelation::Parent,
+                fiche: b
+            }]
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    // [utest->req~lien-par-identifiant-maitre~1]
+    #[test]
+    fn en_3_0_renommer_la_fiche_liee_ne_perd_pas_la_relation() -> Resultat {
+        let copies = [copie("a", &["FN:Alix"]), copie("b", &["FN:Basile"])];
+        let (mut referentiel, source) = source_en(Version::V3, &copies)?;
+        let (a, b) = (
+            fiche_de(&referentiel, source, "a")?,
+            fiche_de(&referentiel, source, "b")?,
+        );
+        referentiel.lier(a, TypeRelation::Ami, b, date(2))?;
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+        let ecrites = [
+            apres_ecriture(&rapport, "a")?,
+            apres_ecriture(&rapport, "b")?,
+        ];
+        referentiel.fiche_mut(b).ok_or("fiche attendue")?.modifier(
+            Champ::NomAffiche,
+            &["Basile Renommé"],
+            date(4),
+        )?;
+
+        referentiel.synchroniser(source, &ecrites, date(5))?;
+
+        assert_eq!(
+            relations(&referentiel, a),
+            [Relation {
+                type_relation: TypeRelation::Ami,
+                fiche: b
+            }]
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn une_relation_que_la_source_ne_peut_porter_reste_au_referentiel() -> Resultat {
+        let copies = [copie("a", &["FN:Alix"])];
+        let (mut referentiel, source) = source_en(Version::V3, &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        let mut homonymes = Vec::new();
+        for _ in 0..2 {
+            let mut fiche = Fiche::nouvelle();
+            fiche.modifier(Champ::NomAffiche, &["Basile"], date(1))?;
+            homonymes.push(referentiel.ajouter(fiche));
+        }
+        let b = homonymes.first().copied().ok_or("fiche attendue")?;
+        referentiel.lier(a, TypeRelation::depuis_texte("Voisin"), b, date(2))?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+        referentiel.synchroniser(source, &copies, date(4))?;
+
+        assert!(ecrit(&rapport, "a").is_none());
+        assert_eq!(relations(&referentiel, a).len(), 1);
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-relations~1]
+    #[test]
+    fn une_relation_qu_on_ne_sait_resoudre_est_conservee_telle_quelle() -> Resultat {
+        let inconnue = "RELATED;TYPE=friend:urn:uuid:inconnue";
+        let copies = [copie_en(Version::V4, "a", &["FN:Alix", inconnue])];
+        let (mut referentiel, source) = source_en(Version::V4, &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        referentiel.fiche_mut(a).ok_or("fiche attendue")?.modifier(
+            Champ::Note,
+            &["note nouvelle"],
+            date(2),
+        )?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(carte.contains(&format!("{inconnue}\r\n")), "{carte}");
+        Ok(())
+    }
+}
