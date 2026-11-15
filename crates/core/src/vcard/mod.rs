@@ -7,6 +7,7 @@
 //! source ne se perd, et le serveur ne voit changer que ce qui a changé.
 // [impl->req~vcard-3-et-4~1]
 
+mod dates;
 mod ecriture;
 mod lecture;
 mod relations;
@@ -174,16 +175,29 @@ impl Carte {
                 );
                 continue;
             }
+            if let Some(lue) = dates::lire(self, indice) {
+                interpretees.insert(
+                    indice,
+                    Interpretee {
+                        champ: Champ::Dates,
+                        textes: vec![lue.texte],
+                        types: Vec::new(),
+                        compagnon: lue.compagnon,
+                        rendu: None,
+                    },
+                );
+                continue;
+            }
             let Some(champ) = Champ::depuis_propriete_vcard(&propriete.nom) else {
                 continue;
             };
-            if champ == Champ::Relation {
+            if matches!(champ, Champ::Relation | Champ::Dates) {
                 continue;
             }
-            let textes = if champ == Champ::Groupes {
-                ecriture::lire_categories(&propriete.valeur)
-            } else {
-                vec![ecriture::decoder(champ, &propriete.valeur)]
+            let textes = match champ {
+                Champ::Groupes => ecriture::lire_categories(&propriete.valeur),
+                Champ::Anniversaire => vec![dates::naissance_lue(&propriete.valeur)],
+                _ => vec![ecriture::decoder(champ, &propriete.valeur)],
             };
             if textes.is_empty() {
                 continue;

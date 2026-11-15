@@ -91,7 +91,13 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (8) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranDates.kt:3
+  - `impl` — crates/core/src/dates.rs:8
+  - `impl` — crates/core/src/dates.rs:411
+  - `utest` — crates/core/src/dates/tests.rs:84
+  - `utest` — crates/core/src/dates/tests.rs:112
+  - `utest` — crates/core/src/dates/tests.rs:146
   - `utest` — crates/core/src/synchronisation/tests.rs:1125
   - `impl` — crates/ffi/src/lib.rs:313
 
@@ -99,34 +105,48 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (8) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranDates.kt:4
+  - `impl` — crates/core/src/dates.rs:357
+  - `impl` — crates/core/src/dates.rs:482
+  - `utest` — crates/core/src/dates/tests.rs:192
+  - `utest` — crates/core/src/dates/tests.rs:208
+  - `utest` — crates/core/src/dates/tests.rs:232
   - `impl` — crates/ffi/src/lib.rs:354
+  - `impl` — tools/fetes.sh:17
 
 #### `req~vue-a-venir~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles (1) :
+- Couvertures réelles (3) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranDates.kt:5
+  - `impl` — crates/core/src/dates.rs:511
   - `impl` — crates/ffi/src/lib.rs:372
 
 #### `req~synchronisation-dates~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (6) :
+- Couvertures réelles (7) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/LignesContacts.kt:6
   - `utest` — android/app/src/test/java/fr/lemesre/unicontacts/synchro/LignesContactsTest.kt:4
   - `utest` — crates/core/src/synchronisation/tests.rs:1066
   - `utest` — crates/core/src/synchronisation/tests.rs:1084
   - `utest` — crates/core/src/synchronisation/tests.rs:1105
   - `utest` — crates/core/src/synchronisation/tests.rs:1124
+  - `impl` — crates/core/src/vcard/dates.rs:6
 
 #### `req~dates-dans-l-agenda~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles (1) :
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/agenda/AgendaDates.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/agenda/EvenementsAgenda.kt:3
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranDates.kt:6
+  - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/agenda/EvenementsAgendaTest.kt:2
 
 ### spec/02-exigences/file-decisions.md
 
@@ -725,5 +745,5 @@ Fichiers d'outillage (`tools/`, hooks git, gabarits de forge) qui ne portent AUC
 - `tools/hooks/commit-msg.sh`
 - `tools/hooks/pre-commit.sh`
 
-**Total : 67/76 fichier(s) d'outillage sans trace de traçabilité.**
+**Total : 67/77 fichier(s) d'outillage sans trace de traçabilité.**
 

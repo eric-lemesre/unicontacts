@@ -1023,3 +1023,156 @@ mod groupes {
         Ok(())
     }
 }
+
+mod dates {
+    use super::*;
+    use crate::dates::{Date, DateDeFiche, TypeDate};
+
+    fn source_en(
+        version: Version,
+        copies: &[CopieDistante],
+    ) -> Result<(Referentiel, SourceId), Box<dyn std::error::Error>> {
+        let mut referentiel = Referentiel::new();
+        let source = referentiel.sources_mut().ajouter("Nextcloud", version);
+        referentiel.synchroniser(source, copies, date(1))?;
+        Ok((referentiel, source))
+    }
+
+    fn copie_4(uid: &str, lignes: &[&str]) -> CopieDistante {
+        let mut copie = copie(uid, lignes);
+        copie.contenu = copie.contenu.replace("VERSION:3.0", "VERSION:4.0");
+        copie
+    }
+
+    /// Carte écrite pour « a » après l'ajout des dates données.
+    fn ecrite_avec(
+        version: Version,
+        dates: &[(TypeDate, &str)],
+    ) -> Result<String, Box<dyn std::error::Error>> {
+        let copies = [if version == Version::V4 {
+            copie_4("a", &["FN:Alix"])
+        } else {
+            copie("a", &["FN:Alix"])
+        }];
+        let (mut referentiel, source) = source_en(version, &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        for (type_date, texte) in dates {
+            referentiel.ajouter_date(a, type_date.clone(), texte, date(2))?;
+        }
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+        Ok(ecrit(&rapport, "a").ok_or("écriture de a attendue")?)
+    }
+
+    // [utest->req~synchronisation-dates~1]
+    #[test]
+    fn en_4_0_naissance_et_mariage_vont_dans_bday_et_anniversary() -> Resultat {
+        let carte = ecrite_avec(
+            Version::V4,
+            &[
+                (TypeDate::Naissance, "--05-17"),
+                (TypeDate::Mariage, "2005-06-11"),
+            ],
+        )?;
+
+        assert!(
+            carte.contains("BDAY:--0517\r\n") && carte.contains("ANNIVERSARY:20050611\r\n"),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-dates~1]
+    #[test]
+    fn en_3_0_mariage_et_annee_omise_suivent_la_convention_apple() -> Resultat {
+        let carte = ecrite_avec(
+            Version::V3,
+            &[
+                (TypeDate::Naissance, "--05-17"),
+                (TypeDate::Mariage, "2005-06-11"),
+            ],
+        )?;
+
+        assert!(
+            carte.contains("BDAY;X-APPLE-OMIT-YEAR=1604:1604-05-17\r\n")
+                && carte.contains(
+                    "item1.X-ABDATE:2005-06-11\r\nitem1.X-ABLABEL:_$!<Anniversary>!$_\r\n"
+                ),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-dates~1]
+    #[test]
+    fn la_fete_et_les_dates_personnalisees_sont_des_x_abdate_etiquetees() -> Resultat {
+        let carte = ecrite_avec(
+            Version::V4,
+            &[
+                (TypeDate::Fete, "--05-18"),
+                (TypeDate::depuis_texte("Arrivée"), "2010-09-01"),
+            ],
+        )?;
+
+        assert!(
+            carte.contains("item1.X-ABDATE:--0518\r\nitem1.X-ABLABEL:Fête du prénom\r\n")
+                && carte.contains("item2.X-ABDATE:20100901\r\nitem2.X-ABLABEL:Arrivée\r\n"),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~synchronisation-dates~1]
+    // [utest->req~types-de-dates~1]
+    #[test]
+    fn les_dates_recues_se_relisent_selon_leur_type_et_sans_annee_omise() -> Resultat {
+        let (referentiel, source) = source_en(
+            Version::V3,
+            &[copie(
+                "a",
+                &[
+                    "FN:Alix",
+                    "BDAY;X-APPLE-OMIT-YEAR=1604:1604-05-17",
+                    "item3.X-ABDATE:2005-06-11",
+                    "item3.X-ABLabel:_$!<Anniversary>!$_",
+                    "item4.X-ABDATE;X-APPLE-OMIT-YEAR=1604:1604-05-18",
+                    "item4.X-ABLabel:Fête du prénom",
+                ],
+            )],
+        )?;
+        let a = fiche_de(&referentiel, source, "a")?;
+
+        let dates: Vec<String> = referentiel
+            .dates(a)
+            .iter()
+            .map(DateDeFiche::texte)
+            .collect();
+
+        assert_eq!(
+            dates,
+            ["naissance;--05-17", "mariage;2005-06-11", "fete;--05-18"]
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn une_x_abdate_sans_libelle_est_conservee_telle_quelle() -> Resultat {
+        let ligne = "item9.X-ABDATE:2001-01-01";
+        let copies = [copie("a", &["FN:Alix", ligne])];
+        let (mut referentiel, source) = source_en(Version::V3, &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        referentiel.ajouter_date(a, TypeDate::Mariage, "2005-06-11", date(2))?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(
+            carte.contains(&format!("{ligne}\r\n")) && carte.contains("item10.X-ABDATE:2005-06-11"),
+            "{carte}"
+        );
+        assert_eq!(
+            referentiel.dates(a).first().map(|d| d.date),
+            Date::lire("2005-06-11")
+        );
+        Ok(())
+    }
+}

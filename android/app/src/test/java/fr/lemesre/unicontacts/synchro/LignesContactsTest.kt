@@ -1,10 +1,12 @@
 // Traduction des fiches en lignes de contacts Android, éprouvée sur la JVM.
 // [impl->req~ecriture-sous-compte-unique~1]
 // [utest->req~synchronisation-relations~1]
+// [utest->req~synchronisation-dates~1]
 package fr.lemesre.unicontacts.synchro
 
 import fr.lemesre.unicontacts.coeur.ChampFfi
 import fr.lemesre.unicontacts.coeur.ChampValeursFfi
+import fr.lemesre.unicontacts.coeur.DateFfi
 import fr.lemesre.unicontacts.coeur.FicheFfi
 import fr.lemesre.unicontacts.coeur.RelationFfi
 import fr.lemesre.unicontacts.coeur.ValeurFfi
@@ -23,6 +25,7 @@ class LignesContactsTest {
         relations = emptyList(),
         estMoi = false,
         groupes = emptyList(),
+        dates = emptyList(),
     )
 
     @Test
@@ -34,6 +37,28 @@ class LignesContactsTest {
         assertEquals(
             mapOf("data1" to "Dominique Fictif", "data2" to "14"),
             lignes.first { it.mimetype == Mime.RELATION }.colonnes,
+        )
+    }
+
+    @Test
+    fun lesDatesDeviennentDesEvenementsSelonLeurType() {
+        val lignes = LignesContacts.lignes(
+            fiche().copy(
+                dates = listOf(
+                    DateFfi("naissance", "Anniversaire", "--05-17", null, 5u, 17u),
+                    DateFfi("mariage", "Anniversaire de mariage", "2005-06-11", 2005, 6u, 11u),
+                    DateFfi("fete", "Fête du prénom", "--05-18", null, 5u, 18u),
+                ),
+            ),
+        )
+
+        assertEquals(
+            listOf(
+                mapOf("data1" to "--05-17", "data2" to "3"),
+                mapOf("data1" to "2005-06-11", "data2" to "1"),
+                mapOf("data1" to "--05-18", "data2" to "0", "data3" to "Fête du prénom"),
+            ),
+            lignes.filter { it.mimetype == Mime.EVENEMENT }.map { it.colonnes },
         )
     }
 

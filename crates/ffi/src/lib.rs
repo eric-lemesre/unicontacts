@@ -19,6 +19,7 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use unicontacts_carddav::{ClientCardDav, Compte, MotDePasse, envoyer, lire_carnet, reporter};
+use unicontacts_core::dates::{Date, DateDeFiche, TypeDate};
 use unicontacts_core::referentiel::Referentiel;
 use unicontacts_core::relations::TypeRelation;
 use unicontacts_core::stockage::Stockage;
@@ -26,8 +27,9 @@ use unicontacts_core::vcard::Version;
 use unicontacts_core::{DecisionId, Fiche, Horodatage, SourceId};
 
 pub use modele::{
-    BilanFfi, ChampFfi, ChoixFfi, DecisionFfi, FicheFfi, FiltreFfi, NatureFfi, RelationFfi,
-    ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi,
+    BilanFfi, ChampFfi, ChoixFfi, DateAVenirFfi, DateFfi, DecisionFfi, FicheFfi, FiltreFfi,
+    NatureFfi, RelationFfi, ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi,
+    ValeurFfi,
 };
 
 /// Erreur rendue à Kotlin.
@@ -173,9 +175,12 @@ impl Coeur {
         champ: ChampFfi,
         valeurs: Vec<String>,
     ) -> Result<(), ErreurFfi> {
-        if matches!(champ, ChampFfi::Relation | ChampFfi::Groupes) {
+        if matches!(
+            champ,
+            ChampFfi::Relation | ChampFfi::Groupes | ChampFfi::Dates
+        ) {
             return Err(ErreurFfi::Refuse(
-                "relations et groupes ont leurs propres opérations".to_owned(),
+                "relations, groupes et dates ont leurs propres opérations".to_owned(),
             ));
         }
         let mut etat = self.verrou()?;
@@ -295,6 +300,93 @@ impl Coeur {
             )
             .map_err(ErreurFfi::refuse)?;
         etat.enregistrer()
+    }
+
+    /// Ajoute une date à une fiche : type par son code (`naissance`,
+    /// `mariage`, `fete`) ou son libellé ; une naissance remplace la
+    /// précédente.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] : fiche inconnue, date invalide, libellé vide.
+    // [impl->req~types-de-dates~1]
+    pub fn ajouter_date(&self, id: String, code: String, date: String) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .ajouter_date(
+                fiche,
+                TypeDate::depuis_texte(&code),
+                &date,
+                Horodatage::maintenant(),
+            )
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Retire une date d'une fiche.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] : fiche inconnue, date invalide.
+    pub fn retirer_date(&self, id: String, code: String, date: String) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let retiree = DateDeFiche {
+            type_date: TypeDate::depuis_texte(&code),
+            date: Date::lire(&date)
+                .ok_or_else(|| ErreurFfi::Refuse(format!("date invalide : {date}")))?,
+        };
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .retirer_date(fiche, &retiree)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Jours de fête proposés pour une fiche sans fête du prénom, au
+    /// format `--MM-JJ`.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé.
+    // [impl->req~fete-du-prenom-proposee~1]
+    pub fn fetes_proposees(&self, id: String) -> Result<Vec<String>, ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let etat = self.verrou()?;
+        Ok(etat
+            .referentiel
+            .fetes_proposees(fiche)
+            .iter()
+            .map(Date::texte)
+            .collect())
+    }
+
+    /// Dates à venir des fiches qui passent le filtre, de la plus proche à
+    /// la plus lointaine.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Interne`] si l'état est inutilisable.
+    // [impl->req~vue-a-venir~1]
+    pub fn a_venir(&self, filtre: FiltreFfi) -> Result<Vec<DateAVenirFfi>, ErreurFfi> {
+        let etat = self.verrou()?;
+        let referentiel = &etat.referentiel;
+        Ok(referentiel
+            .a_venir(Horodatage::maintenant(), &filtre.into())
+            .iter()
+            .map(|d| DateAVenirFfi {
+                fiche_id: d.fiche.to_string(),
+                nom: referentiel
+                    .fiche(d.fiche)
+                    .map(modele::nom)
+                    .unwrap_or_default(),
+                date: modele::date(&d.date),
+                dans_jours: d.dans_jours,
+                annees: d.annees,
+            })
+            .collect())
     }
 
     /// Tous les groupes, par ordre de chemin.
@@ -703,6 +795,34 @@ mod tests {
             .collect();
 
         assert_eq!(retenues, [alix]);
+        Ok(())
+    }
+
+    #[test]
+    fn une_fete_proposee_puis_acceptee_n_est_plus_proposee() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let eric = fiche_nommee(&coeur, "Éric")?;
+        let proposee = coeur.fetes_proposees(eric.clone())?;
+
+        for jour in &proposee {
+            coeur.ajouter_date(eric.clone(), "fete".to_owned(), jour.clone())?;
+        }
+
+        let fetes: Vec<String> = coeur
+            .fiche(eric.clone())?
+            .dates
+            .into_iter()
+            .map(|d| d.texte)
+            .collect();
+        assert_eq!(
+            (proposee, fetes, coeur.fetes_proposees(eric)?),
+            (
+                vec!["--05-18".to_owned()],
+                vec!["--05-18".to_owned()],
+                Vec::new()
+            )
+        );
         Ok(())
     }
 

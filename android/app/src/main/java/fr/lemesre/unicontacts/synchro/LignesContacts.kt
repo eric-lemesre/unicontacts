@@ -3,9 +3,11 @@
 // sources. Code pur, sans classe Android, éprouvé sur la JVM.
 // [impl->req~ecriture-sous-compte-unique~1]
 // [impl->req~synchronisation-relations~1]
+// [impl->req~synchronisation-dates~1]
 package fr.lemesre.unicontacts.synchro
 
 import fr.lemesre.unicontacts.coeur.ChampFfi
+import fr.lemesre.unicontacts.coeur.DateFfi
 import fr.lemesre.unicontacts.coeur.FicheFfi
 import fr.lemesre.unicontacts.coeur.RelationFfi
 import fr.lemesre.unicontacts.coeur.ValeurFfi
@@ -57,11 +59,24 @@ object LignesContacts {
         }
         de(ChampFfi.NOTE).firstOrNull()?.let { lignes += Ligne(Mime.NOTE, mapOf("data1" to it.texte)) }
         de(ChampFfi.URL).forEach { lignes += Ligne(Mime.SITE, mapOf("data1" to it.texte, "data2" to "7")) }
-        de(ChampFfi.ANNIVERSAIRE).firstOrNull()?.let { date(it.texte) }?.let {
-            lignes += Ligne(Mime.EVENEMENT, mapOf("data1" to it, "data2" to "3"))
-        }
+        fiche.dates.forEach { lignes += evenement(it) }
         fiche.relations.forEach { lignes += relation(it) }
         return lignes
+    }
+
+    /**
+     * Date (ADR-0011) : champ « Événement », de type anniversaire (3),
+     * anniversaire de mariage (1), ou personnalisé (0) portant le libellé.
+     */
+    fun evenement(date: DateFfi): Ligne {
+        val type = when (date.code) {
+            "naissance" -> "3"
+            "mariage" -> "1"
+            else -> "0"
+        }
+        val colonnes = mutableMapOf("data1" to date.texte, "data2" to type)
+        if (type == "0") colonnes["data3"] = date.libelle
+        return Ligne(Mime.EVENEMENT, colonnes)
     }
 
     /**

@@ -49,6 +49,13 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   groupes portés par `CATEGORIES` ; renommage ou déplacement d'un groupe en
   une seule opération, sans décision. Écran de gestion des groupes. Schéma
   SQLite en version 3.
+- Lot 4, dates (ToDo-0005, ADR-0011, ADR-0013) : naissance, anniversaire de
+  mariage, fête du prénom et dates personnalisées, année facultative ; fête
+  proposée d'après le calendrier des fêtes de Wikidata (CC0, vérifié par
+  empreinte, `sh tools/fetes.sh`) ; vue « À venir » filtrable par groupe ;
+  dates portées par `BDAY`, `ANNIVERSARY` et `X-ABDATE`, et par le champ
+  « Événement » d'Android ; report en événements annuels dans un agenda du
+  téléphone choisi, qui émet les rappels.
 
 ## [0.1.0] - 2026-11-14
 

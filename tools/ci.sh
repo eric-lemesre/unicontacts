@@ -141,6 +141,8 @@ etape "badges"             sh tools/badges.sh
 etape "anti-dérive"        sh tools/derive.sh
 etape "secrets"            sh tools/secrets.sh scan
 etape "données"            sh tools/donnees.sh
+# Calendrier des fêtes (ADR-0013) : régénéré, jamais édité à la main.
+etape "calendrier des fêtes" sh tools/fetes.sh verifier
 etape "hygiène de compilation" sh tools/hygiene-compilation.sh
 etape "journalisation"     sh tools/journalisation.sh
 

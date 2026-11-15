@@ -33,11 +33,14 @@ pub enum Champ {
     Relation,
     /// Groupes, par leur chemin (`CATEGORIES`, ADR-0012).
     Groupes,
+    /// Dates autres que la naissance : mariage, fête, dates personnalisées
+    /// (`ANNIVERSARY`, `X-ABDATE`, ADR-0011).
+    Dates,
 }
 
 impl Champ {
     /// Tous les champs interprétés, dans l'ordre d'écriture.
-    pub const TOUS: [Self; 12] = [
+    pub const TOUS: [Self; 13] = [
         Self::NomAffiche,
         Self::NomStructure,
         Self::Organisation,
@@ -50,6 +53,7 @@ impl Champ {
         Self::Url,
         Self::Relation,
         Self::Groupes,
+        Self::Dates,
     ];
 
     /// Vrai si le champ peut porter plusieurs valeurs.
@@ -63,6 +67,7 @@ impl Champ {
                 | Self::Url
                 | Self::Relation
                 | Self::Groupes
+                | Self::Dates
         )
     }
 
@@ -82,6 +87,7 @@ impl Champ {
             Self::Url => "URL",
             Self::Relation => "RELATED",
             Self::Groupes => "CATEGORIES",
+            Self::Dates => "ANNIVERSARY",
         }
     }
 

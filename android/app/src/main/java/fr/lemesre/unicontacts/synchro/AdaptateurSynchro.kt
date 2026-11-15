@@ -2,6 +2,7 @@
 // synchronisée directement avec son serveur, puis le référentiel est publié
 // dans les contacts Android sous le seul compte de l'application.
 // [impl->req~synchronisation-directe~1]
+// [impl->req~dates-dans-l-agenda~1]
 package fr.lemesre.unicontacts.synchro
 
 import android.accounts.Account
@@ -16,6 +17,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
 import fr.lemesre.unicontacts.UnicontactsApp
+import fr.lemesre.unicontacts.agenda.AgendaDates
 import fr.lemesre.unicontacts.coeur.ErreurFfi
 import java.security.GeneralSecurityException
 
@@ -47,8 +49,16 @@ class AdaptateurSynchro(context: Context) : AbstractThreadedSyncAdapter(context,
                 app.signaler(source.nom, "mot de passe à ressaisir (${erreur.javaClass.simpleName})")
             }
         }
+        val fiches = coeur.fichesCompletes()
         try {
-            val (ecrits, retires) = EcrivainContacts(provider, account).publier(coeur.fichesCompletes())
+            AgendaDates(context).reporter(fiches)
+        } catch (erreur: SecurityException) {
+            // Accès à l'agenda retiré depuis le choix : les dates y seront
+            // reportées quand il sera rendu.
+            app.signaler("Agenda", "accès non accordé (${erreur.javaClass.simpleName})")
+        }
+        try {
+            val (ecrits, retires) = EcrivainContacts(provider, account).publier(fiches)
             syncResult.stats.numInserts += ecrits.toLong()
             syncResult.stats.numDeletes += retires.toLong()
         } catch (erreur: SecurityException) {
