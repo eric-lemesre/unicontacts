@@ -49,6 +49,11 @@ class ConfigurationsSources(context: Context) {
         get() = preferences.getString("stockage-local.source", null)
         set(id) = preferences.edit { putString("stockage-local.source", id) }
 
+    /** Source de la carte SIM, une fois ajoutée (ADR-0016). */
+    var sourceSim: String?
+        get() = preferences.getString("sim.source", null)
+        set(id) = preferences.edit { putString("sim.source", id) }
+
     companion object {
         /**
          * Motif du refus d'une URL de carnet, ou null si elle convient :

@@ -1,6 +1,8 @@
 // Stockage local : import des contacts du téléphone à la demande, puis
-// retrait des originaux importés après confirmation explicite (ADR-0015).
+// retrait des originaux importés après confirmation explicite (ADR-0015) ;
+// carte SIM ajoutée comme source en lecture seule (ADR-0016).
 // [impl->req~import-stockage-local~1]
+// [impl->req~source-sim-lecture-seule~1]
 package fr.lemesre.unicontacts.ui
 
 import android.Manifest
@@ -134,5 +136,44 @@ fun SectionStockageLocal(app: UnicontactsApp, recharger: suspend () -> Unit) {
             },
             dismissButton = { TextButton(onClick = { aRetirer = null }) { Text("Annuler") } },
         )
+    }
+}
+
+@Composable
+fun SectionCarteSim(app: UnicontactsApp, recharger: suspend () -> Unit) {
+    val portee = rememberCoroutineScope()
+    var configuree by remember { mutableStateOf(app.configurations.sourceSim != null) }
+    var message by remember { mutableStateOf<String?>(null) }
+    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { accordee ->
+        if (!accordee) {
+            message = "Accès aux contacts non accordé"
+            return@rememberLauncherForActivityResult
+        }
+        portee.launch {
+            message = try {
+                val id = horsInterface { app.coeur.ajouterSourceImport("Carte SIM") }
+                app.configurations.sourceSim = id
+                configuree = true
+                Compte.synchroniser()
+                null
+            } catch (erreur: ErreurFfi) {
+                erreur.message
+            }
+            recharger()
+        }
+    }
+    Column {
+        Text("Carte SIM", style = MaterialTheme.typography.titleMedium)
+        if (configuree) {
+            Text(
+                "Relue à chaque synchronisation : nom et numéro de chaque entrée. Rien n'y est jamais écrit.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+        } else {
+            TextButton(onClick = { permission.launch(Manifest.permission.READ_CONTACTS) }) {
+                Text("Ajouter la carte SIM (lecture seule)")
+            }
+        }
+        message?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
     }
 }

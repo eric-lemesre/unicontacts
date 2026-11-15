@@ -127,6 +127,7 @@ impl Referentiel {
     ///
     /// [`ErreurReglage`] si les réglages ne peuvent s'appliquer.
     // [impl->req~import-stockage-local~1]
+    // [impl->req~source-sim-lecture-seule~1]
     pub fn ajouter_source_import(&mut self, nom: &str) -> Result<SourceId, ErreurReglage> {
         let source = self.sources_mut().ajouter(nom, Version::V4);
         self.sources_mut().regler(

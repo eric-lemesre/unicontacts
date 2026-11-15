@@ -1,8 +1,9 @@
 // Adaptateur de synchronisation du compte d'unicontacts : chaque source est
-// synchronisée directement avec son serveur, puis le référentiel est publié
+// synchronisée directement avec son serveur, la carte SIM relue, puis le référentiel est publié
 // dans les contacts Android sous le seul compte de l'application.
 // [impl->req~synchronisation-directe~1]
 // [impl->req~dates-dans-l-agenda~1]
+// [impl->req~source-sim-lecture-seule~1]
 package fr.lemesre.unicontacts.synchro
 
 import android.accounts.Account
@@ -19,6 +20,7 @@ import android.os.RemoteException
 import fr.lemesre.unicontacts.UnicontactsApp
 import fr.lemesre.unicontacts.agenda.AgendaDates
 import fr.lemesre.unicontacts.coeur.ErreurFfi
+import fr.lemesre.unicontacts.stockage.CarteSim
 import java.security.GeneralSecurityException
 
 class AdaptateurSynchro(context: Context) : AbstractThreadedSyncAdapter(context, true, false) {
@@ -47,6 +49,22 @@ class AdaptateurSynchro(context: Context) : AbstractThreadedSyncAdapter(context,
                 // passe est à ressaisir.
                 syncResult.stats.numAuthExceptions++
                 app.signaler(source.nom, "mot de passe à ressaisir (${erreur.javaClass.simpleName})")
+            }
+        }
+        app.configurations.sourceSim?.let { sim ->
+            // La SIM est relue, jamais écrite (ADR-0016) ; sans annuaire
+            // lisible, elle est sautée plutôt que vidée.
+            try {
+                CarteSim(context).lire()?.let { entrees ->
+                    val bilan = coeur.importer(sim, entrees)
+                    syncResult.stats.numSkippedEntries += bilan.illisibles.toLong()
+                }
+            } catch (erreur: ErreurFfi) {
+                syncResult.stats.numIoExceptions++
+                app.signaler("Carte SIM", erreur.message.orEmpty())
+            } catch (erreur: SecurityException) {
+                syncResult.stats.numAuthExceptions++
+                app.signaler("Carte SIM", "accès non accordé (${erreur.javaClass.simpleName})")
             }
         }
         val fiches = coeur.fichesCompletes()

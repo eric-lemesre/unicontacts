@@ -1,4 +1,5 @@
 // [utest->req~import-stockage-local~1]
+// [utest->req~source-sim-lecture-seule~1]
 use super::*;
 use crate::decisions::Nature;
 use crate::fiche::Fiche;
@@ -229,4 +230,58 @@ fn deux_notes_d_un_contact_local_se_joignent() {
             .contenu
             .contains("NOTE:voisine\\n\\nallergique aux chats")
     );
+}
+
+/// Entrée de SIM : nom et numéro seulement (ADR-0016).
+fn entree_sim(uid: &str, nom: &str, numero: &str) -> ContactLu {
+    ContactLu {
+        uid: uid.to_owned(),
+        valeurs: vec![
+            valeur(Champ::NomAffiche, nom, &[]),
+            valeur(Champ::Telephone, numero, &[]),
+        ],
+        dates: Vec::new(),
+    }
+}
+
+#[test]
+fn une_entree_sim_donne_une_fiche_portant_son_nom_et_son_numero() -> Resultat {
+    let mut referentiel = Referentiel::new();
+    let sim = referentiel.ajouter_source_import("Carte SIM")?;
+    referentiel.importer_contacts(
+        sim,
+        &[entree_sim("sim-1-3", "Garage", "+33 4 78 00 00 00")],
+        date(1),
+    )?;
+    let fiche = fiche_liee(&referentiel, sim, "sim-1-3").ok_or("aucune fiche liée")?;
+    assert_eq!(
+        (
+            fiche.textes(Champ::NomAffiche),
+            fiche.textes(Champ::Telephone)
+        ),
+        (
+            vec!["Garage".to_owned()],
+            vec!["+33 4 78 00 00 00".to_owned()]
+        )
+    );
+    Ok(())
+}
+
+#[test]
+fn une_fiche_liee_a_la_sim_modifiee_ne_donne_aucune_ecriture_vers_la_sim() -> Resultat {
+    let mut referentiel = Referentiel::new();
+    let sim = referentiel.ajouter_source_import("Carte SIM")?;
+    let entrees = [entree_sim("sim-1-3", "Garage", "+33 4 78 00 00 00")];
+    referentiel.importer_contacts(sim, &entrees, date(1))?;
+    let id = fiche_liee(&referentiel, sim, "sim-1-3")
+        .ok_or("aucune fiche")?
+        .id();
+    referentiel.fiche_mut(id).ok_or("fiche perdue")?.modifier(
+        Champ::Telephone,
+        &["+33 4 78 11 11 11"],
+        date(2),
+    )?;
+    let import = referentiel.importer_contacts(sim, &entrees, date(3))?;
+    assert!(import.rapport.ecritures.is_empty());
+    Ok(())
 }
