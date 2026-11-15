@@ -66,6 +66,9 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   contacts du téléphone rangés hors de tout compte, par la détection des
   doublons, sans toucher aux originaux ; un nouvel import ne crée aucun
   doublon. Retrait des originaux importés, distinct, annoncé puis confirmé.
+- Lot 5, carte SIM (ToDo-0006, ADR-0016) : la SIM devient une source en
+  lecture seule ; nom et numéro de chaque entrée relus à chaque
+  synchronisation, jamais écrits ; sans SIM lisible, la source est sautée.
 
 ## [0.1.0] - 2026-11-14
 
