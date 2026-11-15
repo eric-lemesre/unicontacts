@@ -20,18 +20,21 @@ Les fonctions qui font d'un carnet synchronisé un carnet utile
   calendrier de Wikidata (ADR-0013), vue « À venir », portage vCard et
   Android (ADR-0011), report dans un agenda du téléphone ; vue et agenda
   restent à vérifier sur le Fairphone.
-- Canaux : à ouvrir dans leur pull request.
+- Canaux : canaux rattachés aux identifiants de la fiche, notes,
+  classements pro et perso, boutons d'action, détection assistée des
+  messageries, filtre par canal (ADR-0014).
 
 ## Vérifications manuelles à élever
 
 - `req~section-proches~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
 - `req~vue-a-venir~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
 - `req~dates-dans-l-agenda~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~detection-assistee-canaux~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~actions-triees-par-preference~2` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
 
 ## Renvois
 
 - Exigences approuvées (D-2026-11-13) : domaines `relations`, `groupes`,
-  `dates`
-- Exigences à approuver dans leur pull request : domaine `canaux`
+  `dates`, `canaux`
 - Questions : OQ-003 à OQ-006 (tranchées)
-- Décisions : ADR-0011, ADR-0012, ADR-0013
+- Décisions : ADR-0011, ADR-0012, ADR-0013, ADR-0014

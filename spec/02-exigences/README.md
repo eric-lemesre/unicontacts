@@ -14,4 +14,4 @@ Covers vers le besoin, Needs vers la couverture attendue).
 | [groupes](groupes.md) | ACTIVE | implémentée | appartenance multiple, hiérarchie, filtre, CATEGORIES, renommage |
 | [photos](photos.md) | PROPOSITION | — | fournisseurs, récupération à la demande, candidates, ajout manuel |
 | [dates](dates.md) | ACTIVE | implémentée | types, fête du prénom, À venir, synchronisation |
-| [canaux](canaux.md) | PROPOSITION | — | canaux par identifiant, classements pro/perso, actions, filtre |
+| [canaux](canaux.md) | ACTIVE | implémentée | canaux par identifiant, classements pro/perso, actions, filtre |

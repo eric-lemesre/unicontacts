@@ -1,16 +1,15 @@
 # Exigences — domaine canaux de communication
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 11) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Pas de
-contexte pro / perso global : chaque fiche porte une préférence pro et une
-préférence perso (OQ-005, tranchée le 2026-11-14).
+**Statut : ACTIVE** — domaine acté le 2026-11-15 (D-2026-11-13) au lot 4,
+rédigé depuis la spécification v0.1 (§ 11). Pas de contexte pro / perso
+global : chaque fiche porte une préférence pro et une préférence perso
+(OQ-005, tranchée le 2026-11-14). Canaux tenus au seul référentiel :
+ADR-0014.
 
 ## Canaux rattachés à un identifiant de la fiche
 
 `req~canaux-par-identifiant~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT enregistrer chaque canal disponible d'une fiche (appel, SMS,
 e-mail, WhatsApp, Signal, Telegram, Matrix…) rattaché à un identifiant de
@@ -30,9 +29,7 @@ Needs: impl, utest
 ## Préférences pro et perso par fiche
 
 `req~classements-pro-perso~2`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT tenir pour chaque fiche deux classements de ses canaux par
 préférence, l'un pour les communications pro, l'autre pour les
@@ -58,9 +55,7 @@ Needs: impl, utest
 ## Note libre par canal
 
 `req~note-par-canal~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT permettre d'attacher une note libre à chaque canal d'une
 fiche.
@@ -74,9 +69,7 @@ Needs: impl, utest
 ## Détection assistée des messageries
 
 `req~detection-assistee-canaux~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une messagerie installée a déclaré dans Android un contact
 correspondant à un identifiant d'une fiche, le système DOIT suggérer le canal
@@ -91,9 +84,7 @@ Needs: impl, mtest
 ## Actions selon les préférences pro et perso
 
 `req~actions-triees-par-preference~2`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une fiche est affichée, le système DOIT présenter un bouton d'action
 par canal disponible, en distinguant le canal préféré pour une communication
@@ -113,9 +104,7 @@ Needs: impl, mtest
 ## Filtrage par canal
 
 `req~filtre-par-canal~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur filtre la liste par un canal, le système DOIT n'afficher
 que les fiches qui disposent de ce canal.
