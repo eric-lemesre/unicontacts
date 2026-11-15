@@ -17,6 +17,9 @@ class EvenementsAgendaTest {
         estMoi = false,
         groupes = emptyList(),
         dates = dates.toList(),
+        canaux = emptyList(),
+        classementPro = emptyList(),
+        classementPerso = emptyList(),
     )
 
     private val naissance = DateFfi("naissance", "Anniversaire", "--05-17", null, 5u, 17u)

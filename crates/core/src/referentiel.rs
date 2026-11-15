@@ -6,6 +6,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use crate::canaux::CanauxDeFiche;
 use crate::champ::{Champ, Provenance, Valeur};
 use crate::decisions::{
     Action, Decision, IssueDoublon, IssueSuppression, Nature, Resolution, Statut, Versions,
@@ -66,6 +67,8 @@ pub struct Referentiel {
     pub(crate) inverses: Inverses,
     /// Groupes créés dans l'application, par leur chemin (ADR-0012).
     pub(crate) groupes: BTreeSet<String>,
+    /// Canaux déclarés, notes et classements, par fiche (ADR-0014).
+    pub(crate) canaux: BTreeMap<FicheId, CanauxDeFiche>,
 }
 
 impl Referentiel {

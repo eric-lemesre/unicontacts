@@ -15,6 +15,7 @@ use std::path::Path;
 
 use rusqlite::{Connection, OptionalExtension, Transaction, TransactionBehavior, params};
 
+use crate::canaux::{Canal, TypeCanal};
 use crate::champ::{Champ, Origine, Provenance, Valeur};
 use crate::decisions::{
     Action, Decision, IssueDoublon, IssueSuppression, Nature, Resolution, Statut, Versions,
@@ -28,10 +29,10 @@ use crate::temps::Horodatage;
 use crate::vcard::Version;
 
 /// Version du schéma que ce code écrit et sait lire.
-const VERSION_SCHEMA: i64 = 3;
+const VERSION_SCHEMA: i64 = 4;
 
 /// Migrations du schéma : chacune mène de la version précédente à la sienne.
-const MIGRATIONS: [(i64, &str); 3] = [(1, SCHEMA_1), (2, SCHEMA_2), (3, SCHEMA_3)];
+const MIGRATIONS: [(i64, &str); 4] = [(1, SCHEMA_1), (2, SCHEMA_2), (3, SCHEMA_3), (4, SCHEMA_4)];
 
 /// Schéma d'origine.
 const SCHEMA_1: &str = "
@@ -136,6 +137,31 @@ CREATE TABLE inverses (
 const SCHEMA_3: &str = "
 CREATE TABLE groupes (
     chemin TEXT PRIMARY KEY
+) STRICT;
+";
+
+/// Version 4 : canaux (lot 4) — messageries déclarées, notes et classements
+/// pro et perso, par fiche.
+const SCHEMA_4: &str = "
+CREATE TABLE canaux (
+    fiche_id    TEXT    NOT NULL REFERENCES fiches (id) ON DELETE CASCADE,
+    rang        INTEGER NOT NULL,
+    type        TEXT    NOT NULL,
+    identifiant TEXT    NOT NULL,
+    PRIMARY KEY (fiche_id, rang)
+) STRICT;
+CREATE TABLE notes_canaux (
+    fiche_id TEXT NOT NULL REFERENCES fiches (id) ON DELETE CASCADE,
+    canal    TEXT NOT NULL,
+    note     TEXT NOT NULL,
+    PRIMARY KEY (fiche_id, canal)
+) STRICT;
+CREATE TABLE classements (
+    fiche_id TEXT    NOT NULL REFERENCES fiches (id) ON DELETE CASCADE,
+    contexte TEXT    NOT NULL CHECK (contexte IN ('pro', 'perso')),
+    rang     INTEGER NOT NULL,
+    canal    TEXT    NOT NULL,
+    PRIMARY KEY (fiche_id, contexte, rang)
 ) STRICT;
 ";
 
@@ -253,7 +279,10 @@ impl Stockage {
 
 fn vider(transaction: &Transaction<'_>) -> Resultat<()> {
     transaction.execute_batch(
-        "DELETE FROM groupes;
+        "DELETE FROM classements;
+         DELETE FROM notes_canaux;
+         DELETE FROM canaux;
+         DELETE FROM groupes;
          DELETE FROM inverses;
          DELETE FROM moi;
          DELETE FROM memoires;
@@ -365,6 +394,37 @@ fn ecrire_fiches(transaction: &Transaction<'_>, referentiel: &Referentiel) -> Re
     let mut groupe = transaction.prepare_cached("INSERT INTO groupes (chemin) VALUES (?1)")?;
     for chemin in &referentiel.groupes {
         groupe.execute(params![chemin])?;
+    }
+    ecrire_canaux(transaction, referentiel)
+}
+
+fn ecrire_canaux(transaction: &Transaction<'_>, referentiel: &Referentiel) -> Resultat<()> {
+    let mut canal = transaction.prepare_cached(
+        "INSERT INTO canaux (fiche_id, rang, type, identifiant) VALUES (?1, ?2, ?3, ?4)",
+    )?;
+    let mut note = transaction
+        .prepare_cached("INSERT INTO notes_canaux (fiche_id, canal, note) VALUES (?1, ?2, ?3)")?;
+    let mut classement = transaction.prepare_cached(
+        "INSERT INTO classements (fiche_id, contexte, rang, canal) VALUES (?1, ?2, ?3, ?4)",
+    )?;
+    for (fiche, propres) in &referentiel.canaux {
+        let id = fiche.to_string();
+        for (rang, c) in propres.declares.iter().enumerate() {
+            canal.execute(params![
+                id,
+                rang_sql(rang),
+                c.type_canal.code(),
+                c.identifiant
+            ])?;
+        }
+        for (cle, texte) in &propres.notes {
+            note.execute(params![id, cle, texte])?;
+        }
+        for (contexte, cles) in [("pro", &propres.pro), ("perso", &propres.perso)] {
+            for (rang, cle) in cles.iter().enumerate() {
+                classement.execute(params![id, contexte, rang_sql(rang), cle])?;
+            }
+        }
     }
     Ok(())
 }
@@ -620,6 +680,70 @@ fn lire_fiches(connexion: &Connection, referentiel: &mut Referentiel) -> Resulta
     let mut requete = connexion.prepare("SELECT chemin FROM groupes")?;
     for chemin in requete.query_map([], |l| l.get::<_, String>(0))? {
         referentiel.groupes.insert(chemin?);
+    }
+    lire_canaux(connexion, referentiel)
+}
+
+fn lire_canaux(connexion: &Connection, referentiel: &mut Referentiel) -> Resultat<()> {
+    let mut requete = connexion
+        .prepare("SELECT fiche_id, type, identifiant FROM canaux ORDER BY fiche_id, rang")?;
+    let lignes = requete.query_map([], |l| {
+        Ok((
+            l.get::<_, String>(0)?,
+            l.get::<_, String>(1)?,
+            l.get::<_, String>(2)?,
+        ))
+    })?;
+    for ligne in lignes {
+        let (fiche, type_canal, designation) = ligne?;
+        referentiel
+            .canaux
+            .entry(identifiant::<FicheId>(&fiche, "canaux.fiche_id")?)
+            .or_default()
+            .declares
+            .push(Canal {
+                type_canal: TypeCanal::depuis_texte(&type_canal),
+                identifiant: designation,
+            });
+    }
+    let mut requete = connexion.prepare("SELECT fiche_id, canal, note FROM notes_canaux")?;
+    let lignes = requete.query_map([], |l| {
+        Ok((
+            l.get::<_, String>(0)?,
+            l.get::<_, String>(1)?,
+            l.get::<_, String>(2)?,
+        ))
+    })?;
+    for ligne in lignes {
+        let (fiche, canal, note) = ligne?;
+        referentiel
+            .canaux
+            .entry(identifiant::<FicheId>(&fiche, "notes_canaux.fiche_id")?)
+            .or_default()
+            .notes
+            .insert(canal, note);
+    }
+    let mut requete = connexion.prepare(
+        "SELECT fiche_id, contexte, canal FROM classements ORDER BY fiche_id, contexte, rang",
+    )?;
+    let lignes = requete.query_map([], |l| {
+        Ok((
+            l.get::<_, String>(0)?,
+            l.get::<_, String>(1)?,
+            l.get::<_, String>(2)?,
+        ))
+    })?;
+    for ligne in lignes {
+        let (fiche, contexte, canal) = ligne?;
+        let propres = referentiel
+            .canaux
+            .entry(identifiant::<FicheId>(&fiche, "classements.fiche_id")?)
+            .or_default();
+        match contexte.as_str() {
+            "pro" => propres.pro.push(canal),
+            "perso" => propres.perso.push(canal),
+            autre => return Err(illisible("classements.contexte", autre)),
+        }
     }
     Ok(())
 }

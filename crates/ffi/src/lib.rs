@@ -19,6 +19,7 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use unicontacts_carddav::{ClientCardDav, Compte, MotDePasse, envoyer, lire_carnet, reporter};
+use unicontacts_core::canaux::{Contexte, TypeCanal};
 use unicontacts_core::dates::{Date, DateDeFiche, TypeDate};
 use unicontacts_core::referentiel::Referentiel;
 use unicontacts_core::relations::TypeRelation;
@@ -27,9 +28,9 @@ use unicontacts_core::vcard::Version;
 use unicontacts_core::{DecisionId, Fiche, Horodatage, SourceId};
 
 pub use modele::{
-    BilanFfi, ChampFfi, ChoixFfi, DateAVenirFfi, DateFfi, DecisionFfi, FicheFfi, FiltreFfi,
-    NatureFfi, RelationFfi, ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi,
-    ValeurFfi,
+    BilanFfi, CanalFfi, ChampFfi, ChoixFfi, DateAVenirFfi, DateFfi, DecisionFfi, FicheFfi,
+    FiltreFfi, NatureFfi, RelationFfi, ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi,
+    TypeRelationFfi, ValeurFfi,
 };
 
 /// Erreur rendue à Kotlin.
@@ -387,6 +388,81 @@ impl Coeur {
                 annees: d.annees,
             })
             .collect())
+    }
+
+    /// Déclare une messagerie pour une fiche (code ou nom), rattachée à un
+    /// de ses numéros, une de ses adresses, ou un pseudonyme.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant de fiche mal formé ;
+    /// [`ErreurFfi::Refuse`] : fiche inconnue, identifiant vide ou absent de
+    /// la fiche.
+    // [impl->req~canaux-par-identifiant~1]
+    // [impl->req~detection-assistee-canaux~1]
+    pub fn declarer_canal(
+        &self,
+        id: String,
+        code: String,
+        identifiant_canal: String,
+    ) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .declarer_canal(fiche, TypeCanal::depuis_texte(&code), &identifiant_canal)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Retire une messagerie déclarée, par sa clé.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé.
+    pub fn retirer_canal(&self, id: String, cle: String) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let mut etat = self.verrou()?;
+        etat.referentiel.retirer_canal(fiche, &cle);
+        etat.enregistrer()
+    }
+
+    /// Attache une note à un canal ; une note vide la retire.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] si la fiche est inconnue.
+    // [impl->req~note-par-canal~1]
+    pub fn annoter_canal(&self, id: String, cle: String, note: String) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .annoter_canal(fiche, &cle, &note)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Fixe le classement pro (`pro` vrai) ou perso d'une fiche, par clés
+    /// de canal, du préféré au moins préféré.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] si la fiche est inconnue.
+    // [impl->req~classements-pro-perso~2]
+    pub fn classer_canaux(
+        &self,
+        id: String,
+        pro: bool,
+        cles: Vec<String>,
+    ) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let contexte = if pro { Contexte::Pro } else { Contexte::Perso };
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .classer_canaux(fiche, contexte, cles)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
     }
 
     /// Tous les groupes, par ordre de chemin.
@@ -789,6 +865,7 @@ mod tests {
                 intersection: false,
                 sous_groupes: true,
                 recherche: String::new(),
+                canal: None,
             })?
             .into_iter()
             .map(|f| f.id)
@@ -823,6 +900,39 @@ mod tests {
                 Vec::new()
             )
         );
+        Ok(())
+    }
+
+    #[test]
+    fn le_canal_prefere_perso_vaut_pour_le_pro_et_se_marque_sur_la_fiche() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let camille = fiche_nommee(&coeur, "Camille")?;
+        coeur.modifier_fiche(
+            camille.clone(),
+            ChampFfi::Telephone,
+            vec!["+33639980000".to_owned()],
+        )?;
+        coeur.declarer_canal(
+            camille.clone(),
+            "Signal".to_owned(),
+            "+33639980000".to_owned(),
+        )?;
+        coeur.classer_canaux(
+            camille.clone(),
+            false,
+            vec!["signal:+33639980000".to_owned()],
+        )?;
+
+        let preferes: Vec<(String, bool, bool)> = coeur
+            .fiche(camille)?
+            .canaux
+            .into_iter()
+            .filter(|c| c.prefere_pro || c.prefere_perso)
+            .map(|c| (c.cle, c.prefere_pro, c.prefere_perso))
+            .collect();
+
+        assert_eq!(preferes, [("signal:+33639980000".to_owned(), true, true)]);
         Ok(())
     }
 

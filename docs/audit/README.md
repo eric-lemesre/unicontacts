@@ -8,7 +8,7 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | Domaine | Exigences | conforme | écart | non examiné |
 | --- | --- | --- | --- | --- |
 | [android](android.md) | 3 | 0 | 3 | 0 |
-| [canaux](canaux.md) | 6 | 0 | 6 | 0 |
+| [canaux](canaux.md) | 6 | 4 | 2 | 0 |
 | [dates](dates.md) | 5 | 3 | 2 | 0 |
 | [file-decisions](file-decisions.md) | 8 | 6 | 2 | 0 |
 | [groupes](groupes.md) | 5 | 5 | 0 | 0 |
@@ -16,4 +16,4 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | [referentiel](referentiel.md) | 5 | 5 | 0 | 0 |
 | [relations](relations.md) | 6 | 5 | 1 | 0 |
 | [synchronisation](synchronisation.md) | 13 | 13 | 0 | 0 |
-| **total** | **51** | **37** | **14** | **0** |
+| **total** | **51** | **41** | **10** | **0** |

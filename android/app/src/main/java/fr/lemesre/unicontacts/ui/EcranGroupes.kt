@@ -5,6 +5,7 @@
 // [impl->req~groupes-hierarchiques~1]
 // [impl->req~filtre-par-groupes~2]
 // [impl->req~renommage-groupe-operation-unique~1]
+// [impl->req~filtre-par-canal~1]
 package fr.lemesre.unicontacts.ui
 
 import androidx.compose.foundation.clickable
@@ -46,10 +47,10 @@ import fr.lemesre.unicontacts.compte.Compte
 import kotlinx.coroutines.launch
 
 /** Filtre vide : toutes les fiches. */
-val FILTRE_VIDE = FiltreFfi(groupes = emptyList(), intersection = false, sousGroupes = true, recherche = "")
+val FILTRE_VIDE = FiltreFfi(groupes = emptyList(), intersection = false, sousGroupes = true, recherche = "", canal = null)
 
 /** Vrai si le filtre restreint la liste. */
-fun FiltreFfi.estActif(): Boolean = groupes.isNotEmpty() || recherche.isNotBlank()
+fun FiltreFfi.estActif(): Boolean = groupes.isNotEmpty() || recherche.isNotBlank() || canal != null
 
 /** Retrait d'un groupe selon sa profondeur, pour montrer la hiérarchie. */
 private fun retrait(chemin: String): Int = chemin.count { it == '/' } * 16
@@ -251,10 +252,11 @@ fun DialogueFiltre(app: UnicontactsApp, filtre: FiltreFfi, onAnnuler: () -> Unit
     val retenus = remember { mutableStateListOf<String>().apply { addAll(filtre.groupes) } }
     var intersection by remember { mutableStateOf(filtre.intersection) }
     var sousGroupes by remember { mutableStateOf(filtre.sousGroupes) }
+    var canal by remember { mutableStateOf(filtre.canal) }
     LaunchedEffect(Unit) { groupes = horsInterface { app.coeur.groupes() } }
     AlertDialog(
         onDismissRequest = onAnnuler,
-        title = { Text("Filtrer par groupes") },
+        title = { Text("Filtrer") },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 groupes.forEach { chemin ->
@@ -267,15 +269,21 @@ fun DialogueFiltre(app: UnicontactsApp, filtre: FiltreFfi, onAnnuler: () -> Unit
                 LigneParent("L'un des groupes", !intersection) { intersection = false }
                 LigneParent("Tous les groupes à la fois", intersection) { intersection = true }
                 LigneCase("Sous-groupes compris", sousGroupes) { sousGroupes = it }
+                HorizontalDivider()
+                Text("Canal disponible", style = MaterialTheme.typography.titleSmall)
+                LigneParent("Tous", canal == null) { canal = null }
+                CANAUX_FILTRABLES.forEach { (code, nom) -> LigneParent(nom, canal == code) { canal = code } }
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                onAppliquer(filtre.copy(groupes = retenus.toList(), intersection = intersection, sousGroupes = sousGroupes))
+                onAppliquer(
+                    filtre.copy(groupes = retenus.toList(), intersection = intersection, sousGroupes = sousGroupes, canal = canal),
+                )
             }) { Text("Appliquer") }
         },
         dismissButton = {
-            TextButton(onClick = { onAppliquer(filtre.copy(groupes = emptyList())) }) { Text("Aucun filtre") }
+            TextButton(onClick = { onAppliquer(filtre.copy(groupes = emptyList(), canal = null)) }) { Text("Aucun filtre") }
         },
     )
 }

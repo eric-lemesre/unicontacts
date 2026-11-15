@@ -53,43 +53,70 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (7) :
+  - `impl` — crates/core/src/canaux.rs:10
+  - `impl` — crates/core/src/canaux.rs:205
+  - `impl` — crates/core/src/canaux.rs:283
+  - `utest` — crates/core/src/canaux/tests.rs:37
+  - `utest` — crates/core/src/canaux/tests.rs:59
+  - `utest` — crates/core/src/canaux/tests.rs:80
   - `impl` — crates/ffi/src/lib.rs:401
 
 #### `req~classements-pro-perso~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (7) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranCanaux.kt:7
+  - `impl` — crates/core/src/canaux.rs:370
+  - `impl` — crates/core/src/canaux.rs:398
+  - `impl` — crates/core/src/canaux.rs:425
+  - `utest` — crates/core/src/canaux/tests.rs:113
+  - `utest` — crates/core/src/canaux/tests.rs:141
   - `impl` — crates/ffi/src/lib.rs:452
 
 #### `req~note-par-canal~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (6) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranCanaux.kt:6
+  - `impl` — crates/core/src/canaux.rs:206
+  - `impl` — crates/core/src/canaux.rs:342
+  - `utest` — crates/core/src/canaux/tests.rs:211
+  - `utest` — crates/core/src/canaux/tests.rs:228
   - `impl` — crates/ffi/src/lib.rs:435
 
 #### `req~detection-assistee-canaux~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles (1) :
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/canaux/DetectionCanaux.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/canaux/LecteurMessageries.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranCanaux.kt:5
+  - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/canaux/CanauxTest.kt:3
   - `impl` — crates/ffi/src/lib.rs:402
 
 #### `req~actions-triees-par-preference~2`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles (1) :
+- Couvertures réelles (4) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/canaux/ActionsCanaux.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranCanaux.kt:4
+  - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/canaux/CanauxTest.kt:2
   - `impl` — crates/ffi/src/modele.rs:539
 
 #### `req~filtre-par-canal~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (5) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranGroupes.kt:8
+  - `impl` — crates/core/src/canaux.rs:442
+  - `utest` — crates/core/src/canaux/tests.rs:245
+  - `utest` — crates/core/src/canaux/tests.rs:261
   - `impl` — crates/core/src/groupes.rs:360
 
 ### spec/02-exigences/dates.md

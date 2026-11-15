@@ -1,4 +1,5 @@
 use super::*;
+use crate::canaux::{Contexte, TypeCanal};
 use crate::synchronisation::CopieDistante;
 
 type Essai = Result<(), Box<dyn std::error::Error>>;
@@ -24,7 +25,8 @@ fn copie(uid: &str, lignes: &[&str]) -> CopieDistante {
 /// Référentiel qui exerce chaque table : sources réglées et désignées,
 /// fiches aux valeurs de provenances diverses, liens, bases, propriétés
 /// inconnues, décisions de chaque statut, copies à supprimer et ignorées,
-/// relations et leur mémoire, fiche « moi », inverses déclarés, groupes.
+/// relations et leur mémoire, fiche « moi », inverses déclarés, groupes,
+/// canaux déclarés, notes et classements.
 fn referentiel_complet() -> Result<Referentiel, Box<dyn std::error::Error>> {
     let mut referentiel = Referentiel::new();
     let nextcloud = referentiel.sources_mut().ajouter("Nextcloud", Version::V4);
@@ -112,6 +114,9 @@ fn referentiel_complet() -> Result<Referentiel, Box<dyn std::error::Error>> {
     referentiel.lier(a, TypeRelation::Medecin, b, date(3))?;
     referentiel.creer_groupe("Famille/Cousins")?;
     referentiel.ranger(b, &["Travail/Clients"], date(3))?;
+    referentiel.declarer_canal(a, TypeCanal::Signal, "+33639980000")?;
+    referentiel.annoter_canal(a, "appel:+33639980000", "après 18 h")?;
+    referentiel.classer_canaux(a, Contexte::Perso, vec!["signal:+33639980000".to_owned()])?;
     let ouvertes: Vec<_> = referentiel.ouvertes().map(|d| (d.id, d.nature)).collect();
     for (id, nature) in ouvertes {
         match nature {

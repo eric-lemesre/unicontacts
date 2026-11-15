@@ -26,6 +26,9 @@ class LignesContactsTest {
         estMoi = false,
         groupes = emptyList(),
         dates = emptyList(),
+        canaux = emptyList(),
+        classementPro = emptyList(),
+        classementPerso = emptyList(),
     )
 
     @Test

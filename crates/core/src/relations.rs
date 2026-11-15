@@ -404,23 +404,42 @@ impl Referentiel {
         porteuse.definir_multivalue(Champ::Relation, valeurs);
     }
 
-    /// Retire toute trace d'une fiche disparue : les liens qui la désignent
-    /// et sa qualité de fiche « moi ».
+    /// Retire toute trace d'une fiche disparue : les liens qui la désignent,
+    /// sa qualité de fiche « moi », ses canaux.
     pub(crate) fn oublier_fiche(&mut self, disparue: FicheId) {
         if self.moi == Some(disparue) {
             self.moi = None;
         }
+        self.canaux.remove(&disparue);
         let porteuses: Vec<FicheId> = self.fiches.keys().copied().collect();
         for fiche in porteuses {
             self.retirer_relations(fiche, |r| r.fiche == disparue);
         }
     }
 
-    /// Reporte sur une fiche les liens et la qualité « moi » d'une autre,
-    /// réunie avec elle.
+    /// Reporte sur une fiche les liens, la qualité « moi » et les canaux
+    /// d'une autre, réunie avec elle ; ses classements ne valent que si la
+    /// fiche réunie n'en a pas.
     pub(crate) fn rediriger_fiche(&mut self, absorbee: FicheId, reunie: FicheId) {
         if self.moi == Some(absorbee) {
             self.moi = Some(reunie);
+        }
+        if let Some(propres) = self.canaux.remove(&absorbee) {
+            let cible = self.canaux.entry(reunie).or_default();
+            for canal in propres.declares {
+                if !cible.declares.iter().any(|c| c.cle() == canal.cle()) {
+                    cible.declares.push(canal);
+                }
+            }
+            for (cle, note) in propres.notes {
+                cible.notes.entry(cle).or_insert(note);
+            }
+            if cible.pro.is_empty() {
+                cible.pro = propres.pro;
+            }
+            if cible.perso.is_empty() {
+                cible.perso = propres.perso;
+            }
         }
         for porteuse in self.fiches.values_mut() {
             let id = porteuse.id();

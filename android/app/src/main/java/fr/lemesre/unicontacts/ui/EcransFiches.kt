@@ -132,7 +132,8 @@ fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
                         modifier = Modifier.weight(1f),
                     )
                     TextButton(onClick = { choixFiltre = true }) {
-                        Text(if (filtre.groupes.isEmpty()) "Groupes…" else "Groupes (${filtre.groupes.size})")
+                        val actifs = filtre.groupes.size + (if (filtre.canal != null) 1 else 0)
+                        Text(if (actifs == 0) "Filtrer…" else "Filtres ($actifs)")
                     }
                 }
             }
@@ -216,6 +217,7 @@ fun EcranFiche(app: UnicontactsApp, id: String, ouvrir: (Ecran) -> Unit, retour:
             }
             SectionRelations(app, lue, ouvrir, recharger = { charger() })
             SectionGroupes(app, lue, recharger = { charger() })
+            SectionCanaux(app, lue, recharger = { charger() })
             SectionDates(app, lue, recharger = { charger() })
             champsEditables.forEach { champ ->
                 OutlinedTextField(
