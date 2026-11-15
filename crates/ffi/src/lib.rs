@@ -26,8 +26,8 @@ use unicontacts_core::vcard::Version;
 use unicontacts_core::{DecisionId, Fiche, Horodatage, SourceId};
 
 pub use modele::{
-    BilanFfi, ChampFfi, ChoixFfi, DecisionFfi, FicheFfi, NatureFfi, RelationFfi, ResolutionFfi,
-    ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi,
+    BilanFfi, ChampFfi, ChoixFfi, DecisionFfi, FicheFfi, FiltreFfi, NatureFfi, RelationFfi,
+    ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi,
 };
 
 /// Erreur rendue à Kotlin.
@@ -173,9 +173,9 @@ impl Coeur {
         champ: ChampFfi,
         valeurs: Vec<String>,
     ) -> Result<(), ErreurFfi> {
-        if champ == ChampFfi::Relation {
+        if matches!(champ, ChampFfi::Relation | ChampFfi::Groupes) {
             return Err(ErreurFfi::Refuse(
-                "une relation se crée par lier, pas par saisie".to_owned(),
+                "relations et groupes ont leurs propres opérations".to_owned(),
             ));
         }
         let mut etat = self.verrou()?;
@@ -295,6 +295,115 @@ impl Coeur {
             )
             .map_err(ErreurFfi::refuse)?;
         etat.enregistrer()
+    }
+
+    /// Tous les groupes, par ordre de chemin.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Interne`] si l'état est inutilisable.
+    pub fn groupes(&self) -> Result<Vec<String>, ErreurFfi> {
+        Ok(self.verrou()?.referentiel.groupes())
+    }
+
+    /// Crée un groupe vide, par son chemin, et rend le chemin normalisé.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Refuse`] pour un chemin vide ou déjà pris.
+    // [impl->req~groupes-hierarchiques~1]
+    pub fn creer_groupe(&self, chemin: String) -> Result<String, ErreurFfi> {
+        let mut etat = self.verrou()?;
+        let chemin = etat
+            .referentiel
+            .creer_groupe(&chemin)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()?;
+        Ok(chemin)
+    }
+
+    /// Range une fiche dans les groupes donnés, à la place des précédents.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] si la fiche est inconnue.
+    // [impl->req~appartenance-multiple~1]
+    pub fn ranger(&self, id: String, groupes: Vec<String>) -> Result<(), ErreurFfi> {
+        let fiche = identifiant(&id, "fiche")?;
+        let mut etat = self.verrou()?;
+        let groupes: Vec<&str> = groupes.iter().map(String::as_str).collect();
+        etat.referentiel
+            .ranger(fiche, &groupes, Horodatage::maintenant())
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Renomme un groupe, ou le déplace par un nouveau chemin, sous-groupes
+    /// et fiches compris, en une seule opération.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Refuse`] : groupe inconnu, chemin pris ou vide, cycle.
+    // [impl->req~renommage-groupe-operation-unique~1]
+    pub fn renommer_groupe(&self, ancien: String, nouveau: String) -> Result<String, ErreurFfi> {
+        let mut etat = self.verrou()?;
+        let chemin = etat
+            .referentiel
+            .renommer_groupe(&ancien, &nouveau, Horodatage::maintenant())
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()?;
+        Ok(chemin)
+    }
+
+    /// Donne à un groupe un autre parent, ou aucun.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Refuse`] : groupe inconnu, chemin pris, cycle.
+    // [impl->req~groupes-hierarchiques~1]
+    pub fn deplacer_groupe(
+        &self,
+        groupe: String,
+        parent: Option<String>,
+    ) -> Result<String, ErreurFfi> {
+        let mut etat = self.verrou()?;
+        let chemin = etat
+            .referentiel
+            .deplacer_groupe(&groupe, parent.as_deref(), Horodatage::maintenant())
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()?;
+        Ok(chemin)
+    }
+
+    /// Supprime un groupe et ses sous-groupes ; les fiches demeurent.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Stockage`] si l'enregistrement échoue.
+    pub fn supprimer_groupe(&self, groupe: String) -> Result<(), ErreurFfi> {
+        let mut etat = self.verrou()?;
+        etat.referentiel.supprimer_groupe(&groupe);
+        etat.enregistrer()
+    }
+
+    /// Fiches qui passent le filtre, triées par nom.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Interne`] si l'état est inutilisable.
+    // [impl->req~filtre-par-groupes~2]
+    pub fn fiches_filtrees(&self, filtre: FiltreFfi) -> Result<Vec<ResumeFicheFfi>, ErreurFfi> {
+        let etat = self.verrou()?;
+        let mut fiches: Vec<ResumeFicheFfi> = etat
+            .referentiel
+            .filtrer(&filtre.into())
+            .into_iter()
+            .filter_map(|id| etat.referentiel.fiche(id))
+            .map(modele::resume)
+            .collect();
+        fiches.sort_by_key(|f| f.nom.to_lowercase());
+        Ok(fiches)
     }
 
     /// Sources où la suppression d'une fiche peut s'appliquer.
@@ -568,6 +677,32 @@ mod tests {
                 vec![camille]
             )
         );
+        Ok(())
+    }
+
+    #[test]
+    fn le_filtre_retient_les_fiches_rangees_dans_un_sous_groupe() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let (alix, basile) = (
+            fiche_nommee(&coeur, "Alix")?,
+            fiche_nommee(&coeur, "Basile")?,
+        );
+        coeur.ranger(alix.clone(), vec!["Famille/Cousins".to_owned()])?;
+        coeur.ranger(basile, vec!["Voisins".to_owned()])?;
+
+        let retenues: Vec<String> = coeur
+            .fiches_filtrees(FiltreFfi {
+                groupes: vec!["Famille".to_owned()],
+                intersection: false,
+                sous_groupes: true,
+                recherche: String::new(),
+            })?
+            .into_iter()
+            .map(|f| f.id)
+            .collect();
+
+        assert_eq!(retenues, [alix]);
         Ok(())
     }
 

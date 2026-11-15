@@ -23,6 +23,7 @@ pub fn cle(champ: Champ, texte: &str) -> String {
         Champ::Note => texte.trim().replace("\r\n", "\n"),
         Champ::NomAffiche | Champ::Fonction | Champ::Url => espaces(texte),
         Champ::Relation => texte.trim().to_owned(),
+        Champ::Groupes => crate::groupes::chemin(texte),
     }
 }
 

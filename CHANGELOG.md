@@ -43,6 +43,12 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   section « Proches » en tête de liste ; relations portées par `RELATED` en
   vCard 4.0, par la convention Apple en 3.0, et par le champ « Relation »
   d'Android. Schéma SQLite en version 2, migré à l'ouverture.
+- Lot 4, groupes (ToDo-0005, ADR-0012) : une fiche dans plusieurs groupes
+  hiérarchiques, désignés par leur chemin ; filtre de la liste par groupes
+  (union ou intersection, sous-groupes compris) combiné à une recherche ;
+  groupes portés par `CATEGORIES` ; renommage ou déplacement d'un groupe en
+  une seule opération, sans décision. Écran de gestion des groupes. Schéma
+  SQLite en version 3.
 
 ## [0.1.0] - 2026-11-14
 

@@ -10,6 +10,7 @@ use unicontacts_core::referentiel::Referentiel;
 use unicontacts_core::reglages::{Source, Sources};
 use unicontacts_core::vcard::Version;
 
+use unicontacts_core::groupes::{Combinaison, Filtre};
 use unicontacts_core::relations::{Relation, TypeRelation};
 use unicontacts_core::{Champ, Fiche, Origine, Valeur};
 
@@ -42,6 +43,8 @@ pub enum ChampFfi {
     /// Relations : présentées à part ([`FicheFfi::relations`]), jamais
     /// éditées comme un champ.
     Relation,
+    /// Groupes, par leur chemin : présentés à part ([`FicheFfi::groupes`]).
+    Groupes,
 }
 
 impl From<ChampFfi> for Champ {
@@ -58,6 +61,7 @@ impl From<ChampFfi> for Champ {
             ChampFfi::Adresse => Self::Adresse,
             ChampFfi::Url => Self::Url,
             ChampFfi::Relation => Self::Relation,
+            ChampFfi::Groupes => Self::Groupes,
         }
     }
 }
@@ -76,6 +80,7 @@ impl From<Champ> for ChampFfi {
             Champ::Adresse => Self::Adresse,
             Champ::Url => Self::Url,
             Champ::Relation => Self::Relation,
+            Champ::Groupes => Self::Groupes,
         }
     }
 }
@@ -117,6 +122,37 @@ pub struct FicheFfi {
     pub relations: Vec<RelationFfi>,
     /// Vrai pour la fiche du propriétaire.
     pub est_moi: bool,
+    /// Groupes de la fiche, par leur chemin.
+    pub groupes: Vec<String>,
+}
+
+/// Filtre de la liste des fiches.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct FiltreFfi {
+    /// Groupes retenus, par leur chemin ; aucun : pas de filtre de groupe.
+    pub groupes: Vec<String>,
+    /// Vrai pour les fiches de tous les groupes à la fois ; sinon de l'un
+    /// d'eux.
+    pub intersection: bool,
+    /// Vrai si un sous-groupe compte pour son groupe.
+    pub sous_groupes: bool,
+    /// Texte cherché dans le nom.
+    pub recherche: String,
+}
+
+impl From<FiltreFfi> for Filtre {
+    fn from(filtre: FiltreFfi) -> Self {
+        Self {
+            groupes: filtre.groupes,
+            combinaison: if filtre.intersection {
+                Combinaison::Intersection
+            } else {
+                Combinaison::Union
+            },
+            sous_groupes: filtre.sous_groupes,
+            recherche: filtre.recherche,
+        }
+    }
 }
 
 /// Relation d'une fiche vers une autre.
@@ -382,7 +418,7 @@ pub(crate) fn fiche(fiche: &Fiche, referentiel: &Referentiel) -> FicheFfi {
         nom: nom(fiche),
         champs: fiche
             .champs()
-            .filter(|(champ, _)| *champ != Champ::Relation)
+            .filter(|(champ, _)| !matches!(champ, Champ::Relation | Champ::Groupes))
             .map(|(champ, valeurs)| ChampValeursFfi {
                 champ: champ.into(),
                 valeurs: valeurs.iter().map(|v| valeur(v, sources)).collect(),
@@ -399,6 +435,7 @@ pub(crate) fn fiche(fiche: &Fiche, referentiel: &Referentiel) -> FicheFfi {
             .map(|r| relation(r, referentiel))
             .collect(),
         est_moi: referentiel.moi() == Some(fiche.id()),
+        groupes: fiche.textes(Champ::Groupes),
     }
 }
 

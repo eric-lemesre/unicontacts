@@ -166,7 +166,7 @@ impl Carte {
                     indice,
                     Interpretee {
                         champ: Champ::Relation,
-                        texte: lue.texte,
+                        textes: vec![lue.texte],
                         types: Vec::new(),
                         compagnon: lue.compagnon,
                         rendu: Some(lue.rendu),
@@ -180,13 +180,21 @@ impl Carte {
             if champ == Champ::Relation {
                 continue;
             }
+            let textes = if champ == Champ::Groupes {
+                ecriture::lire_categories(&propriete.valeur)
+            } else {
+                vec![ecriture::decoder(champ, &propriete.valeur)]
+            };
+            if textes.is_empty() {
+                continue;
+            }
             if champ.est_multivalue() || !vus.contains(&champ) {
                 vus.push(champ);
                 interpretees.insert(
                     indice,
                     Interpretee {
                         champ,
-                        texte: ecriture::decoder(champ, &propriete.valeur),
+                        textes,
                         types: propriete.types(),
                         compagnon: None,
                         rendu: None,
@@ -217,9 +225,13 @@ impl Carte {
     ) -> BTreeMap<Champ, Vec<Valeur>> {
         let mut valeurs: BTreeMap<Champ, Vec<Valeur>> = BTreeMap::new();
         for interpretee in self.interpreter(annuaire, memoire).into_values() {
-            let valeur = Valeur::new(interpretee.texte, Provenance::source(source, date))
-                .avec_types(interpretee.types);
-            valeurs.entry(interpretee.champ).or_default().push(valeur);
+            let champ = valeurs.entry(interpretee.champ).or_default();
+            for texte in interpretee.textes {
+                champ.push(
+                    Valeur::new(texte, Provenance::source(source, date))
+                        .avec_types(interpretee.types.iter()),
+                );
+            }
         }
         valeurs
     }
@@ -230,7 +242,7 @@ impl Carte {
     pub fn memoire(&self, annuaire: &Annuaire, precedente: &Memoire) -> Memoire {
         self.interpreter(annuaire, precedente)
             .into_values()
-            .filter_map(|i| i.rendu.map(|rendu| (rendu, i.texte)))
+            .filter_map(|i| Some((i.rendu?, i.textes.into_iter().next()?)))
             .collect()
     }
 
@@ -253,8 +265,9 @@ impl Carte {
 struct Interpretee {
     /// Champ qu'elle porte.
     champ: Champ,
-    /// Texte décodé de la valeur.
-    texte: String,
+    /// Textes décodés des valeurs qu'elle porte : un seul, sauf pour
+    /// `CATEGORIES`, qui en porte un par groupe.
+    textes: Vec<String>,
     /// Types de la valeur.
     types: Vec<String>,
     /// Propriété compagne, interprétée avec elle.

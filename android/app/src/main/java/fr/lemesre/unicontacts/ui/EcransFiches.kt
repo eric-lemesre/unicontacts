@@ -3,6 +3,7 @@
 // suppression choisie par source.
 // [impl->req~boite-de-decisions~1]
 // [impl->req~section-proches~1]
+// [impl->req~filtre-par-groupes~2]
 package fr.lemesre.unicontacts.ui
 
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.lemesre.unicontacts.UnicontactsApp
@@ -63,10 +65,11 @@ fun libelle(champ: ChampFfi): String = when (champ) {
     ChampFfi.ADRESSE -> "Adresses (une par ligne, champs séparés par ;)"
     ChampFfi.URL -> "Sites web (un par ligne)"
     ChampFfi.RELATION -> "Relations"
+    ChampFfi.GROUPES -> "Groupes"
 }
 
-/** Champs édités comme du texte : tous, sauf les relations. */
-val champsEditables: List<ChampFfi> = ChampFfi.entries.filter { it != ChampFfi.RELATION }
+/** Champs édités comme du texte : tous, sauf relations et groupes. */
+val champsEditables: List<ChampFfi> = ChampFfi.entries.filter { it != ChampFfi.RELATION && it != ChampFfi.GROUPES }
 
 /** Vrai pour un champ multivalué : une valeur par ligne. */
 fun multivalue(champ: ChampFfi): Boolean =
@@ -83,11 +86,15 @@ fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
     var fiches by remember { mutableStateOf(emptyList<ResumeFicheFfi>()) }
     var proches by remember { mutableStateOf(emptyList<ResumeFicheFfi>()) }
     var decisions by remember { mutableStateOf(0u) }
+    var filtre by remember { mutableStateOf(FILTRE_VIDE) }
+    var choixFiltre by remember { mutableStateOf(false) }
     val portee = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        fiches = horsInterface { app.coeur.fiches() }
         proches = horsInterface { app.coeur.proches() }
         decisions = horsInterface { app.coeur.nombreDecisions() }
+    }
+    LaunchedEffect(filtre) {
+        fiches = horsInterface { if (filtre.estActif()) app.coeur.fichesFiltrees(filtre) else app.coeur.fiches() }
     }
     Scaffold(
         topBar = {
@@ -99,6 +106,7 @@ fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
                             BadgedBox(badge = { Badge { Text(decisions.toString()) } }) { Text("Décisions") }
                         }
                     }
+                    TextButton(onClick = { ouvrir(Ecran.Groupes) }) { Text("Groupes") }
                     TextButton(onClick = { ouvrir(Ecran.Sources) }) { Text("Sources") }
                 },
             )
@@ -110,12 +118,32 @@ fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
         },
     ) { marges ->
         LazyColumn(Modifier.padding(marges).fillMaxSize()) {
-            if (proches.isNotEmpty()) {
+            item(key = "filtre") {
+                Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        filtre.recherche,
+                        { filtre = filtre.copy(recherche = it) },
+                        label = { Text("Rechercher") },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { choixFiltre = true }) {
+                        Text(if (filtre.groupes.isEmpty()) "Groupes…" else "Groupes (${filtre.groupes.size})")
+                    }
+                }
+            }
+            if (proches.isNotEmpty() && !filtre.estActif()) {
                 item(key = "titre-proches") { TitreSection("Proches") }
                 items(proches, key = { "proche-" + it.id }) { LigneFiche(it, ouvrir) }
                 item(key = "titre-tous") { TitreSection("Tous les contacts") }
             }
             items(fiches, key = { it.id }) { LigneFiche(it, ouvrir) }
+        }
+    }
+    if (choixFiltre) {
+        DialogueFiltre(app, filtre, onAnnuler = { choixFiltre = false }) {
+            filtre = it
+            choixFiltre = false
         }
     }
 }
@@ -183,6 +211,7 @@ fun EcranFiche(app: UnicontactsApp, id: String, ouvrir: (Ecran) -> Unit, retour:
                 Text("Sources : " + lue.sources.joinToString(", "), style = MaterialTheme.typography.bodySmall)
             }
             SectionRelations(app, lue, ouvrir, recharger = { charger() })
+            SectionGroupes(app, lue, recharger = { charger() })
             champsEditables.forEach { champ ->
                 OutlinedTextField(
                     value = saisies[champ].orEmpty(),

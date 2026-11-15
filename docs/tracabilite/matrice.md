@@ -205,14 +205,25 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (1) :
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranGroupes.kt:4
+  - `impl` — crates/core/src/groupes.rs:9
+  - `impl` — crates/core/src/groupes.rs:216
+  - `utest` — crates/core/src/groupes/tests.rs:59
   - `impl` — crates/ffi/src/lib.rs:331
 
 #### `req~groupes-hierarchiques~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (9) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranGroupes.kt:5
+  - `impl` — crates/core/src/groupes.rs:10
+  - `impl` — crates/core/src/groupes.rs:188
+  - `impl` — crates/core/src/groupes.rs:260
+  - `impl` — crates/core/src/groupes.rs:318
+  - `utest` — crates/core/src/groupes/tests.rs:89
+  - `utest` — crates/core/src/groupes/tests.rs:107
   - `impl` — crates/ffi/src/lib.rs:314
   - `impl` — crates/ffi/src/lib.rs:364
 
@@ -220,8 +231,15 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (9) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranGroupes.kt:6
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:6
+  - `impl` — crates/core/src/groupes.rs:126
+  - `impl` — crates/core/src/groupes.rs:355
+  - `utest` — crates/core/src/groupes/tests.rs:166
+  - `utest` — crates/core/src/groupes/tests.rs:178
+  - `utest` — crates/core/src/groupes/tests.rs:191
+  - `utest` — crates/core/src/groupes/tests.rs:204
   - `impl` — crates/ffi/src/lib.rs:395
 
 #### `req~groupes-en-categories~1`
@@ -239,7 +257,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (2) :
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranGroupes.kt:7
+  - `impl` — crates/core/src/groupes.rs:259
+  - `utest` — crates/core/src/groupes/tests.rs:230
   - `utest` — crates/core/src/synchronisation/tests.rs:996
   - `impl` — crates/ffi/src/lib.rs:348
 

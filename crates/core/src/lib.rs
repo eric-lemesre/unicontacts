@@ -12,6 +12,7 @@ pub mod decisions;
 pub mod doublons;
 pub mod fiche;
 pub mod fusion;
+pub mod groupes;
 pub mod identifiants;
 pub mod normalisation;
 pub mod referentiel;
