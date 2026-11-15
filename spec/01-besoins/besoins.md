@@ -130,7 +130,6 @@ Needs: req
 ## Joindre chacun par le bon canal
 
 `feat~canaux-preferes~1`
-Status: draft
 
 Je veux savoir, pour chaque contact, par quels canaux le joindre (appel, SMS,
 e-mail, messageries) et lequel il préfère pour une communication pro et pour

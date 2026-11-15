@@ -136,6 +136,36 @@ réglages ; une fois la date retirée, l'événement disparaît.
 Covers:
 - req~dates-dans-l-agenda~1
 
+## Les messageries installées sont suggérées, ajoutées après confirmation
+
+`mtest~detection-messageries-sur-l-appareil~1`
+
+**Geste** — sur un téléphone où Signal (ou WhatsApp) est installé et
+connaît un contact, ouvrir la fiche de ce contact dans unicontacts.
+
+**Critère** — la fiche affiche « Signal détecté pour … » avec « Ajouter » et
+« Ignorer » ; tant qu'on n'a pas touché « Ajouter », aucun canal Signal ne
+figure parmi ses canaux ; après « Ajouter », un bouton Signal apparaît.
+
+Covers:
+- req~detection-assistee-canaux~1
+
+## Les boutons d'action ouvrent l'application, préférés pro et perso marqués
+
+`mtest~actions-canaux-sur-l-appareil~1`
+
+**Geste** — sur une fiche à un numéro, une adresse et un canal Signal,
+fixer dans « Préférences » Signal en tête du classement perso et l'e-mail en
+tête du classement pro ; toucher chaque bouton.
+
+**Critère** — un bouton par canal, Signal marqué « ★ perso », l'e-mail
+« ★ pro » ; « Appel » ouvre le composeur sur le numéro, « SMS » la
+messagerie, « E-mail » le client de messagerie, « Signal » la conversation
+Signal ; aucun réglage pro / perso global n'est demandé.
+
+Covers:
+- req~actions-triees-par-preference~2
+
 ## Journal des exécutions
 
 | Date | Exécutant | Version | Verdict |
