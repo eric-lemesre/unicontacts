@@ -31,7 +31,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/LignesContacts.kt:4
   - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/synchro/LignesContactsTest.kt:2
   - `impl` — crates/ffi/src/lib.rs:11
-  - `impl` — crates/ffi/src/lib.rs:130
+  - `impl` — crates/ffi/src/lib.rs:135
 
 #### `req~synchronisation-directe~1`
 
@@ -39,13 +39,13 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, mtest
 - Couvertures réelles (8) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/Coffre.kt:3
-  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/ConfigurationsSources.kt:4
-  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:4
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/ConfigurationsSources.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:5
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranSources.kt:4
   - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/sources/ConfigurationsSourcesTest.kt:2
   - `impl` — crates/ffi/src/bin/uniffi-bindgen.rs:4
   - `impl` — crates/ffi/src/lib.rs:10
-  - `impl` — crates/ffi/src/lib.rs:814
+  - `impl` — crates/ffi/src/lib.rs:819
 
 ### spec/02-exigences/canaux.md
 
@@ -60,7 +60,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/canaux/tests.rs:37
   - `utest` — crates/core/src/canaux/tests.rs:59
   - `utest` — crates/core/src/canaux/tests.rs:80
-  - `impl` — crates/ffi/src/lib.rs:401
+  - `impl` — crates/ffi/src/lib.rs:406
 
 #### `req~classements-pro-perso~2`
 
@@ -73,7 +73,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/canaux.rs:425
   - `utest` — crates/core/src/canaux/tests.rs:113
   - `utest` — crates/core/src/canaux/tests.rs:141
-  - `impl` — crates/ffi/src/lib.rs:452
+  - `impl` — crates/ffi/src/lib.rs:457
 
 #### `req~note-par-canal~1`
 
@@ -85,7 +85,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/canaux.rs:342
   - `utest` — crates/core/src/canaux/tests.rs:211
   - `utest` — crates/core/src/canaux/tests.rs:228
-  - `impl` — crates/ffi/src/lib.rs:435
+  - `impl` — crates/ffi/src/lib.rs:440
 
 #### `req~detection-assistee-canaux~1`
 
@@ -96,7 +96,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/canaux/LecteurMessageries.kt:3
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranCanaux.kt:5
   - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/canaux/CanauxTest.kt:3
-  - `impl` — crates/ffi/src/lib.rs:402
+  - `impl` — crates/ffi/src/lib.rs:407
 
 #### `req~actions-triees-par-preference~2`
 
@@ -133,7 +133,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/dates/tests.rs:112
   - `utest` — crates/core/src/dates/tests.rs:146
   - `utest` — crates/core/src/synchronisation/tests.rs:1125
-  - `impl` — crates/ffi/src/lib.rs:314
+  - `impl` — crates/ffi/src/lib.rs:319
 
 #### `req~fete-du-prenom-proposee~1`
 
@@ -146,7 +146,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/dates/tests.rs:192
   - `utest` — crates/core/src/dates/tests.rs:208
   - `utest` — crates/core/src/dates/tests.rs:232
-  - `impl` — crates/ffi/src/lib.rs:355
+  - `impl` — crates/ffi/src/lib.rs:360
   - `impl` — tools/fetes.sh:17
 
 #### `req~vue-a-venir~1`
@@ -156,7 +156,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (3) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranDates.kt:5
   - `impl` — crates/core/src/dates.rs:511
-  - `impl` — crates/ffi/src/lib.rs:373
+  - `impl` — crates/ffi/src/lib.rs:378
 
 #### `req~synchronisation-dates~1`
 
@@ -178,7 +178,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (5) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/agenda/AgendaDates.kt:5
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/agenda/EvenementsAgenda.kt:3
-  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:6
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranDates.kt:6
   - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/agenda/EvenementsAgendaTest.kt:2
 
@@ -200,8 +200,8 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/ActivitePrincipale.kt:3
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransDecisions.kt:3
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:4
-  - `impl` — crates/ffi/src/lib.rs:723
-  - `impl` — crates/ffi/src/lib.rs:735
+  - `impl` — crates/ffi/src/lib.rs:728
+  - `impl` — crates/ffi/src/lib.rs:740
 
 #### `req~vue-comparee~1`
 
@@ -209,7 +209,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, mtest
 - Couvertures réelles (3) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransDecisions.kt:4
-  - `impl` — crates/ffi/src/lib.rs:736
+  - `impl` — crates/ffi/src/lib.rs:741
   - `impl` — crates/ffi/src/modele.rs:2
 
 #### `req~actions-de-resolution~1`
@@ -275,7 +275,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/groupes.rs:9
   - `impl` — crates/core/src/groupes.rs:220
   - `utest` — crates/core/src/groupes/tests.rs:59
-  - `impl` — crates/ffi/src/lib.rs:499
+  - `impl` — crates/ffi/src/lib.rs:504
 
 #### `req~groupes-hierarchiques~1`
 
@@ -289,8 +289,8 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/groupes.rs:322
   - `utest` — crates/core/src/groupes/tests.rs:89
   - `utest` — crates/core/src/groupes/tests.rs:107
-  - `impl` — crates/ffi/src/lib.rs:482
-  - `impl` — crates/ffi/src/lib.rs:532
+  - `impl` — crates/ffi/src/lib.rs:487
+  - `impl` — crates/ffi/src/lib.rs:537
 
 #### `req~filtre-par-groupes~2`
 
@@ -305,7 +305,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/groupes/tests.rs:178
   - `utest` — crates/core/src/groupes/tests.rs:191
   - `utest` — crates/core/src/groupes/tests.rs:204
-  - `impl` — crates/ffi/src/lib.rs:563
+  - `impl` — crates/ffi/src/lib.rs:568
 
 #### `req~groupes-en-categories~1`
 
@@ -327,7 +327,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/groupes.rs:263
   - `utest` — crates/core/src/groupes/tests.rs:230
   - `utest` — crates/core/src/synchronisation/tests.rs:996
-  - `impl` — crates/ffi/src/lib.rs:516
+  - `impl` — crates/ffi/src/lib.rs:521
 
 ### spec/02-exigences/photos.md
 
@@ -449,7 +449,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/relations.rs:247
   - `utest` — crates/core/src/relations/tests.rs:31
   - `utest` — crates/core/src/relations/tests.rs:46
-  - `impl` — crates/ffi/src/lib.rs:247
+  - `impl` — crates/ffi/src/lib.rs:252
 
 #### `req~liens-types~1`
 
@@ -461,7 +461,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/relations.rs:305
   - `utest` — crates/core/src/relations/tests.rs:74
   - `utest` — crates/core/src/relations/tests.rs:94
-  - `impl` — crates/ffi/src/lib.rs:211
+  - `impl` — crates/ffi/src/lib.rs:216
 
 #### `req~reciproques-automatiques~1`
 
@@ -477,8 +477,8 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/core/src/relations/tests.rs:199
   - `utest` — crates/core/src/relations/tests.rs:219
   - `utest` — crates/core/src/relations/tests.rs:238
-  - `impl` — crates/ffi/src/lib.rs:212
-  - `impl` — crates/ffi/src/lib.rs:289
+  - `impl` — crates/ffi/src/lib.rs:217
+  - `impl` — crates/ffi/src/lib.rs:294
 
 #### `req~lien-par-identifiant-maitre~1`
 
@@ -497,7 +497,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (3) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:5
   - `impl` — crates/core/src/relations.rs:283
-  - `impl` — crates/ffi/src/lib.rs:262
+  - `impl` — crates/ffi/src/lib.rs:267
 
 #### `req~synchronisation-relations~1`
 
@@ -526,10 +526,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, itest
 - Couvertures réelles (19) :
-  - `impl` — crates/carddav/src/client.rs:81
-  - `impl` — crates/carddav/src/client.rs:146
-  - `impl` — crates/carddav/src/client.rs:163
-  - `impl` — crates/carddav/src/client.rs:189
+  - `impl` — crates/carddav/src/client.rs:103
+  - `impl` — crates/carddav/src/client.rs:272
+  - `impl` — crates/carddav/src/client.rs:286
+  - `impl` — crates/carddav/src/client.rs:312
   - `impl` — crates/carddav/src/lib.rs:11
   - `impl` — crates/carddav/src/multistatus.rs:53
   - `impl` — crates/carddav/src/synchro.rs:89
@@ -549,8 +549,24 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 #### `req~source-google~1`
 
 - Niveau normatif : DOIT
-- Needs: impl, itest
-- Couvertures réelles : — À COUVRIR
+- Needs: impl, utest, itest, mtest
+- Couvertures réelles (16) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/ConfigurationsSources.kt:6
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:8
+  - `impl` — crates/carddav/src/client.rs:120
+  - `impl` — crates/carddav/src/client.rs:143
+  - `impl` — crates/carddav/src/client.rs:207
+  - `utest` — crates/carddav/src/client.rs:438
+  - `utest` — crates/carddav/src/client.rs:450
+  - `utest` — crates/carddav/src/client.rs:460
+  - `impl` — crates/carddav/src/multistatus.rs:74
+  - `utest` — crates/carddav/src/multistatus.rs:230
+  - `itest` — crates/carddav/tests/radicale.rs:365
+  - `impl` — crates/ffi/src/lib.rs:844
+  - `impl` — crates/ffi/src/lib.rs:867
+  - `impl` — crates/ffi/src/lib.rs:893
+  - `utest` — crates/ffi/src/lib.rs:1301
+  - `utest` — crates/ffi/src/lib.rs:1320
 
 #### `req~import-stockage-local~1`
 
@@ -564,10 +580,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/import.rs:129
   - `impl` — crates/core/src/import.rs:153
   - `utest` — crates/core/src/import/tests.rs:1
-  - `impl` — crates/ffi/src/lib.rs:651
-  - `impl` — crates/ffi/src/lib.rs:670
-  - `impl` — crates/ffi/src/lib.rs:711
-  - `utest` — crates/ffi/src/lib.rs:1152
+  - `impl` — crates/ffi/src/lib.rs:656
+  - `impl` — crates/ffi/src/lib.rs:675
+  - `impl` — crates/ffi/src/lib.rs:716
+  - `utest` — crates/ffi/src/lib.rs:1265
 
 #### `req~source-sim-lecture-seule~1`
 
@@ -575,7 +591,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest, mtest
 - Couvertures réelles (7) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/stockage/CarteSim.kt:3
-  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:6
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:7
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranSources.kt:5
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/SectionStockageLocal.kt:5
   - `utest` — android/app/src/test/java/fr/lemesre/unicontacts/stockage/EntreesSimTest.kt:2
@@ -703,7 +719,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-53/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (86.9 %) — 8 à couvrir.
+54/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (88.5 %) — 7 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
