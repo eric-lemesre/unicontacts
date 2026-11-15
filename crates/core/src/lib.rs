@@ -16,6 +16,7 @@ pub mod fiche;
 pub mod fusion;
 pub mod groupes;
 pub mod identifiants;
+pub mod import;
 pub mod normalisation;
 pub mod referentiel;
 pub mod reglages;

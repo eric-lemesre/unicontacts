@@ -44,6 +44,11 @@ class ConfigurationsSources(context: Context) {
 
     fun carnet(id: String): String? = preferences.getString("$id.carnet", null)
 
+    /** Source d'import du stockage local, une fois créée (ADR-0015). */
+    var sourceStockageLocal: String?
+        get() = preferences.getString("stockage-local.source", null)
+        set(id) = preferences.edit { putString("stockage-local.source", id) }
+
     companion object {
         /**
          * Motif du refus d'une URL de carnet, ou null si elle convient :
