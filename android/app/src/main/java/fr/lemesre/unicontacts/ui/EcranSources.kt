@@ -1,5 +1,6 @@
 // Sources : ajout d'un carnet CardDAV (URL, identifiant, mot de passe
-// d'application chiffré au coffre) et synchronisation à la demande.
+// d'application chiffré au coffre), synchronisation à la demande, et import
+// des contacts du téléphone.
 // [impl->req~synchronisation-directe~1]
 package fr.lemesre.unicontacts.ui
 
@@ -79,6 +80,8 @@ fun EcranSources(app: UnicontactsApp, retour: () -> Unit) {
             }
             Button(onClick = { Compte.synchroniser() }, enabled = sources.isNotEmpty()) { Text("Synchroniser maintenant") }
             SectionAgenda()
+            HorizontalDivider()
+            SectionStockageLocal(app) { charger() }
             HorizontalDivider()
 
             Text("Ajouter un carnet CardDAV", style = MaterialTheme.typography.titleMedium)

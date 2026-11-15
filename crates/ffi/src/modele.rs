@@ -11,8 +11,9 @@ use unicontacts_core::reglages::{Source, Sources};
 use unicontacts_core::vcard::Version;
 
 use unicontacts_core::canaux::Contexte;
-use unicontacts_core::dates::DateDeFiche;
+use unicontacts_core::dates::{DateDeFiche, TypeDate};
 use unicontacts_core::groupes::{Combinaison, Filtre};
+use unicontacts_core::import::{ContactLu, ValeurLue};
 use unicontacts_core::relations::{Relation, TypeRelation};
 use unicontacts_core::{Champ, Fiche, Origine, Valeur};
 
@@ -438,7 +439,7 @@ pub struct BilanFfi {
     pub illisibles: u32,
 }
 
-fn compte(n: usize) -> u32 {
+pub(crate) fn compte(n: usize) -> u32 {
     u32::try_from(n).unwrap_or(u32::MAX)
 }
 
@@ -717,5 +718,69 @@ pub(crate) fn decision(decision: &Decision, referentiel: &Referentiel) -> Decisi
         referentiel: referentiel_valeurs,
         source: recu(&decision.versions.source, &source_nom),
         base: decision.versions.base.iter().map(|t| lisible(t)).collect(),
+    }
+}
+
+/// Valeur d'un contact lu hors du cœur (stockage local).
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct ValeurLueFfi {
+    /// Champ ; ni relation, ni groupe, ni date.
+    pub champ: ChampFfi,
+    /// Texte ; composantes séparées par `;` pour le nom et l'adresse.
+    pub texte: String,
+    /// Types (`home`, `work`, `cell`…).
+    pub types: Vec<String>,
+}
+
+/// Date d'un contact lu hors du cœur.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct DateLueFfi {
+    /// Code du type (`naissance`, `mariage`, `fete`) ou libellé.
+    pub code: String,
+    /// Date (`AAAA-MM-JJ`, `--MM-JJ`…).
+    pub texte: String,
+}
+
+/// Contact lu hors du cœur, à importer.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct ContactLuFfi {
+    /// Identifiant du contact dans sa source, stable d'un import à l'autre.
+    pub uid: String,
+    /// Valeurs du contact.
+    pub valeurs: Vec<ValeurLueFfi>,
+    /// Dates du contact.
+    pub dates: Vec<DateLueFfi>,
+}
+
+/// Compte rendu d'un import.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct ImportFfi {
+    /// Fiches créées.
+    pub creees: u32,
+    /// Contacts rattachés à une fiche existante.
+    pub rattachees: u32,
+    /// Décisions créées ou mises à jour (doublons probables, divergences).
+    pub decisions: u32,
+    /// Contacts ou dates illisibles, laissés de côté.
+    pub illisibles: u32,
+}
+
+pub(crate) fn contact_lu(contact: ContactLuFfi) -> ContactLu {
+    ContactLu {
+        uid: contact.uid,
+        valeurs: contact
+            .valeurs
+            .into_iter()
+            .map(|v| ValeurLue {
+                champ: v.champ.into(),
+                texte: v.texte,
+                types: v.types,
+            })
+            .collect(),
+        dates: contact
+            .dates
+            .into_iter()
+            .map(|d| (TypeDate::depuis_texte(&d.code), d.texte))
+            .collect(),
     }
 }

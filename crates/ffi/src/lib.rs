@@ -28,9 +28,9 @@ use unicontacts_core::vcard::Version;
 use unicontacts_core::{DecisionId, Fiche, Horodatage, SourceId};
 
 pub use modele::{
-    BilanFfi, CanalFfi, ChampFfi, ChoixFfi, DateAVenirFfi, DateFfi, DecisionFfi, FicheFfi,
-    FiltreFfi, NatureFfi, RelationFfi, ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi,
-    TypeRelationFfi, ValeurFfi,
+    BilanFfi, CanalFfi, ChampFfi, ChoixFfi, ContactLuFfi, DateAVenirFfi, DateFfi, DateLueFfi,
+    DecisionFfi, FicheFfi, FiltreFfi, ImportFfi, NatureFfi, RelationFfi, ResolutionFfi,
+    ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi, ValeurLueFfi,
 };
 
 /// Erreur rendue à Kotlin.
@@ -641,6 +641,80 @@ impl Coeur {
         Ok(id.to_string())
     }
 
+    /// Ajoute une source d'import (stockage local) : lecture seule,
+    /// suppressions ignorées (ADR-0015). Rend son identifiant.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Refuse`] si les réglages ne s'appliquent pas ;
+    /// [`ErreurFfi::Stockage`] si l'enregistrement échoue.
+    // [impl->req~import-stockage-local~1]
+    pub fn ajouter_source_import(&self, nom: String) -> Result<String, ErreurFfi> {
+        let mut etat = self.verrou()?;
+        let id = etat
+            .referentiel
+            .ajouter_source_import(&nom)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()?;
+        Ok(id.to_string())
+    }
+
+    /// Importe la liste complète des contacts lus d'une source d'import :
+    /// détection des doublons pour un contact inconnu, fusion pour un
+    /// contact déjà importé, détachement pour un contact disparu.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] si la source n'est pas configurée ;
+    /// [`ErreurFfi::Stockage`] si l'enregistrement échoue.
+    // [impl->req~import-stockage-local~1]
+    pub fn importer(
+        &self,
+        source: String,
+        contacts: Vec<ContactLuFfi>,
+    ) -> Result<ImportFfi, ErreurFfi> {
+        let source: SourceId = identifiant(&source, "source")?;
+        let contacts: Vec<_> = contacts.into_iter().map(modele::contact_lu).collect();
+        let mut etat = self.verrou()?;
+        let fiches_avant = etat.referentiel.fiches().count();
+        let liees_avant = etat.referentiel.copies_liees(source).len();
+        let import = etat
+            .referentiel
+            .importer_contacts(source, &contacts, Horodatage::maintenant())
+            .map_err(|e| ErreurFfi::Introuvable(e.to_string()))?;
+        let creees = etat
+            .referentiel
+            .fiches()
+            .count()
+            .saturating_sub(fiches_avant);
+        let liees = etat
+            .referentiel
+            .copies_liees(source)
+            .len()
+            .saturating_sub(liees_avant);
+        etat.enregistrer()?;
+        Ok(ImportFfi {
+            creees: modele::compte(creees),
+            rattachees: modele::compte(liees.saturating_sub(creees)),
+            decisions: modele::compte(import.rapport.decisions.len()),
+            illisibles: modele::compte(
+                import.rapport.illisibles.len() + import.dates_illisibles.len(),
+            ),
+        })
+    }
+
+    /// Identifiants des contacts d'une source déjà versés au référentiel.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé.
+    // [impl->req~import-stockage-local~1]
+    pub fn copies_liees(&self, source: String) -> Result<Vec<String>, ErreurFfi> {
+        let source: SourceId = identifiant(&source, "source")?;
+        let etat = self.verrou()?;
+        Ok(etat.referentiel.copies_liees(source))
+    }
+
     /// Nombre de décisions en attente ou reportées.
     ///
     /// # Errors
@@ -1051,6 +1125,62 @@ mod tests {
                 nom: "Murena".to_owned(),
                 vcard4: false
             }]
+        );
+        Ok(())
+    }
+
+    /// Contact local au nom et au téléphone donnés.
+    fn contact_local(uid: &str, nom: &str, telephone: &str) -> ContactLuFfi {
+        let valeur = |champ, texte: &str| ValeurLueFfi {
+            champ,
+            texte: texte.to_owned(),
+            types: Vec::new(),
+        };
+        ContactLuFfi {
+            uid: uid.to_owned(),
+            valeurs: vec![
+                valeur(ChampFfi::NomAffiche, nom),
+                valeur(ChampFfi::Telephone, telephone),
+            ],
+            dates: vec![DateLueFfi {
+                code: "naissance".to_owned(),
+                texte: "--02-30".to_owned(),
+            }],
+        }
+    }
+
+    // [utest->req~import-stockage-local~1]
+    #[test]
+    fn un_import_rejoue_apres_reouverture_ne_cree_ni_ne_rattache_rien() -> Essai {
+        let base = Base::new();
+        let contacts = vec![
+            contact_local("local-1", "Alice Martin", "0612345678"),
+            contact_local("local-2", "Bruno Petit", "0698765432"),
+        ];
+        let premier = {
+            let coeur = Coeur::ouvrir(base.chemin())?;
+            let source = coeur.ajouter_source_import("Stockage local".to_owned())?;
+            (source.clone(), coeur.importer(source, contacts.clone())?)
+        };
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let second = coeur.importer(premier.0.clone(), contacts)?;
+        assert_eq!(
+            (premier.1, second, coeur.copies_liees(premier.0)?.len()),
+            (
+                ImportFfi {
+                    creees: 2,
+                    rattachees: 0,
+                    decisions: 0,
+                    illisibles: 2
+                },
+                ImportFfi {
+                    creees: 0,
+                    rattachees: 0,
+                    decisions: 0,
+                    illisibles: 2
+                },
+                2
+            )
         );
         Ok(())
     }
