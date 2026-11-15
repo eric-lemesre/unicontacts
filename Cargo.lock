@@ -911,6 +911,8 @@ name = "unicontacts-carddav"
 version = "0.1.0"
 dependencies = [
  "quick-xml",
+ "ring",
+ "serde_json",
  "thiserror",
  "unicontacts-core",
  "ureq",

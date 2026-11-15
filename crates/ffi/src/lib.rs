@@ -18,6 +18,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex, MutexGuard};
 
+use unicontacts_carddav::oauth::{ClientOAuth, ErreurOAuth, Jeton, Points};
 use unicontacts_carddav::{ClientCardDav, Compte, MotDePasse, envoyer, lire_carnet, reporter};
 use unicontacts_core::canaux::{Contexte, TypeCanal};
 use unicontacts_core::dates::{Date, DateDeFiche, TypeDate};
@@ -29,8 +30,8 @@ use unicontacts_core::{DecisionId, Fiche, Horodatage, SourceId};
 
 pub use modele::{
     BilanFfi, CanalFfi, ChampFfi, ChoixFfi, ContactLuFfi, DateAVenirFfi, DateFfi, DateLueFfi,
-    DecisionFfi, FicheFfi, FiltreFfi, ImportFfi, NatureFfi, RelationFfi, ResolutionFfi,
-    ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi, ValeurLueFfi,
+    DecisionFfi, DemandeGoogleFfi, FicheFfi, FiltreFfi, ImportFfi, NatureFfi, RelationFfi,
+    ResolutionFfi, ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi, ValeurLueFfi,
 };
 
 /// Erreur rendue à Kotlin.
@@ -49,6 +50,10 @@ pub enum ErreurFfi {
     /// Le carnet CardDAV n'a pu être lu.
     #[error("carnet : {0}")]
     Carnet(String),
+    /// L'autorisation OAuth est refusée, révoquée ou expirée : l'utilisateur
+    /// doit autoriser à nouveau l'application (ADR-0017).
+    #[error("autorisation à renouveler : {0}")]
+    Autorisation(String),
     /// État interne inutilisable : un fil a échoué en tenant le verrou.
     #[error("état interne inutilisable")]
     Interne,
@@ -826,15 +831,123 @@ impl Coeur {
             mot_de_passe: MotDePasse::new(mot_de_passe),
         })
         .map_err(|e| ErreurFfi::Carnet(e.to_string()))?;
+        self.synchroniser_client(source, &client)
+    }
 
-        let lecture = lire_carnet(&client).map_err(|e| ErreurFfi::Carnet(e.to_string()))?;
+    /// Demande d'autorisation d'un compte Google (ADR-0017) : la page à
+    /// ouvrir dans le navigateur, et le vérificateur et l'état à garder
+    /// jusqu'au retour.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Interne`] si l'aléa du système fait défaut.
+    // [impl->req~source-google~1]
+    pub fn google_demande(
+        &self,
+        client: String,
+        adresse: String,
+    ) -> Result<DemandeGoogleFfi, ErreurFfi> {
+        let demande = client_google(client)
+            .demander(Some(&adresse))
+            .map_err(|_| ErreurFfi::Interne)?;
+        Ok(DemandeGoogleFfi {
+            url: demande.url,
+            verificateur: demande.verificateur.valeur().to_owned(),
+            etat: demande.etat,
+        })
+    }
+
+    /// Échange le code reçu au retour de l'autorisation contre le jeton de
+    /// renouvellement, que l'appelant garde chiffré.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Autorisation`] si Google refuse, ou ne rend pas de jeton
+    /// de renouvellement ; [`ErreurFfi::Carnet`] si l'échange échoue.
+    // [impl->req~source-google~1]
+    pub fn google_echanger(
+        &self,
+        client: String,
+        code: String,
+        verificateur: String,
+    ) -> Result<String, ErreurFfi> {
+        let jetons = client_google(client)
+            .echanger(&code, &Jeton::new(verificateur))
+            .map_err(erreur_oauth)?;
+        jetons
+            .renouvellement
+            .map(|j| j.valeur().to_owned())
+            .ok_or_else(|| {
+                ErreurFfi::Autorisation("aucun jeton de renouvellement rendu".to_owned())
+            })
+    }
+
+    /// Synchronise une source Google : jeton d'accès neuf d'après le jeton
+    /// de renouvellement, puis carnet par défaut du compte, en vCard 3.0.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Autorisation`] si le jeton est révoqué ou expiré : rien
+    /// n'est alors modifié ; [`ErreurFfi::Carnet`] si le carnet ne peut être
+    /// lu ; [`ErreurFfi::Introuvable`] si la source n'est pas configurée.
+    // [impl->req~source-google~1]
+    pub fn synchroniser_google(
+        &self,
+        source: String,
+        adresse: String,
+        client: String,
+        renouvellement: String,
+    ) -> Result<BilanFfi, ErreurFfi> {
+        let source: SourceId = identifiant(&source, "source")?;
+        let carnet =
+            ClientCardDav::carnet_google(&adresse).map_err(|e| ErreurFfi::Carnet(e.to_string()))?;
+        let acces = client_google(client)
+            .renouveler(&Jeton::new(renouvellement))
+            .map_err(erreur_oauth)?;
+        let client = ClientCardDav::avec_jeton(&carnet, &acces)
+            .map_err(|e| ErreurFfi::Carnet(e.to_string()))?;
+        self.synchroniser_client(source, &client)
+    }
+}
+
+/// Adresse de retour de l'autorisation Google, captée par l'application.
+const RETOUR_GOOGLE: &str = "fr.lemesre.unicontacts:/oauth2redirect";
+
+fn client_google(identifiant: String) -> ClientOAuth {
+    ClientOAuth {
+        identifiant: identifiant.trim().to_owned(),
+        retour: RETOUR_GOOGLE.to_owned(),
+        points: Points::google(),
+    }
+}
+
+/// Erreur d'autorisation traduite : un refus demande une nouvelle
+/// autorisation, le reste est un échec d'échange.
+fn erreur_oauth(erreur: ErreurOAuth) -> ErreurFfi {
+    if matches!(erreur, ErreurOAuth::Refus { .. }) {
+        ErreurFfi::Autorisation(erreur.to_string())
+    } else {
+        ErreurFfi::Carnet(erreur.to_string())
+    }
+}
+
+impl Coeur {
+    /// Lit le carnet d'un client, synchronise le référentiel, écrit vers le
+    /// carnet, puis enregistre : le verrou n'est jamais tenu pendant un
+    /// échange réseau.
+    fn synchroniser_client(
+        &self,
+        source: SourceId,
+        client: &ClientCardDav,
+    ) -> Result<BilanFfi, ErreurFfi> {
+        let lecture = lire_carnet(client).map_err(|e| ErreurFfi::Carnet(e.to_string()))?;
         let rapport = {
             let mut etat = self.verrou()?;
             etat.referentiel
                 .synchroniser(source, &lecture.copies, Horodatage::maintenant())
                 .map_err(|e| ErreurFfi::Introuvable(e.to_string()))?
         };
-        let issues = envoyer(&client, &lecture, &rapport);
+        let issues = envoyer(client, &lecture, &rapport);
         let mut etat = self.verrou()?;
         let bilan = reporter(&mut etat.referentiel, source, rapport, issues);
         etat.enregistrer()?;
@@ -1182,6 +1295,42 @@ mod tests {
                 2
             )
         );
+        Ok(())
+    }
+
+    // [utest->req~source-google~1]
+    #[test]
+    fn une_demande_google_revient_a_l_application_sans_montrer_son_verificateur() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let demande = coeur.google_demande("123-abc".to_owned(), "alice@gmail.com".to_owned())?;
+        let debug = format!("{demande:?}");
+        assert_eq!(
+            (
+                demande
+                    .url
+                    .contains("redirect_uri=fr.lemesre.unicontacts%3A%2Foauth2redirect"),
+                debug.contains(&demande.verificateur)
+            ),
+            (true, false)
+        );
+        Ok(())
+    }
+
+    // [utest->req~source-google~1]
+    #[test]
+    fn une_adresse_google_invalide_laisse_le_referentiel_intact() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let source = coeur.ajouter_source("Google".to_owned(), false)?;
+        let resultat = coeur.synchroniser_google(
+            source,
+            "pas-une-adresse".to_owned(),
+            "123-abc".to_owned(),
+            "1//renouv".to_owned(),
+        );
+        assert!(matches!(resultat, Err(ErreurFfi::Carnet(_))));
+        assert!(coeur.fiches()?.is_empty());
         Ok(())
     }
 

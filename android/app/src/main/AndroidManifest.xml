@@ -30,6 +30,22 @@
             </intent-filter>
         </activity>
 
+        <!-- Retour de l'autorisation Google (ADR-0017) : exporté pour que le
+             navigateur l'ouvre ; il n'agit que si l'état reçu est celui de
+             la demande en attente. -->
+        <activity
+            android:name=".sources.RetourGoogle"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Le schéma seul : sans hôte, Android ignore le chemin. -->
+                <data android:scheme="fr.lemesre.unicontacts" />
+            </intent-filter>
+        </activity>
+
         <!-- Exporté sans permission, comme tout authentificateur : seul le
              gestionnaire de comptes du système s'y lie, et il ne porte aucun
              secret (ADR-0010). -->

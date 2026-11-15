@@ -361,3 +361,40 @@ fn une_fiche_supprimee_dans_l_application_est_supprimee_du_serveur() -> Essai {
     );
     Ok(())
 }
+
+// [itest->req~source-google~1]
+#[test]
+#[ignore = "requiert Radicale : sh tools/radicale.sh test"]
+fn un_carnet_lu_par_propfind_puis_multiget_donne_des_fiches_liees_a_leur_uid_et_etag() -> Essai {
+    let serveur = Serveur::nouveau()?;
+    serveur.deposer(
+        "un",
+        &vcard("uid-1", &["FN:Camille Exemple", "N:Exemple;Camille;;;"]),
+    )?;
+    serveur.deposer(
+        "deux",
+        &vcard("uid-2", &["FN:Dominique Fictif", "N:Fictif;Dominique;;;"]),
+    )?;
+    let (mut referentiel, source) = referentiel();
+    let client = serveur.client()?.par_multiget();
+
+    synchroniser(&mut referentiel, source, &client, date(1))?;
+
+    let reference = serveur.client()?;
+    let attendus = (
+        etag_serveur(&reference, "/un.vcf")?,
+        etag_serveur(&reference, "/deux.vcf")?,
+    );
+    assert_eq!(
+        (
+            etag_lie(&referentiel, source, "uid-1"),
+            etag_lie(&referentiel, source, "uid-2")
+        ),
+        attendus
+    );
+    assert!(
+        attendus.0.is_some() && attendus.1.is_some(),
+        "ETag absents : {attendus:?}"
+    );
+    Ok(())
+}
