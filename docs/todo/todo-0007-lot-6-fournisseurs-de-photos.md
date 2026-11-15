@@ -12,7 +12,12 @@ d'accès de chaque API sont à vérifier en tête de lot.
 - À l'ouverture : approuver les exigences du lot par une décision au
   registre (domaine passé ACTIVE s'il ne l'est pas), cadrer et accepter ses
   ADR ; reporter « à élever » ou mécaniser ses vérifications manuelles.
+- Services fermés (D-2026-11-14) : pas de collecte automatisée ; rendre le
+  repli manuel rapide — partage d'une photo depuis l'application du réseau
+  vers unicontacts, fiche correspondante proposée d'emblée — et l'écrire
+  dans `req~photo-manuelle~1` (révision) et un ADR.
 
 ## Renvois
 
 - Exigences : domaine `photos` (proposées)
+- Décisions : D-2026-11-14 (services fermés)
