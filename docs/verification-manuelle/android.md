@@ -203,6 +203,40 @@ de la SIM garde son numéro d'origine.
 Covers:
 - req~source-sim-lecture-seule~1
 
+## Un compte Google se synchronise sans services Play
+
+`mtest~google-sans-services-play~1`
+
+**Préalable — client OAuth de l'utilisateur** (ADR-0017), une fois :
+
+1. Console Google Cloud : créer un projet ; dans « API et services »,
+   activer l'API « Google Contacts CardDAV API ».
+2. Écran de consentement OAuth : public externe, portée
+   `https://www.googleapis.com/auth/carddav` ; **publier l'application**
+   (« En production ») — en mode test, les jetons expirent en sept jours.
+3. Identifiants → Créer un ID client OAuth, type **Android** : paquet
+   `fr.lemesre.unicontacts`, empreinte SHA-1 du certificat qui signe l'APK
+   (pour l'APK de débogage :
+   `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android`) ;
+   dans les réglages avancés du client, **activer le schéma d'URI
+   personnalisé**.
+
+**Geste** — sur le Fairphone sous /e/OS (sans services Play), écran
+Sources, « Ajouter ou reconnecter un compte Google » : saisir l'adresse du
+compte et l'identifiant client, toucher « Autoriser dans le navigateur »,
+accepter chez Google (« application non vérifiée » → continuer). Revenir à
+unicontacts, attendre la synchronisation. Modifier ensuite une fiche venue
+de Google, synchroniser, et l'ouvrir sur contacts.google.com. Enfin,
+révoquer l'accès dans les réglages du compte Google et synchroniser.
+
+**Critère** — les contacts du compte Google apparaissent comme fiches
+liées ; la modification se retrouve sur contacts.google.com ; après
+révocation, la source affiche « autorisation à renouveler » et le
+référentiel est inchangé ; une nouvelle autorisation la rétablit.
+
+Covers:
+- req~source-google~1
+
 ## Journal des exécutions
 
 | Date | Exécutant | Version | Verdict |

@@ -34,29 +34,37 @@ Needs: impl, itest
 ## Source Google
 
 `req~source-google~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT synchroniser le référentiel avec les contacts d'un compte
-Google, de préférence par son interface CardDAV et une autorisation OAuth,
-sans dépendre des services Google Play.
+Google par son interface CardDAV, sous une autorisation OAuth 2.0 que
+l'utilisateur donne avec un identifiant client qui lui est propre, sans
+dépendre des services Google Play.
 
 Rationale:
-§ 5.1 ; la faisabilité de l'interface CardDAV de Google est à vérifier à
-l'implémentation. /e/OS ne fournit pas les services Play.
+§ 5.1 ; /e/OS ne fournit pas les services Play. Google n'ouvre plus son
+CardDAV qu'à OAuth 2.0 ; l'identifiant client est celui que l'utilisateur
+crée dans la console Google Cloud (D-2026-11-15, ADR-0017).
 
 Critères d'acceptation :
 
-- Étant donné un compte Google de test autorisé par OAuth, quand la source
-  est synchronisée sur un appareil sans services Google Play, alors ses
+- Étant donné un compte Google autorisé par OAuth, quand la source est
+  synchronisée sur un appareil sans services Google Play, alors ses
   contacts donnent des fiches maîtres liées.
+- Étant donné un jeton de renouvellement gardé chiffré, quand la source est
+  synchronisée, alors un jeton d'accès neuf est obtenu sans que
+  l'utilisateur se reconnecte ; un jeton révoqué demande une nouvelle
+  autorisation, sans rien modifier du référentiel.
+- Étant donné un carnet lu par `PROPFIND` puis `addressbook-multiget`, comme
+  le sert Google, quand la source est synchronisée, alors chaque carte donne
+  une fiche liée à son UID et à son ETag.
 
 Covers:
 
 - feat~synchronisation-sans-blocage~1
 
-Needs: impl, itest
+Needs: impl, utest, itest, mtest
 
 ## Import du stockage local Android
 
