@@ -14,6 +14,6 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | [groupes](groupes.md) | 0 | 0 | 0 | 0 |
 | [photos](photos.md) | 0 | 0 | 0 | 0 |
 | [referentiel](referentiel.md) | 5 | 5 | 0 | 0 |
-| [relations](relations.md) | 0 | 0 | 0 | 0 |
+| [relations](relations.md) | 6 | 0 | 6 | 0 |
 | [synchronisation](synchronisation.md) | 13 | 13 | 0 | 0 |
-| **total** | **29** | **24** | **5** | **0** |
+| **total** | **35** | **24** | **11** | **0** |

@@ -75,7 +75,6 @@ Needs: req
 ## Relier les personnes entre elles
 
 `feat~relations-entre-contacts~1`
-Status: draft
 
 Je veux relier mes contacts entre eux et à moi-même (conjoint, enfant,
 parent, collègue, médecin, types personnalisés), et retrouver mes proches en

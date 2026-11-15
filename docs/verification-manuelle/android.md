@@ -4,7 +4,8 @@ Procédures de vérification **manuelle assumée** (items `mtest`, méthode
 [ch. 5](../methode/05-tests-et-verification.md)) des exigences qui ne se
 constatent que sur un téléphone : compte système, contacts d'Android,
 écrans. Elles ne sont pas mécanisées faute de tests instrumentés en CI
-(ADR-0009) ; chacune est reportée « à élever » dans ToDo-0004.
+(ADR-0009) ; chacune est reportée « à élever » dans la fiche de son lot
+(ToDo-0004, ToDo-0005).
 
 **Appareil de référence** : Fairphone 6 sous /e/OS. **Cadence** : à chaque
 version publiée, et à chaque PR qui touche `android/` ou `crates/ffi/`.
@@ -88,6 +89,22 @@ deux » seulement pour un champ multivalué).
 
 Covers:
 - req~vue-comparee~1
+
+## La section « Proches » rassemble les fiches liées à la fiche « moi »
+
+`mtest~section-proches-sur-l-appareil~1`
+
+**Geste** — ouvrir sa propre fiche, cocher « C'est moi » ; y ajouter deux
+relations (un conjoint, un ami) vers deux autres fiches ; revenir à la
+liste ; puis décocher « C'est moi ».
+
+**Critère** — la liste s'ouvre sur une section « Proches » qui contient les
+deux fiches liées, au-dessus de tous les contacts ; la fiche liée comme
+conjoint porte en retour la relation « Conjoint » vers sa propre fiche ;
+sans fiche « moi », la section disparaît.
+
+Covers:
+- req~section-proches~1
 
 ## Journal des exécutions
 
