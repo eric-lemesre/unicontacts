@@ -69,6 +69,7 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | [ADR-0012](0012-designer-un-groupe-par-son-chemin.md) | Désigner un groupe par son chemin | Accepté |
 | [ADR-0013](0013-tirer-le-calendrier-des-fetes-de-wikidata.md) | Tirer le calendrier des fêtes de Wikidata | Accepté |
 | [ADR-0014](0014-tenir-les-canaux-au-seul-referentiel.md) | Tenir les canaux au seul référentiel, rattachés aux identifiants de la fiche | Accepté |
+| [ADR-0015](0015-importer-le-stockage-local-comme-une-source-en-lecture-seule.md) | Importer le stockage local comme une source en lecture seule | Accepté |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.

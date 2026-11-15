@@ -61,28 +61,36 @@ Needs: impl, itest
 ## Import du stockage local Android
 
 `req~import-stockage-local~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur le demande, le système DOIT importer dans le référentiel
 les contacts du stockage local Android, en passant par la détection des
-doublons.
+doublons, sans modifier ni retirer les originaux ; il DOIT ensuite permettre
+de retirer du stockage local les originaux importés, par une action distincte
+confirmée explicitement.
 
 Rationale:
 Le stockage local est une source de migration vers le référentiel (§ 5.1).
+La migration va au bout sans jamais être implicite : l'import ne détruit
+rien, le retrait est un geste à part (D-2026-11-15, ADR-0015).
 
 Critères d'acceptation :
 
 - Étant donné des contacts dans le stockage local, quand l'import est lancé,
   alors chacun donne une fiche maître ou rejoint une fiche existante selon la
-  détection des doublons.
+  détection des doublons, et le stockage local reste inchangé.
+- Étant donné un import déjà fait, quand il est relancé, alors aucune fiche
+  n'est créée en double.
+- Étant donné des originaux importés, quand l'utilisateur confirme leur
+  retrait, alors ils disparaissent du stockage local et les fiches du
+  référentiel restent intactes ; sans confirmation, rien n'est retiré.
 
 Covers:
 
 - feat~synchronisation-sans-blocage~1
 
-Needs: impl, mtest
+Needs: impl, utest, mtest
 
 ## Source SIM en lecture seule par défaut
 
