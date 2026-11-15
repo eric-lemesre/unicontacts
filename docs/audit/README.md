@@ -11,9 +11,9 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | [canaux](canaux.md) | 0 | 0 | 0 | 0 |
 | [dates](dates.md) | 0 | 0 | 0 | 0 |
 | [file-decisions](file-decisions.md) | 8 | 6 | 2 | 0 |
-| [groupes](groupes.md) | 0 | 0 | 0 | 0 |
+| [groupes](groupes.md) | 5 | 0 | 5 | 0 |
 | [photos](photos.md) | 0 | 0 | 0 | 0 |
 | [referentiel](referentiel.md) | 5 | 5 | 0 | 0 |
 | [relations](relations.md) | 6 | 5 | 1 | 0 |
 | [synchronisation](synchronisation.md) | 13 | 13 | 0 | 0 |
-| **total** | **35** | **29** | **6** | **0** |
+| **total** | **40** | **29** | **11** | **0** |
