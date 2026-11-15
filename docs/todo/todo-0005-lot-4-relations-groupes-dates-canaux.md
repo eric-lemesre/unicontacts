@@ -16,18 +16,21 @@ Les fonctions qui font d'un carnet synchronisé un carnet utile
 - Groupes : réalisés — appartenance multiple, hiérarchie, filtre et
   recherche, `CATEGORIES`, renommage en une opération (ADR-0012), schéma
   SQLite 3.
-- Dates : à ouvrir dans leur pull request ; calendrier des fêtes tiré de
-  Wikidata (propriété P1750, France, CC0), export versionné avec sa requête
-  et son empreinte.
+- Dates : types et année facultative, fête proposée d'après le calendrier
+  de Wikidata (ADR-0013), vue « À venir », portage vCard et Android
+  (ADR-0011), report dans un agenda du téléphone.
 - Canaux : à ouvrir dans leur pull request.
 
 ## Vérifications manuelles à élever
 
 - `req~section-proches~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~vue-a-venir~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
+- `req~dates-dans-l-agenda~1` (à élever : vérification sur l'appareil faute de tests instrumentés en CI, ADR-0009)
 
 ## Renvois
 
-- Exigences approuvées (D-2026-11-13) : domaines `relations`, `groupes`
-- Exigences à approuver dans leur pull request : domaines `dates`, `canaux`
+- Exigences approuvées (D-2026-11-13) : domaines `relations`, `groupes`,
+  `dates`
+- Exigences à approuver dans leur pull request : domaine `canaux`
 - Questions : OQ-003 à OQ-006 (tranchées)
-- Décisions : ADR-0011, ADR-0012
+- Décisions : ADR-0011, ADR-0012, ADR-0013

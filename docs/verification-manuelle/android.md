@@ -106,6 +106,36 @@ sans fiche « moi », la section disparaît.
 Covers:
 - req~section-proches~1
 
+## Les dates à venir se lisent dans l'ordre, filtrables par groupe
+
+`mtest~a-venir-sur-l-appareil~1`
+
+**Geste** — donner à trois fiches des dates proches (une naissance sans
+année, un anniversaire de mariage avec année, une fête), ranger l'une d'elles
+dans un groupe, ouvrir « À venir », puis filtrer sur ce groupe.
+
+**Critère** — les dates s'affichent de la plus proche à la plus lointaine,
+avec le délai (« aujourd'hui », « dans 5 jours ») et l'âge quand l'année est
+connue ; le filtre ne garde que la fiche du groupe.
+
+Covers:
+- req~vue-a-venir~1
+
+## Les dates sont reportées dans l'agenda choisi
+
+`mtest~dates-dans-l-agenda-sur-l-appareil~1`
+
+**Geste** — dans « Sources », accorder l'accès à l'agenda et en choisir un ;
+ajouter un anniversaire à une fiche ; synchroniser ; ouvrir l'agenda du
+téléphone ; puis retirer cet anniversaire et synchroniser de nouveau.
+
+**Critère** — un événement annuel récurrent « Anniversaire de … » apparaît
+le jour dit, chaque année, et l'agenda en émet le rappel selon ses propres
+réglages ; une fois la date retirée, l'événement disparaît.
+
+Covers:
+- req~dates-dans-l-agenda~1
+
 ## Journal des exécutions
 
 | Date | Exécutant | Version | Verdict |

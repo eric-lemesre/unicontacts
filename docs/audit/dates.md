@@ -9,11 +9,18 @@
 Miroir de [`spec/02-exigences/dates.md`](../../spec/02-exigences/dates.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
+Exigences du lot 4 (D-2026-11-13), jugées sur le code de `crates/core`,
+`crates/ffi` et `android/`, et sur l'exécution des procédures de
+`docs/verification-manuelle/android.md`.
+
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-
-Aucune exigence approuvée à ce jour : le domaine est en proposition.
+| `req~types-de-dates~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~fete-du-prenom-proposee~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~vue-a-venir~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~synchronisation-dates~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~dates-dans-l-agenda~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
 
 ## Écarts ouverts
 
-- Aucun.
+- Exigences du domaine dates : à réaliser (ToDo-0005).

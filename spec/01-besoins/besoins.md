@@ -117,7 +117,6 @@ Needs: req
 ## Ne pas oublier les dates qui comptent
 
 `feat~dates-a-retenir~1`
-Status: draft
 
 Je veux noter les anniversaires, fêtes, anniversaires de mariage et dates
 personnalisées de mes contacts, et voir celles qui approchent.

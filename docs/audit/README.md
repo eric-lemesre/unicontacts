@@ -9,11 +9,11 @@ dans la fiche de chaque domaine ; ce tableau de bord ne fait que les compter.
 | --- | --- | --- | --- | --- |
 | [android](android.md) | 3 | 0 | 3 | 0 |
 | [canaux](canaux.md) | 0 | 0 | 0 | 0 |
-| [dates](dates.md) | 0 | 0 | 0 | 0 |
+| [dates](dates.md) | 5 | 0 | 5 | 0 |
 | [file-decisions](file-decisions.md) | 8 | 6 | 2 | 0 |
 | [groupes](groupes.md) | 5 | 5 | 0 | 0 |
 | [photos](photos.md) | 0 | 0 | 0 | 0 |
 | [referentiel](referentiel.md) | 5 | 5 | 0 | 0 |
 | [relations](relations.md) | 6 | 5 | 1 | 0 |
 | [synchronisation](synchronisation.md) | 13 | 13 | 0 | 0 |
-| **total** | **40** | **34** | **6** | **0** |
+| **total** | **45** | **34** | **11** | **0** |
