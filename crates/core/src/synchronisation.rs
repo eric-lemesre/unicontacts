@@ -20,7 +20,7 @@ use crate::normalisation::cle;
 use crate::referentiel::Referentiel;
 use crate::reglages::{Gagnant, Source, Suppressions};
 use crate::temps::Horodatage;
-use crate::vcard::{Carte, lire};
+use crate::vcard::{Annuaire, Carte, Memoire, lire};
 
 /// Copie d'une fiche telle que la source la sert.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -84,6 +84,8 @@ struct Contexte {
     ecrit: bool,
     gagnants: BTreeMap<Champ, Gagnant>,
     date: Horodatage,
+    /// Désignation des fiches dans la source, pour les relations.
+    annuaire: Annuaire,
 }
 
 impl Referentiel {
@@ -221,7 +223,25 @@ impl Referentiel {
                 .map(|champ| (champ, self.sources.gagnant(source, champ)))
                 .collect(),
             date,
+            annuaire: self.annuaire(source),
         })
+    }
+
+    /// Annuaire des fiches pour une source : nom affiché de chacune, et UID
+    /// de sa copie dans la source.
+    fn annuaire(&self, source: SourceId) -> Annuaire {
+        let mut annuaire = Annuaire::new();
+        for fiche in self.fiches.values() {
+            annuaire.ajouter(
+                fiche.id(),
+                fiche
+                    .valeurs(Champ::NomAffiche)
+                    .first()
+                    .map(|v| v.texte.as_str()),
+                fiche.lien(source).map(|l| l.uid.as_str()),
+            );
+        }
+        annuaire
     }
 
     /// Fusionne la copie d'une fiche liée, champ par champ.
@@ -236,20 +256,20 @@ impl Referentiel {
         rapport: &mut Rapport,
     ) -> Result<(), ErreurSynchronisation> {
         let source = contexte.source.id;
-        let recues = carte.valeurs(source, contexte.date);
         let Some(fiche) = self.fiches.get_mut(&id) else {
             return Ok(());
         };
         let Some(lien) = fiche.lien(source).cloned() else {
             return Ok(());
         };
+        let recues = carte.valeurs_avec(source, contexte.date, &contexte.annuaire, &lien.memoire);
         let mut a_ecrire = lien.a_restaurer;
         let mut base = BTreeMap::new();
         let mut divergences = Vec::new();
         let mut accords = Vec::new();
         for champ in Champ::TOUS {
-            let referentiel = fiche.valeurs(champ).to_vec();
             let recu = recues.get(&champ).map_or(&[][..], Vec::as_slice);
+            let (referentiel, hors_source) = portees(champ, fiche.valeurs(champ), recu, contexte);
             let precedente = lien.base.get(&champ).map_or(&[][..], Vec::as_slice);
             let gagnant = contexte
                 .gagnants
@@ -284,14 +304,23 @@ impl Referentiel {
             } else {
                 accords.push(champ);
             }
-            fiche.definir(champ, fusion.referentiel)?;
+            let mut valeurs = fusion.referentiel;
+            valeurs.extend(hors_source);
+            fiche.definir(champ, valeurs)?;
             if !nouvelle_base.is_empty() {
                 base.insert(champ, nouvelle_base);
             }
         }
         let contenu = if a_ecrire && contexte.ecrit {
-            let contenu =
-                Carte::reecrire(Some(carte), contexte.source.version, &copie.uid, fiche).ecrire();
+            let contenu = Carte::reecrire_avec(
+                Some(carte),
+                contexte.source.version,
+                &copie.uid,
+                fiche,
+                &contexte.annuaire,
+                &lien.memoire,
+            )
+            .ecrire();
             rapport.ecritures.push(Ecriture::Carte {
                 uid: copie.uid.clone(),
                 contenu: contenu.clone(),
@@ -303,8 +332,10 @@ impl Referentiel {
         } else {
             copie.contenu.clone()
         };
+        let memoire = memoire_de(&contenu, &contexte.annuaire, &lien.memoire);
         if let Some(lien) = fiche.lien_mut(source) {
             lien.base = base;
+            lien.memoire = memoire;
             lien.carte = Some(contenu);
             lien.etag.clone_from(&copie.etag);
             lien.a_restaurer = false;
@@ -338,10 +369,13 @@ impl Referentiel {
     ) -> Result<(), ErreurSynchronisation> {
         let source = contexte.source.id;
         let mut importee = Fiche::nouvelle();
-        for (champ, valeurs) in carte.valeurs(source, contexte.date) {
+        for (champ, valeurs) in
+            carte.valeurs_avec(source, contexte.date, &contexte.annuaire, &Memoire::new())
+        {
             importee.definir(champ, valeurs)?;
         }
         let mut lien = Lien::new(source, copie.uid.clone());
+        lien.memoire = carte.memoire(&contexte.annuaire, &Memoire::new());
         lien.etag.clone_from(&copie.etag);
         lien.carte = Some(copie.contenu.clone());
         let doublon = doublons::detecter(
@@ -410,11 +444,13 @@ impl Referentiel {
                     .as_deref()
                     .and_then(|texte| lire(texte).ok())
                     .and_then(|cartes| cartes.into_iter().next());
-                let contenu = Carte::reecrire(
+                let contenu = Carte::reecrire_avec(
                     precedente.as_ref(),
                     contexte.source.version,
                     &lien.uid,
                     fiche,
+                    &contexte.annuaire,
+                    &lien.memoire,
                 )
                 .ecrire();
                 rapport.ecritures.push(Ecriture::Carte {
@@ -424,9 +460,12 @@ impl Referentiel {
                 rapport
                     .avant_ecriture
                     .insert(lien.uid.clone(), (id, lien.clone()));
-                let base = valeurs_en_textes(fiche);
+                let mut base = valeurs_en_textes(fiche);
+                let memoire = memoire_de(&contenu, &contexte.annuaire, &lien.memoire);
+                retenir_portees(&mut base, &memoire);
                 if let Some(lien) = fiche.lien_mut(source) {
                     lien.carte = Some(contenu);
+                    lien.memoire = memoire;
                     lien.base = base;
                     lien.etag = None;
                     lien.a_restaurer = false;
@@ -467,6 +506,47 @@ fn recouvrir(champ: Champ, referentiel: &[Valeur], source: &[Valeur]) -> Fusion 
         ecrire_source: cles(referentiel) != cles(source),
         base: textes(referentiel),
         divergence: false,
+    }
+}
+
+/// Valeurs du référentiel que la fusion confronte à la source, et celles
+/// qu'elle laisse de côté. Seules les relations peuvent être laissées de
+/// côté : celles que la source ne peut porter (ADR-0011) restent au seul
+/// référentiel, sans que la source soit réputée les avoir retirées.
+// [impl->req~synchronisation-relations~1]
+fn portees(
+    champ: Champ,
+    valeurs: &[Valeur],
+    recu: &[Valeur],
+    contexte: &Contexte,
+) -> (Vec<Valeur>, Vec<Valeur>) {
+    if champ != Champ::Relation {
+        return (valeurs.to_vec(), Vec::new());
+    }
+    valeurs.iter().cloned().partition(|v| {
+        recu.iter().any(|r| r.texte == v.texte)
+            || contexte
+                .annuaire
+                .peut_porter(&v.texte, contexte.source.version)
+    })
+}
+
+/// Mémoire des relations d'une carte écrite ou reçue.
+fn memoire_de(contenu: &str, annuaire: &Annuaire, precedente: &Memoire) -> Memoire {
+    lire(contenu)
+        .ok()
+        .and_then(|cartes| cartes.into_iter().next())
+        .map(|carte| carte.memoire(annuaire, precedente))
+        .unwrap_or_default()
+}
+
+/// Ne garde dans la base que les relations que porte la copie.
+fn retenir_portees(base: &mut BTreeMap<Champ, Vec<String>>, memoire: &Memoire) {
+    if let Some(relations) = base.get_mut(&Champ::Relation) {
+        relations.retain(|texte| memoire.values().any(|m| m == texte));
+        if relations.is_empty() {
+            base.remove(&Champ::Relation);
+        }
     }
 }
 

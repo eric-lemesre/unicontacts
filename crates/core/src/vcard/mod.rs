@@ -9,10 +9,12 @@
 
 mod ecriture;
 mod lecture;
+mod relations;
 
 use std::collections::BTreeMap;
 
 pub use lecture::lire;
+pub use relations::{Annuaire, Memoire};
 
 use crate::champ::{Champ, Provenance, Valeur};
 use crate::identifiants::SourceId;
@@ -149,54 +151,116 @@ impl Carte {
             .map(|p| p.valeur.trim().to_owned())
     }
 
-    /// Indices des propriétés interprétées, avec leur champ.
+    /// Propriétés interprétées, par indice.
     ///
     /// Un champ à valeur unique n'interprète que sa première occurrence :
-    /// les suivantes sont conservées comme les propriétés inconnues.
-    fn interpretees(&self) -> BTreeMap<usize, Champ> {
+    /// les suivantes sont conservées comme les propriétés inconnues. Une
+    /// relation n'est interprétée que si la fiche liée se désigne dans
+    /// l'annuaire ou la mémoire (ADR-0011).
+    fn interpreter(&self, annuaire: &Annuaire, memoire: &Memoire) -> BTreeMap<usize, Interpretee> {
         let mut vus = Vec::new();
         let mut interpretees = BTreeMap::new();
         for (indice, propriete) in self.proprietes.iter().enumerate() {
+            if let Some(lue) = relations::lire(self, indice, annuaire, memoire) {
+                interpretees.insert(
+                    indice,
+                    Interpretee {
+                        champ: Champ::Relation,
+                        texte: lue.texte,
+                        types: Vec::new(),
+                        compagnon: lue.compagnon,
+                        rendu: Some(lue.rendu),
+                    },
+                );
+                continue;
+            }
             let Some(champ) = Champ::depuis_propriete_vcard(&propriete.nom) else {
                 continue;
             };
+            if champ == Champ::Relation {
+                continue;
+            }
             if champ.est_multivalue() || !vus.contains(&champ) {
                 vus.push(champ);
-                interpretees.insert(indice, champ);
+                interpretees.insert(
+                    indice,
+                    Interpretee {
+                        champ,
+                        texte: ecriture::decoder(champ, &propriete.valeur),
+                        types: propriete.types(),
+                        compagnon: None,
+                        rendu: None,
+                    },
+                );
             }
         }
         interpretees
     }
 
     /// Valeurs des champs interprétés, avec pour provenance la source et la
-    /// date de réception données.
+    /// date de réception données. Les relations ne s'y trouvent pas : il
+    /// faut un annuaire pour les résoudre ([`Carte::valeurs_avec`]).
     #[must_use]
     pub fn valeurs(&self, source: SourceId, date: Horodatage) -> BTreeMap<Champ, Vec<Valeur>> {
+        self.valeurs_avec(source, date, &Annuaire::new(), &Memoire::new())
+    }
+
+    /// Valeurs des champs interprétés, relations résolues par l'annuaire de
+    /// la source et la mémoire de la copie.
+    #[must_use]
+    pub fn valeurs_avec(
+        &self,
+        source: SourceId,
+        date: Horodatage,
+        annuaire: &Annuaire,
+        memoire: &Memoire,
+    ) -> BTreeMap<Champ, Vec<Valeur>> {
         let mut valeurs: BTreeMap<Champ, Vec<Valeur>> = BTreeMap::new();
-        for (indice, champ) in self.interpretees() {
-            let Some(propriete) = self.proprietes.get(indice) else {
-                continue;
-            };
-            let valeur = Valeur::new(
-                ecriture::decoder(champ, &propriete.valeur),
-                Provenance::source(source, date),
-            )
-            .avec_types(propriete.types());
-            valeurs.entry(champ).or_default().push(valeur);
+        for interpretee in self.interpreter(annuaire, memoire).into_values() {
+            let valeur = Valeur::new(interpretee.texte, Provenance::source(source, date))
+                .avec_types(interpretee.types);
+            valeurs.entry(interpretee.champ).or_default().push(valeur);
         }
         valeurs
+    }
+
+    /// Mémoire des relations que la carte porte et que l'annuaire ou la
+    /// mémoire précédente savent résoudre.
+    #[must_use]
+    pub fn memoire(&self, annuaire: &Annuaire, precedente: &Memoire) -> Memoire {
+        self.interpreter(annuaire, precedente)
+            .into_values()
+            .filter_map(|i| i.rendu.map(|rendu| (rendu, i.texte)))
+            .collect()
     }
 
     /// Propriétés non interprétées : celles que le cœur conserve telles
     /// quelles pour la source.
     pub fn conservees(&self) -> impl Iterator<Item = &Propriete> {
-        let interpretees = self.interpretees();
+        let interpretees = self.interpreter(&Annuaire::new(), &Memoire::new());
+        let compagnons: Vec<usize> = interpretees.values().filter_map(|i| i.compagnon).collect();
         self.proprietes
             .iter()
             .enumerate()
-            .filter(move |(indice, _)| !interpretees.contains_key(indice))
+            .filter(move |(indice, _)| {
+                !interpretees.contains_key(indice) && !compagnons.contains(indice)
+            })
             .map(|(_, propriete)| propriete)
     }
+}
+
+/// Propriété interprétée d'une carte.
+struct Interpretee {
+    /// Champ qu'elle porte.
+    champ: Champ,
+    /// Texte décodé de la valeur.
+    texte: String,
+    /// Types de la valeur.
+    types: Vec<String>,
+    /// Propriété compagne, interprétée avec elle.
+    compagnon: Option<usize>,
+    /// Pour une relation, son écriture, clé de la mémoire.
+    rendu: Option<String>,
 }
 
 #[cfg(test)]

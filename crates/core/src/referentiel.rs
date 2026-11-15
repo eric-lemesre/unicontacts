@@ -14,6 +14,7 @@ use crate::fiche::{ErreurFiche, Fiche};
 use crate::identifiants::{DecisionId, FicheId, SourceId};
 use crate::normalisation::cle;
 use crate::reglages::Sources;
+use crate::relations::Inverses;
 use crate::temps::Horodatage;
 
 /// Erreur de traitement d'une décision.
@@ -59,6 +60,10 @@ pub struct Referentiel {
     /// Copies que la synchronisation ne doit plus importer : leur fiche a
     /// été supprimée du référentiel sans l'être de leur source.
     pub(crate) ignorees: BTreeSet<(SourceId, String)>,
+    /// Fiche du propriétaire.
+    pub(crate) moi: Option<FicheId>,
+    /// Inverses déclarés des types de relation.
+    pub(crate) inverses: Inverses,
 }
 
 impl Referentiel {
@@ -356,6 +361,7 @@ impl Referentiel {
             }
         }
         self.clore_decisions_de(id);
+        self.oublier_fiche(id);
     }
 
     /// Applique l'issue choisie pour un doublon probable. Pour une fusion,
@@ -395,6 +401,7 @@ impl Referentiel {
                 decision.fiche = autre;
             }
         }
+        self.rediriger_fiche(importee.id(), autre);
         Ok(())
     }
 
@@ -452,6 +459,7 @@ impl Referentiel {
             }
         }
         self.clore_decisions_de(id);
+        self.oublier_fiche(id);
         Ok(())
     }
 }

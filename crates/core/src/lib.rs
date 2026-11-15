@@ -16,6 +16,7 @@ pub mod identifiants;
 pub mod normalisation;
 pub mod referentiel;
 pub mod reglages;
+pub mod relations;
 pub mod stockage;
 pub mod synchronisation;
 pub mod temps;

@@ -2,10 +2,12 @@
 // Android : un contact brut par fiche, quel que soit le nombre de ses
 // sources. Code pur, sans classe Android, éprouvé sur la JVM.
 // [impl->req~ecriture-sous-compte-unique~1]
+// [impl->req~synchronisation-relations~1]
 package fr.lemesre.unicontacts.synchro
 
 import fr.lemesre.unicontacts.coeur.ChampFfi
 import fr.lemesre.unicontacts.coeur.FicheFfi
+import fr.lemesre.unicontacts.coeur.RelationFfi
 import fr.lemesre.unicontacts.coeur.ValeurFfi
 import java.security.MessageDigest
 
@@ -22,6 +24,7 @@ object Mime {
     const val NOTE = "vnd.android.cursor.item/note"
     const val SITE = "vnd.android.cursor.item/website"
     const val EVENEMENT = "vnd.android.cursor.item/contact_event"
+    const val RELATION = "vnd.android.cursor.item/relation"
 }
 
 object LignesContacts {
@@ -57,7 +60,26 @@ object LignesContacts {
         de(ChampFfi.ANNIVERSAIRE).firstOrNull()?.let { date(it.texte) }?.let {
             lignes += Ligne(Mime.EVENEMENT, mapOf("data1" to it, "data2" to "3"))
         }
+        fiche.relations.forEach { lignes += relation(it) }
         return lignes
+    }
+
+    /**
+     * Relation (ADR-0011) : le nom de la fiche liée ; le type Android quand
+     * il en existe un (14 conjoint, 3 enfant, 9 parent, 6 ami), sinon un
+     * type personnalisé portant le libellé.
+     */
+    fun relation(relation: RelationFfi): Ligne {
+        val type = when (relation.code) {
+            "conjoint" -> "14"
+            "enfant" -> "3"
+            "parent" -> "9"
+            "ami" -> "6"
+            else -> "0"
+        }
+        val colonnes = mutableMapOf("data1" to relation.nom, "data2" to type)
+        if (type == "0") colonnes["data3"] = relation.libelle
+        return Ligne(Mime.RELATION, colonnes)
     }
 
     /**

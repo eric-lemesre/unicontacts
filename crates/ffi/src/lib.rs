@@ -20,13 +20,14 @@ use std::sync::{Arc, Mutex, MutexGuard};
 
 use unicontacts_carddav::{ClientCardDav, Compte, MotDePasse, envoyer, lire_carnet, reporter};
 use unicontacts_core::referentiel::Referentiel;
+use unicontacts_core::relations::TypeRelation;
 use unicontacts_core::stockage::Stockage;
 use unicontacts_core::vcard::Version;
 use unicontacts_core::{DecisionId, Fiche, Horodatage, SourceId};
 
 pub use modele::{
-    BilanFfi, ChampFfi, ChoixFfi, DecisionFfi, FicheFfi, NatureFfi, ResolutionFfi, ResumeFicheFfi,
-    SourceFfi, StatutFfi, ValeurFfi,
+    BilanFfi, ChampFfi, ChoixFfi, DecisionFfi, FicheFfi, NatureFfi, RelationFfi, ResolutionFfi,
+    ResumeFicheFfi, SourceFfi, StatutFfi, TypeRelationFfi, ValeurFfi,
 };
 
 /// Erreur rendue à Kotlin.
@@ -126,11 +127,10 @@ impl Coeur {
     // [impl->req~ecriture-sous-compte-unique~1]
     pub fn fiches_completes(&self) -> Result<Vec<FicheFfi>, ErreurFfi> {
         let etat = self.verrou()?;
-        let sources = etat.referentiel.sources();
         Ok(etat
             .referentiel
             .fiches()
-            .map(|f| modele::fiche(f, sources))
+            .map(|f| modele::fiche(f, &etat.referentiel))
             .collect())
     }
 
@@ -145,7 +145,7 @@ impl Coeur {
             .referentiel
             .fiche(identifiant(&id, "fiche")?)
             .ok_or_else(|| ErreurFfi::Introuvable(format!("fiche {id}")))?;
-        Ok(modele::fiche(fiche, etat.referentiel.sources()))
+        Ok(modele::fiche(fiche, &etat.referentiel))
     }
 
     /// Crée une fiche vide et rend son identifiant.
@@ -173,6 +173,11 @@ impl Coeur {
         champ: ChampFfi,
         valeurs: Vec<String>,
     ) -> Result<(), ErreurFfi> {
+        if champ == ChampFfi::Relation {
+            return Err(ErreurFfi::Refuse(
+                "une relation se crée par lier, pas par saisie".to_owned(),
+            ));
+        }
         let mut etat = self.verrou()?;
         let fiche = etat
             .referentiel
@@ -185,6 +190,109 @@ impl Coeur {
             .collect();
         fiche
             .modifier(champ.into(), &textes, Horodatage::maintenant())
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Lie une fiche à une autre par un type de relation (code ou libellé),
+    /// et crée la réciproque si le type a un inverse.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] si une fiche est inconnue, ou pour un lien
+    /// d'une fiche vers elle-même.
+    // [impl->req~liens-types~1]
+    // [impl->req~reciproques-automatiques~1]
+    pub fn lier(&self, id: String, type_relation: String, liee: String) -> Result<(), ErreurFfi> {
+        let (fiche, liee) = (identifiant(&id, "fiche")?, identifiant(&liee, "fiche")?);
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .lier(
+                fiche,
+                TypeRelation::depuis_texte(&type_relation),
+                liee,
+                Horodatage::maintenant(),
+            )
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Retire un lien, et sa réciproque.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Introuvable`] pour un identifiant mal formé ;
+    /// [`ErreurFfi::Refuse`] si une fiche est inconnue.
+    pub fn delier(&self, id: String, type_relation: String, liee: String) -> Result<(), ErreurFfi> {
+        let (fiche, liee) = (identifiant(&id, "fiche")?, identifiant(&liee, "fiche")?);
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .delier(fiche, &TypeRelation::depuis_texte(&type_relation), liee)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Désigne la fiche du propriétaire, ou retire la désignation.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Refuse`] si la fiche est inconnue.
+    // [impl->req~fiche-moi~1]
+    pub fn designer_moi(&self, id: Option<String>) -> Result<(), ErreurFfi> {
+        let fiche = id.map(|id| identifiant(&id, "fiche")).transpose()?;
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .designer_moi(fiche)
+            .map_err(ErreurFfi::refuse)?;
+        etat.enregistrer()
+    }
+
+    /// Fiches liées à la fiche « moi » : la section « Proches ».
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Interne`] si l'état est inutilisable.
+    // [impl->req~section-proches~1]
+    pub fn proches(&self) -> Result<Vec<ResumeFicheFfi>, ErreurFfi> {
+        let etat = self.verrou()?;
+        Ok(etat
+            .referentiel
+            .proches()
+            .into_iter()
+            .filter_map(|id| etat.referentiel.fiche(id))
+            .map(modele::resume)
+            .collect())
+    }
+
+    /// Types de relation à proposer.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Interne`] si l'état est inutilisable.
+    pub fn types_relation(&self) -> Result<Vec<TypeRelationFfi>, ErreurFfi> {
+        let etat = self.verrou()?;
+        Ok(modele::types_relation(&etat.referentiel))
+    }
+
+    /// Déclare deux types de relation inverses l'un de l'autre.
+    ///
+    /// # Errors
+    ///
+    /// [`ErreurFfi::Refuse`] si l'un a un inverse fixé, ou un libellé vide.
+    // [impl->req~reciproques-automatiques~1]
+    pub fn declarer_inverse(
+        &self,
+        type_relation: String,
+        inverse: String,
+    ) -> Result<(), ErreurFfi> {
+        let mut etat = self.verrou()?;
+        etat.referentiel
+            .inverses_mut()
+            .declarer(
+                &TypeRelation::depuis_texte(&type_relation),
+                &TypeRelation::depuis_texte(&inverse),
+            )
             .map_err(ErreurFfi::refuse)?;
         etat.enregistrer()
     }
@@ -420,6 +528,78 @@ mod tests {
                 let _ = std::fs::remove_file(chemin);
             }
         }
+    }
+
+    /// Fiche nommée, créée dans le cœur.
+    fn fiche_nommee(coeur: &Coeur, nom: &str) -> Result<String, ErreurFfi> {
+        let id = coeur.creer_fiche()?;
+        coeur.modifier_fiche(id.clone(), ChampFfi::NomAffiche, vec![nom.to_owned()])?;
+        Ok(id)
+    }
+
+    #[test]
+    fn une_relation_se_presente_par_le_nom_de_la_fiche_liee_et_survit_a_la_reouverture() -> Essai {
+        let base = Base::new();
+        let (eric, camille) = {
+            let coeur = Coeur::ouvrir(base.chemin())?;
+            let (eric, camille) = (
+                fiche_nommee(&coeur, "Eric")?,
+                fiche_nommee(&coeur, "Camille")?,
+            );
+            coeur.designer_moi(Some(eric.clone()))?;
+            coeur.lier(eric.clone(), "Conjoint".to_owned(), camille.clone())?;
+            (eric, camille)
+        };
+
+        let coeur = Coeur::ouvrir(base.chemin())?;
+
+        let fiche = coeur.fiche(eric)?;
+        let relations: Vec<(String, String)> = fiche
+            .relations
+            .into_iter()
+            .map(|r| (r.code, r.nom))
+            .collect();
+        let proches: Vec<String> = coeur.proches()?.into_iter().map(|p| p.id).collect();
+        assert_eq!(
+            (relations, fiche.est_moi, proches),
+            (
+                vec![("conjoint".to_owned(), "Camille".to_owned())],
+                true,
+                vec![camille]
+            )
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn une_relation_ne_se_saisit_pas_comme_un_champ() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        let id = coeur.creer_fiche()?;
+
+        let refus = coeur.modifier_fiche(id, ChampFfi::Relation, vec!["ami;x".to_owned()]);
+
+        assert!(matches!(refus, Err(ErreurFfi::Refuse(_))), "{refus:?}");
+        Ok(())
+    }
+
+    #[test]
+    fn les_types_proposes_comptent_un_personnalise_avec_son_inverse() -> Essai {
+        let base = Base::new();
+        let coeur = Coeur::ouvrir(base.chemin())?;
+        coeur.declarer_inverse("Parrain".to_owned(), "Filleul".to_owned())?;
+
+        let parrain = coeur
+            .types_relation()?
+            .into_iter()
+            .find(|t| t.libelle == "Parrain")
+            .ok_or("type Parrain attendu")?;
+
+        assert_eq!(
+            (parrain.inverse.as_deref(), parrain.predefini),
+            (Some("Filleul"), false)
+        );
+        Ok(())
     }
 
     #[test]

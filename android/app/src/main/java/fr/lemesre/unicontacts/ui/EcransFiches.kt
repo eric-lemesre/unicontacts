@@ -1,6 +1,8 @@
-// Liste des fiches, avec le compteur de décisions, et écran d'une fiche :
-// valeurs avec leur provenance, édition, suppression choisie par source.
+// Liste des fiches, avec le compteur de décisions et la section « Proches »,
+// et écran d'une fiche : valeurs avec leur provenance, édition, relations,
+// suppression choisie par source.
 // [impl->req~boite-de-decisions~1]
+// [impl->req~section-proches~1]
 package fr.lemesre.unicontacts.ui
 
 import androidx.compose.foundation.clickable
@@ -60,7 +62,11 @@ fun libelle(champ: ChampFfi): String = when (champ) {
     ChampFfi.EMAIL -> "E-mails (un par ligne)"
     ChampFfi.ADRESSE -> "Adresses (une par ligne, champs séparés par ;)"
     ChampFfi.URL -> "Sites web (un par ligne)"
+    ChampFfi.RELATION -> "Relations"
 }
+
+/** Champs édités comme du texte : tous, sauf les relations. */
+val champsEditables: List<ChampFfi> = ChampFfi.entries.filter { it != ChampFfi.RELATION }
 
 /** Vrai pour un champ multivalué : une valeur par ligne. */
 fun multivalue(champ: ChampFfi): Boolean =
@@ -75,10 +81,12 @@ fun dateLisible(millis: Long): String =
 @Composable
 fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
     var fiches by remember { mutableStateOf(emptyList<ResumeFicheFfi>()) }
+    var proches by remember { mutableStateOf(emptyList<ResumeFicheFfi>()) }
     var decisions by remember { mutableStateOf(0u) }
     val portee = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         fiches = horsInterface { app.coeur.fiches() }
+        proches = horsInterface { app.coeur.proches() }
         decisions = horsInterface { app.coeur.nombreDecisions() }
     }
     Scaffold(
@@ -102,27 +110,45 @@ fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
         },
     ) { marges ->
         LazyColumn(Modifier.padding(marges).fillMaxSize()) {
-            items(fiches, key = { it.id }) { fiche ->
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable { ouvrir(Ecran.Fiche(fiche.id)) }
-                        .padding(16.dp),
-                ) {
-                    Text(fiche.nom, style = MaterialTheme.typography.titleMedium)
-                    listOfNotNull(fiche.telephone, fiche.email).forEach {
-                        Text(it, style = MaterialTheme.typography.bodySmall)
-                    }
-                }
-                HorizontalDivider()
+            if (proches.isNotEmpty()) {
+                item(key = "titre-proches") { TitreSection("Proches") }
+                items(proches, key = { "proche-" + it.id }) { LigneFiche(it, ouvrir) }
+                item(key = "titre-tous") { TitreSection("Tous les contacts") }
             }
+            items(fiches, key = { it.id }) { LigneFiche(it, ouvrir) }
         }
     }
 }
 
+@Composable
+private fun TitreSection(titre: String) {
+    Text(
+        titre,
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+    )
+}
+
+@Composable
+private fun LigneFiche(fiche: ResumeFicheFfi, ouvrir: (Ecran) -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable { ouvrir(Ecran.Fiche(fiche.id)) }
+            .padding(16.dp),
+    ) {
+        Text(fiche.nom, style = MaterialTheme.typography.titleMedium)
+        listOfNotNull(fiche.telephone, fiche.email).forEach {
+            Text(it, style = MaterialTheme.typography.bodySmall)
+        }
+    }
+    HorizontalDivider()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EcranFiche(app: UnicontactsApp, id: String, retour: () -> Unit) {
+fun EcranFiche(app: UnicontactsApp, id: String, ouvrir: (Ecran) -> Unit, retour: () -> Unit) {
     var fiche by remember { mutableStateOf<FicheFfi?>(null) }
     val saisies = remember { mutableStateMapOf<ChampFfi, String>() }
     var message by remember { mutableStateOf<String?>(null) }
@@ -133,7 +159,7 @@ fun EcranFiche(app: UnicontactsApp, id: String, retour: () -> Unit) {
         val lue = horsInterface { app.coeur.fiche(id) }
         fiche = lue
         saisies.clear()
-        ChampFfi.entries.forEach { champ ->
+        champsEditables.forEach { champ ->
             saisies[champ] = lue.champs.firstOrNull { it.champ == champ }?.valeurs.orEmpty()
                 .joinToString("\n") { it.texte }
         }
@@ -156,7 +182,8 @@ fun EcranFiche(app: UnicontactsApp, id: String, retour: () -> Unit) {
             if (lue.sources.isNotEmpty()) {
                 Text("Sources : " + lue.sources.joinToString(", "), style = MaterialTheme.typography.bodySmall)
             }
-            ChampFfi.entries.forEach { champ ->
+            SectionRelations(app, lue, ouvrir, recharger = { charger() })
+            champsEditables.forEach { champ ->
                 OutlinedTextField(
                     value = saisies[champ].orEmpty(),
                     onValueChange = { saisies[champ] = it },
@@ -203,7 +230,7 @@ fun EcranFiche(app: UnicontactsApp, id: String, retour: () -> Unit) {
 
 /** Enregistre les champs modifiés ; rend le motif d'un refus, ou null. */
 private suspend fun enregistrer(app: UnicontactsApp, fiche: FicheFfi, saisies: Map<ChampFfi, String>): String? {
-    for (champ in ChampFfi.entries) {
+    for (champ in champsEditables) {
         val avant = fiche.champs.firstOrNull { it.champ == champ }?.valeurs.orEmpty().map { it.texte }
         val saisi = saisies[champ].orEmpty()
         val apres = if (multivalue(champ)) saisi.lines() else listOf(saisi)

@@ -38,6 +38,11 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   écrans des fiches, des sources et des décisions avec vue comparée ;
   mots de passe chiffrés par le Keystore. Vérification sur l'appareil à
   exécuter.
+- Lot 4, relations (ToDo-0005, D-2026-11-13, ADR-0011) : fiche « moi »,
+  liens typés entre fiches (prédéfinis ou personnalisés) avec réciproques,
+  section « Proches » en tête de liste ; relations portées par `RELATED` en
+  vCard 4.0, par la convention Apple en 3.0, et par le champ « Relation »
+  d'Android. Schéma SQLite en version 2, migré à l'ouverture.
 
 ## [0.1.0] - 2026-11-14
 

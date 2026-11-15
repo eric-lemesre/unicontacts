@@ -1,8 +1,8 @@
 //! Écriture des vCard : réécriture fidèle vers une source.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
-use super::{Carte, Parametre, Propriete, Version};
+use super::{Annuaire, Carte, Interpretee, Memoire, Parametre, Propriete, Version, relations};
 use crate::champ::{Champ, Valeur};
 use crate::fiche::Fiche;
 use crate::normalisation::{cle, composantes};
@@ -16,7 +16,7 @@ const LONGUEUR_MAX: usize = 75;
 const fn est_texte(champ: Champ) -> bool {
     !matches!(
         champ,
-        Champ::NomStructure | Champ::Adresse | Champ::Organisation | Champ::Url
+        Champ::NomStructure | Champ::Adresse | Champ::Organisation | Champ::Url | Champ::Relation
     )
 }
 
@@ -42,7 +42,7 @@ pub(super) fn decoder(champ: Champ, valeur: &str) -> String {
 }
 
 /// Valeur encodée pour une propriété.
-fn encoder(champ: Champ, texte: &str) -> String {
+pub(super) fn encoder(champ: Champ, texte: &str) -> String {
     if !est_texte(champ) {
         return texte.to_owned();
     }
@@ -79,7 +79,7 @@ impl Propriete {
     }
 
     /// Propriété produite par le cœur.
-    fn nouvelle(nom: &str, parametres: Vec<Parametre>, valeur: String) -> Self {
+    pub(super) fn nouvelle(nom: &str, parametres: Vec<Parametre>, valeur: String) -> Self {
         Self {
             groupe: None,
             nom: nom.to_owned(),
@@ -171,6 +171,32 @@ impl Carte {
     // [impl->req~vcard-3-et-4~1]
     #[must_use]
     pub fn reecrire(precedente: Option<&Self>, version: Version, uid: &str, fiche: &Fiche) -> Self {
+        Self::reecrire_avec(
+            precedente,
+            version,
+            uid,
+            fiche,
+            &Annuaire::new(),
+            &Memoire::new(),
+        )
+    }
+
+    /// Comme [`Carte::reecrire`], les relations de la fiche écrites selon
+    /// l'annuaire de la source et la mémoire de la copie (ADR-0011). Une
+    /// relation dont la fiche liée ne se désigne pas dans la source n'est
+    /// pas écrite.
+    // [impl->req~conservation-proprietes-inconnues~1]
+    // [impl->req~vcard-3-et-4~1]
+    // [impl->req~synchronisation-relations~1]
+    #[must_use]
+    pub fn reecrire_avec(
+        precedente: Option<&Self>,
+        version: Version,
+        uid: &str,
+        fiche: &Fiche,
+        annuaire: &Annuaire,
+        memoire: &Memoire,
+    ) -> Self {
         let mut restantes: BTreeMap<Champ, Vec<&Valeur>> = fiche
             .champs()
             .map(|(champ, valeurs)| (champ, valeurs.iter().collect()))
@@ -178,22 +204,40 @@ impl Carte {
         let mut proprietes = Vec::new();
         match precedente {
             Some(precedente) => {
-                let interpretees = precedente.interpretees();
+                let interpretees = precedente.interpreter(annuaire, memoire);
+                let mut gardees = BTreeSet::new();
+                for (indice, interpretee) in &interpretees {
+                    if retirer_identique(&mut restantes, interpretee) {
+                        gardees.insert(*indice);
+                        gardees.extend(interpretee.compagnon);
+                    }
+                }
+                let compagnons: BTreeSet<usize> =
+                    interpretees.values().filter_map(|i| i.compagnon).collect();
                 for (indice, propriete) in precedente.proprietes.iter().enumerate() {
-                    match interpretees.get(&indice) {
-                        None => proprietes.push(propriete.clone()),
-                        Some(&champ) => {
-                            if retirer_identique(&mut restantes, champ, propriete) {
-                                proprietes.push(propriete.clone());
-                            }
-                        }
+                    let interpretee =
+                        interpretees.contains_key(&indice) || compagnons.contains(&indice);
+                    if !interpretee || gardees.contains(&indice) {
+                        proprietes.push(propriete.clone());
                     }
                 }
             }
             None => proprietes.push(Self::uid_produit(uid)),
         }
+        let mut groupe = relations::dernier_groupe(proprietes.iter());
         for (champ, valeurs) in restantes {
-            proprietes.extend(valeurs.into_iter().map(|v| Propriete::produite(champ, v)));
+            for valeur in valeurs {
+                if champ == Champ::Relation {
+                    proprietes.extend(relations::produire(
+                        &valeur.texte,
+                        version,
+                        annuaire,
+                        &mut groupe,
+                    ));
+                } else {
+                    proprietes.push(Propriete::produite(champ, valeur));
+                }
+            }
         }
         for nom in ["FN", "N"] {
             let exigee = (nom == "FN" || version == Version::V3)
@@ -219,21 +263,20 @@ impl Carte {
     }
 }
 
-/// Retire des valeurs restantes celle qu'écrit déjà la propriété, et dit si
-/// elle y était.
+/// Retire des valeurs restantes celle qu'écrit déjà la propriété
+/// interprétée, et dit si elle y était.
 fn retirer_identique(
     restantes: &mut BTreeMap<Champ, Vec<&Valeur>>,
-    champ: Champ,
-    propriete: &Propriete,
+    interpretee: &Interpretee,
 ) -> bool {
+    let champ = interpretee.champ;
     let Some(valeurs) = restantes.get_mut(&champ) else {
         return false;
     };
-    let cle_ecrite = cle(champ, &decoder(champ, &propriete.valeur));
-    let types = propriete.types();
+    let cle_ecrite = cle(champ, &interpretee.texte);
     let Some(position) = valeurs
         .iter()
-        .position(|v| cle(champ, &v.texte) == cle_ecrite && v.types == types)
+        .position(|v| cle(champ, &v.texte) == cle_ecrite && v.types == interpretee.types)
     else {
         return false;
     };

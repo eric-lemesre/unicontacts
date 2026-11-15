@@ -23,7 +23,8 @@ fn copie(uid: &str, lignes: &[&str]) -> CopieDistante {
 
 /// Référentiel qui exerce chaque table : sources réglées et désignées,
 /// fiches aux valeurs de provenances diverses, liens, bases, propriétés
-/// inconnues, décisions de chaque statut, copies à supprimer et ignorées.
+/// inconnues, décisions de chaque statut, copies à supprimer et ignorées,
+/// relations et leur mémoire, fiche « moi », inverses déclarés.
 fn referentiel_complet() -> Result<Referentiel, Box<dyn std::error::Error>> {
     let mut referentiel = Referentiel::new();
     let nextcloud = referentiel.sources_mut().ajouter("Nextcloud", Version::V4);
@@ -91,11 +92,24 @@ fn referentiel_complet() -> Result<Referentiel, Box<dyn std::error::Error>> {
                     "X-PROPRIETAIRE:garde",
                 ],
             ),
-            copie("b", &["FN:Dominique Fictif", "ORG:Société Nouvelle"]),
+            copie(
+                "b",
+                &[
+                    "FN:Dominique Fictif",
+                    "ORG:Société Nouvelle",
+                    "RELATED;TYPE=friend:urn:uuid:a",
+                ],
+            ),
             copie("c", &["FN:Alix Démo", "NOTE:à supprimer"]),
         ],
         date(3),
     )?;
+    referentiel.designer_moi(Some(a))?;
+    let patient = TypeRelation::depuis_texte("Patient");
+    referentiel
+        .inverses_mut()
+        .declarer(&TypeRelation::Medecin, &patient)?;
+    referentiel.lier(a, TypeRelation::Medecin, b, date(3))?;
     let ouvertes: Vec<_> = referentiel.ouvertes().map(|d| (d.id, d.nature)).collect();
     for (id, nature) in ouvertes {
         match nature {
@@ -235,6 +249,54 @@ mod fichier {
         );
         Ok(())
     }
+}
+
+#[test]
+fn le_jeu_d_essai_exerce_relations_memoire_moi_et_inverses() -> Essai {
+    let referentiel = referentiel_complet()?;
+
+    let memoires = referentiel
+        .fiches()
+        .flat_map(Fiche::liens)
+        .filter(|l| !l.memoire.is_empty())
+        .count();
+    let relations: usize = referentiel
+        .fiches()
+        .map(|f| referentiel.relations(f.id()).len())
+        .sum();
+
+    assert_eq!(
+        (
+            memoires,
+            relations,
+            referentiel.moi().is_some(),
+            referentiel.inverses().couples().count()
+        ),
+        (1, 3, true, 1)
+    );
+    Ok(())
+}
+
+#[test]
+fn une_base_du_schema_1_passe_au_schema_courant_sans_perte() -> Essai {
+    let connexion = Connection::open_in_memory()?;
+    connexion.execute_batch(SCHEMA_1)?;
+    connexion.pragma_update(None, "user_version", 1)?;
+    connexion.execute(
+        "INSERT INTO fiches (id) VALUES (?1)",
+        params![Fiche::nouvelle().id().to_string()],
+    )?;
+
+    let stockage = Stockage::preparer(connexion)?;
+
+    let version: i64 = stockage
+        .connexion
+        .pragma_query_value(None, "user_version", |l| l.get(0))?;
+    assert_eq!(
+        (version, stockage.charger()?.fiches().count()),
+        (VERSION_SCHEMA, 1)
+    );
+    Ok(())
 }
 
 #[test]

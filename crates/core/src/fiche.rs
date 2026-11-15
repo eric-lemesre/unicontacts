@@ -34,6 +34,9 @@ pub struct Lien {
     /// Dernière vCard connue de la source, telle quelle : elle porte les
     /// propriétés non interprétées, à renvoyer inchangées à cette source.
     pub carte: Option<String>,
+    /// Mémoire des relations de la copie : chaque écriture de relation lue
+    /// ou écrite dans la source, et la relation qu'elle désigne (ADR-0011).
+    pub memoire: BTreeMap<String, String>,
     /// Vrai si la fiche doit être réécrite sur la source à la prochaine
     /// synchronisation, après une suppression que l'utilisateur a choisi de
     /// défaire.
@@ -50,6 +53,7 @@ impl Lien {
             etag: None,
             base: BTreeMap::new(),
             carte: None,
+            memoire: BTreeMap::new(),
             a_restaurer: false,
         }
     }
@@ -135,6 +139,16 @@ impl Fiche {
             self.valeurs.insert(champ, valeurs);
         }
         Ok(())
+    }
+
+    /// Remplace les valeurs d'un champ multivalué : sans erreur possible.
+    pub(crate) fn definir_multivalue(&mut self, champ: Champ, valeurs: Vec<Valeur>) {
+        debug_assert!(champ.est_multivalue());
+        if valeurs.is_empty() {
+            self.valeurs.remove(&champ);
+        } else {
+            self.valeurs.insert(champ, valeurs);
+        }
     }
 
     /// Modifie un champ dans l'application : chaque valeur nouvelle prend
