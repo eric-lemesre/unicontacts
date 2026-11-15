@@ -56,6 +56,12 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   dates portées par `BDAY`, `ANNIVERSARY` et `X-ABDATE`, et par le champ
   « Événement » d'Android ; report en événements annuels dans un agenda du
   téléphone choisi, qui émet les rappels.
+- Lot 4, canaux (ToDo-0005, ADR-0014) : appel, SMS et e-mail par numéro et
+  adresse, messageries déclarées ou suggérées d'après les messageries
+  installées, rattachées à un numéro, une adresse ou un pseudonyme ; note
+  par canal ; classements pro et perso par contact ; un bouton d'action par
+  canal, préférés marqués ; filtre de la liste par canal. Schéma SQLite en
+  version 4.
 
 ## [0.1.0] - 2026-11-14
 

@@ -20,9 +20,13 @@ Les fonctions qui font d'un carnet synchronisé un carnet utile
   calendrier de Wikidata (ADR-0013), vue « À venir », portage vCard et
   Android (ADR-0011), report dans un agenda du téléphone ; vue et agenda
   restent à vérifier sur le Fairphone.
-- Canaux : canaux rattachés aux identifiants de la fiche, notes,
-  classements pro et perso, boutons d'action, détection assistée des
-  messageries, filtre par canal (ADR-0014).
+- Canaux : réalisés — canaux rattachés aux identifiants de la fiche,
+  notes, classements pro et perso, boutons d'action, détection assistée des
+  messageries, filtre par canal (ADR-0014), schéma SQLite 4 ; détection et
+  boutons restent à vérifier sur le Fairphone.
+- Reste du lot : exécuter sur le Fairphone les procédures de
+  `docs/verification-manuelle/android.md` (section « Proches », « À venir »,
+  agenda, messageries, boutons d'action), puis solder la fiche.
 
 ## Vérifications manuelles à élever
 

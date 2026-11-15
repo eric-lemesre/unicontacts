@@ -108,6 +108,9 @@ pub struct Filtre {
     pub sous_groupes: bool,
     /// Texte cherché dans le nom affiché ; vide : pas de recherche.
     pub recherche: String,
+    /// Canal dont les fiches doivent disposer, par son code ; aucun : pas
+    /// de filtre de canal (ADR-0014).
+    pub canal: Option<String>,
 }
 
 impl Default for Filtre {
@@ -117,6 +120,7 @@ impl Default for Filtre {
             combinaison: Combinaison::Union,
             sous_groupes: true,
             recherche: String::new(),
+            canal: None,
         }
     }
 }
@@ -353,10 +357,16 @@ impl Referentiel {
 
     /// Fiches qui passent le filtre.
     // [impl->req~filtre-par-groupes~2]
+    // [impl->req~filtre-par-canal~1]
     #[must_use]
     pub fn filtrer(&self, filtre: &Filtre) -> Vec<FicheId> {
+        let canal = filtre
+            .canal
+            .as_deref()
+            .map(crate::canaux::TypeCanal::depuis_texte);
         self.fiches
             .values()
+            .filter(|f| canal.as_ref().is_none_or(|c| self.dispose_de(f.id(), c)))
             .filter(|f| {
                 // Nom affiché, puis composantes du nom et organisation : une
                 // fiche sans nom affiché se trouve encore.

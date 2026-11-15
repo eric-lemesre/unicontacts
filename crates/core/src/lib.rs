@@ -7,6 +7,7 @@
 //! (ADR-0003, ADR-0006).
 // [impl->req~coeur-independant-android~1]
 
+pub mod canaux;
 pub mod champ;
 pub mod dates;
 pub mod decisions;

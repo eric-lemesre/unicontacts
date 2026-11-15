@@ -10,6 +10,7 @@ use unicontacts_core::referentiel::Referentiel;
 use unicontacts_core::reglages::{Source, Sources};
 use unicontacts_core::vcard::Version;
 
+use unicontacts_core::canaux::Contexte;
 use unicontacts_core::dates::DateDeFiche;
 use unicontacts_core::groupes::{Combinaison, Filtre};
 use unicontacts_core::relations::{Relation, TypeRelation};
@@ -132,6 +133,33 @@ pub struct FicheFfi {
     pub groupes: Vec<String>,
     /// Dates de la fiche, naissance comprise.
     pub dates: Vec<DateFfi>,
+    /// Canaux disponibles, dans leur ordre.
+    pub canaux: Vec<CanalFfi>,
+    /// Classement pro effectif, par clés de canal.
+    pub classement_pro: Vec<String>,
+    /// Classement perso effectif, par clés de canal.
+    pub classement_perso: Vec<String>,
+}
+
+/// Canal disponible d'une fiche.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct CanalFfi {
+    /// Clé du canal : type et identifiant normalisé.
+    pub cle: String,
+    /// Code du type (`appel`, `sms`, `email`, `signal`…).
+    pub code: String,
+    /// Libellé du type.
+    pub libelle: String,
+    /// Numéro, adresse ou pseudonyme.
+    pub identifiant: String,
+    /// Note libre.
+    pub note: Option<String>,
+    /// Vrai pour une messagerie déclarée.
+    pub declare: bool,
+    /// Vrai si c'est le canal préféré pour une communication pro.
+    pub prefere_pro: bool,
+    /// Vrai si c'est le canal préféré pour une communication perso.
+    pub prefere_perso: bool,
 }
 
 /// Date d'une fiche.
@@ -199,6 +227,8 @@ pub struct FiltreFfi {
     pub sous_groupes: bool,
     /// Texte cherché dans le nom.
     pub recherche: String,
+    /// Code du canal dont les fiches doivent disposer, s'il y en a un.
+    pub canal: Option<String>,
 }
 
 impl From<FiltreFfi> for Filtre {
@@ -212,6 +242,7 @@ impl From<FiltreFfi> for Filtre {
             },
             sous_groupes: filtre.sous_groupes,
             recherche: filtre.recherche,
+            canal: filtre.canal,
         }
     }
 }
@@ -498,7 +529,38 @@ pub(crate) fn fiche(fiche: &Fiche, referentiel: &Referentiel) -> FicheFfi {
         est_moi: referentiel.moi() == Some(fiche.id()),
         groupes: fiche.textes(Champ::Groupes),
         dates: referentiel.dates(fiche.id()).iter().map(date).collect(),
+        canaux: canaux(fiche, referentiel),
+        classement_pro: referentiel.classement(fiche.id(), Contexte::Pro),
+        classement_perso: referentiel.classement(fiche.id(), Contexte::Perso),
     }
+}
+
+/// Canaux disponibles d'une fiche, préférés pro et perso marqués.
+// [impl->req~actions-triees-par-preference~2]
+fn canaux(fiche: &Fiche, referentiel: &Referentiel) -> Vec<CanalFfi> {
+    let prefere = |contexte| {
+        referentiel
+            .canal_prefere(fiche.id(), contexte)
+            .map(|c| c.cle())
+    };
+    let (pro, perso) = (prefere(Contexte::Pro), prefere(Contexte::Perso));
+    referentiel
+        .canaux(fiche.id())
+        .into_iter()
+        .map(|d| {
+            let cle = d.canal.cle();
+            CanalFfi {
+                prefere_pro: pro.as_ref() == Some(&cle),
+                prefere_perso: perso.as_ref() == Some(&cle),
+                cle,
+                code: d.canal.type_canal.code().to_owned(),
+                libelle: d.canal.type_canal.libelle().to_owned(),
+                identifiant: d.canal.identifiant,
+                note: d.note,
+                declare: d.declare,
+            }
+        })
+        .collect()
 }
 
 /// Relation traduite, avec le nom de la fiche liée.
