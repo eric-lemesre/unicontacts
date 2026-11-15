@@ -52,6 +52,39 @@ struct Reponse {
 /// [`ErreurCardDav::ReponseIllisible`] si le XML est mal formé.
 // [impl->req~source-carddav~1]
 pub fn lire(xml: &str) -> Result<Vec<Ressource>, ErreurCardDav> {
+    Ok(reponses(xml)?
+        .into_iter()
+        .filter_map(|(href, etag, donnees)| {
+            donnees.map(|contenu| Ressource {
+                href,
+                etag,
+                contenu,
+            })
+        })
+        .collect())
+}
+
+/// Chemins et ETags d'une réponse multistatus à un `PROPFIND` : les
+/// ressources qui portent un ETag, hors collections (chemin terminé par
+/// `/`).
+///
+/// # Errors
+///
+/// [`ErreurCardDav::ReponseIllisible`] si le XML est mal formé.
+// [impl->req~source-google~1]
+pub fn lire_etags(xml: &str) -> Result<Vec<(String, String)>, ErreurCardDav> {
+    Ok(reponses(xml)?
+        .into_iter()
+        .filter(|(href, _, _)| !href.ends_with('/'))
+        .filter_map(|(href, etag, _)| etag.map(|e| (href, e)))
+        .collect())
+}
+
+/// Réponse lue : chemin, ETag et données retenus d'un propstat en 200.
+type Lue = (String, Option<String>, Option<String>);
+
+/// Chaque réponse d'un multistatus.
+fn reponses(xml: &str) -> Result<Vec<Lue>, ErreurCardDav> {
     let mut lecteur = NsReader::from_str(xml);
     let mut ressources = Vec::new();
     let mut reponse: Option<Reponse> = None;
@@ -103,18 +136,8 @@ pub fn lire(xml: &str) -> Result<Vec<Ressource>, ErreurCardDav> {
                         }
                     }
                     "response" => {
-                        if let Some(Reponse {
-                            href,
-                            etag,
-                            donnees: Some(contenu),
-                            ..
-                        }) = reponse.take()
-                        {
-                            ressources.push(Ressource {
-                                href,
-                                etag,
-                                contenu,
-                            });
+                        if let Some(r) = reponse.take() {
+                            ressources.push((r.href, r.etag, r.donnees));
                         }
                     }
                     _ => {}
@@ -194,6 +217,25 @@ END:VCARD
     <d:propstat><d:prop><d:displayname/></d:prop><d:status>HTTP/1.1 404 Not Found</d:status></d:propstat>
   </d:response>
 </d:multistatus>"#;
+
+    /// Réponse à un PROPFIND des ETags : la collection, deux cartes, dont
+    /// une sans ETag.
+    const PROPFIND: &str = r#"<?xml version="1.0"?>
+<d:multistatus xmlns:d="DAV:">
+  <d:response><d:href>/carnet/</d:href><d:propstat><d:prop><d:getetag>"c0"</d:getetag></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response>
+  <d:response><d:href>/carnet/a.vcf</d:href><d:propstat><d:prop><d:getetag>"e1"</d:getetag></d:prop><d:status>HTTP/1.1 200 OK</d:status></d:propstat></d:response>
+  <d:response><d:href>/carnet/b.vcf</d:href><d:propstat><d:prop><d:getetag/></d:prop><d:status>HTTP/1.1 404 Not Found</d:status></d:propstat></d:response>
+</d:multistatus>"#;
+
+    // [utest->req~source-google~1]
+    #[test]
+    fn un_propfind_donne_les_etags_des_cartes_hors_collection() -> Result<(), ErreurCardDav> {
+        assert_eq!(
+            lire_etags(PROPFIND)?,
+            [("/carnet/a.vcf".to_owned(), "\"e1\"".to_owned())]
+        );
+        Ok(())
+    }
 
     #[test]
     fn la_reponse_de_radicale_donne_href_etag_et_vcard() -> Result<(), ErreurCardDav> {

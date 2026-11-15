@@ -784,3 +784,23 @@ pub(crate) fn contact_lu(contact: ContactLuFfi) -> ContactLu {
             .collect(),
     }
 }
+
+/// Demande d'autorisation d'un compte Google (ADR-0017). Son `Debug` ne
+/// montre pas le vérificateur.
+#[derive(Clone, PartialEq, Eq, uniffi::Record)]
+pub struct DemandeGoogleFfi {
+    /// Page d'autorisation à ouvrir dans le navigateur.
+    pub url: String,
+    /// Vérificateur PKCE, à garder chiffré jusqu'au retour.
+    pub verificateur: String,
+    /// Valeur de `state`, que le retour doit rendre à l'identique.
+    pub etat: String,
+}
+
+impl std::fmt::Debug for DemandeGoogleFfi {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("DemandeGoogleFfi")
+            .field("url", &self.url)
+            .finish_non_exhaustive()
+    }
+}

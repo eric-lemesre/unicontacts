@@ -1,9 +1,11 @@
 // Adaptateur de synchronisation du compte d'unicontacts : chaque source est
-// synchronisée directement avec son serveur, la carte SIM relue, puis le référentiel est publié
+// synchronisée directement avec son serveur (Google sous jeton OAuth), la
+// carte SIM relue, puis le référentiel est publié
 // dans les contacts Android sous le seul compte de l'application.
 // [impl->req~synchronisation-directe~1]
 // [impl->req~dates-dans-l-agenda~1]
 // [impl->req~source-sim-lecture-seule~1]
+// [impl->req~source-google~1]
 package fr.lemesre.unicontacts.synchro
 
 import android.accounts.Account
@@ -49,6 +51,25 @@ class AdaptateurSynchro(context: Context) : AbstractThreadedSyncAdapter(context,
                 // passe est à ressaisir.
                 syncResult.stats.numAuthExceptions++
                 app.signaler(source.nom, "mot de passe à ressaisir (${erreur.javaClass.simpleName})")
+            }
+        }
+        for (source in app.configurations.toutesGoogle(coeur.sources())) {
+            try {
+                val bilan = coeur.synchroniserGoogle(source.id, source.adresse, source.client, source.renouvellement())
+                syncResult.stats.numUpdates += bilan.ecrites.toLong()
+                syncResult.stats.numDeletes += bilan.supprimees.toLong()
+                syncResult.stats.numSkippedEntries += bilan.refusees.toLong()
+            } catch (erreur: ErreurFfi.Autorisation) {
+                // Jeton révoqué ou expiré : rien n'a été modifié, il faut
+                // autoriser à nouveau depuis l'écran des sources (ADR-0017).
+                syncResult.stats.numAuthExceptions++
+                app.signaler(source.nom, "autorisation à renouveler : reconnecter le compte Google")
+            } catch (erreur: ErreurFfi) {
+                syncResult.stats.numIoExceptions++
+                app.signaler(source.nom, erreur.message.orEmpty())
+            } catch (erreur: GeneralSecurityException) {
+                syncResult.stats.numAuthExceptions++
+                app.signaler(source.nom, "autorisation à renouveler (${erreur.javaClass.simpleName})")
             }
         }
         app.configurations.sourceSim?.let { sim ->

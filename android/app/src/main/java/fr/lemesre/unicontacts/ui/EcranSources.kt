@@ -1,6 +1,6 @@
 // Sources : ajout d'un carnet CardDAV (URL, identifiant, mot de passe
 // d'application chiffré au coffre), synchronisation à la demande, et import
-// des contacts du téléphone, carte SIM en lecture seule.
+// des contacts du téléphone, carte SIM en lecture seule, compte Google.
 // [impl->req~synchronisation-directe~1]
 // [impl->req~source-sim-lecture-seule~1]
 package fr.lemesre.unicontacts.ui
@@ -85,6 +85,8 @@ fun EcranSources(app: UnicontactsApp, retour: () -> Unit) {
             SectionStockageLocal(app) { charger() }
             HorizontalDivider()
             SectionCarteSim(app) { charger() }
+            HorizontalDivider()
+            SectionGoogle(app)
             HorizontalDivider()
 
             Text("Ajouter un carnet CardDAV", style = MaterialTheme.typography.titleMedium)

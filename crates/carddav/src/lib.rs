@@ -12,6 +12,7 @@
 
 mod client;
 mod multistatus;
+pub mod oauth;
 mod synchro;
 
 pub use client::{ClientCardDav, Compte, MotDePasse};

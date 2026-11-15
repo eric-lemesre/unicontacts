@@ -550,9 +550,11 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest, itest, mtest
-- Couvertures réelles (16) :
+- Couvertures réelles (22) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/ConfigurationsSources.kt:6
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/sources/RetourGoogle.kt:6
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:8
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/SectionGoogle.kt:4
   - `impl` — crates/carddav/src/client.rs:120
   - `impl` — crates/carddav/src/client.rs:143
   - `impl` — crates/carddav/src/client.rs:207
@@ -561,6 +563,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `utest` — crates/carddav/src/client.rs:460
   - `impl` — crates/carddav/src/multistatus.rs:74
   - `utest` — crates/carddav/src/multistatus.rs:230
+  - `impl` — crates/carddav/src/oauth.rs:137
+  - `impl` — crates/carddav/src/oauth.rs:168
+  - `impl` — crates/carddav/src/oauth.rs:185
+  - `utest` — crates/carddav/src/oauth/tests.rs:1
   - `itest` — crates/carddav/tests/radicale.rs:365
   - `impl` — crates/ffi/src/lib.rs:844
   - `impl` — crates/ffi/src/lib.rs:867
