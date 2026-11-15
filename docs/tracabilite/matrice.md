@@ -573,10 +573,12 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest, mtest
-- Couvertures réelles (5) :
+- Couvertures réelles (7) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/stockage/CarteSim.kt:3
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:6
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranSources.kt:5
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/SectionStockageLocal.kt:5
+  - `utest` — android/app/src/test/java/fr/lemesre/unicontacts/stockage/EntreesSimTest.kt:2
   - `impl` — crates/core/src/import.rs:130
   - `utest` — crates/core/src/import/tests.rs:2
 
