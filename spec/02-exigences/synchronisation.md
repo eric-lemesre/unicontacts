@@ -95,9 +95,8 @@ Needs: impl, utest, mtest
 ## Source SIM en lecture seule par défaut
 
 `req~source-sim-lecture-seule~1`
-Status: proposed
 
-**Statut : proposée**
+**Statut : approuvée**
 
 Là où une carte SIM est configurée comme source, le système DOIT en lire le
 nom et le numéro de chaque entrée et NE DOIT rien y écrire, sauf si
@@ -105,9 +104,13 @@ l'utilisateur règle explicitement cette source en écriture.
 
 Rationale:
 Une SIM ne porte que nom et numéro (§ 5.1) ; y écrire tronquerait les fiches.
+L'écriture n'est pas offerte à ce jour (ADR-0016).
 
 Critères d'acceptation :
 
+- Étant donné une SIM configurée comme source, quand elle est
+  synchronisée, alors chaque entrée donne une fiche portant son nom et son
+  numéro, ou rejoint une fiche existante selon la détection des doublons.
 - Étant donné une SIM réglée par défaut, quand une fiche liée est modifiée
   dans le référentiel, alors aucune écriture n'est faite sur la SIM.
 
@@ -115,7 +118,7 @@ Covers:
 
 - feat~synchronisation-sans-blocage~1
 
-Needs: impl, mtest
+Needs: impl, utest, mtest
 
 ## Réglages par source
 

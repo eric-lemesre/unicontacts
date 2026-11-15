@@ -186,6 +186,23 @@ unicontacts.
 Covers:
 - req~import-stockage-local~1
 
+## La SIM se lit comme source, sans jamais être écrite
+
+`mtest~sim-en-lecture-seule-sur-l-appareil~1`
+
+**Geste** — avec une SIM portant au moins deux entrées (nom et numéro),
+toucher dans l'écran Sources « Ajouter la carte SIM », puis « Synchroniser
+maintenant ». Modifier dans unicontacts le numéro d'une fiche venue de la
+SIM, synchroniser à nouveau, puis consulter les entrées de la SIM
+(application Contacts → Importer depuis la SIM, sans importer).
+
+**Critère** — chaque entrée de la SIM donne une fiche portant son nom et
+son numéro ; après la modification et la seconde synchronisation, l'entrée
+de la SIM garde son numéro d'origine.
+
+Covers:
+- req~source-sim-lecture-seule~1
+
 ## Journal des exécutions
 
 | Date | Exécutant | Version | Verdict |

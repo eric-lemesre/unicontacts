@@ -559,10 +559,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (11) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/stockage/ContactsLocaux.kt:4
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/stockage/StockageLocal.kt:4
-  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/SectionStockageLocal.kt:3
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/SectionStockageLocal.kt:4
   - `utest` — android/app/src/test/java/fr/lemesre/unicontacts/stockage/ContactsLocauxTest.kt:3
   - `impl` — crates/core/src/import.rs:129
-  - `impl` — crates/core/src/import.rs:152
+  - `impl` — crates/core/src/import.rs:153
   - `utest` — crates/core/src/import/tests.rs:1
   - `impl` — crates/ffi/src/lib.rs:651
   - `impl` — crates/ffi/src/lib.rs:670
@@ -572,8 +572,13 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 #### `req~source-sim-lecture-seule~1`
 
 - Niveau normatif : DOIT
-- Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Needs: impl, utest, mtest
+- Couvertures réelles (5) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/AdaptateurSynchro.kt:6
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcranSources.kt:5
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/SectionStockageLocal.kt:5
+  - `impl` — crates/core/src/import.rs:130
+  - `utest` — crates/core/src/import/tests.rs:2
 
 #### `req~reglages-par-source~1`
 
@@ -696,7 +701,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 ### Bilan (couvertures réelles)
 
-52/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (85.2 %) — 9 à couvrir.
+53/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (86.9 %) — 8 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
