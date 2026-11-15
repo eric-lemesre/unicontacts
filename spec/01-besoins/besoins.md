@@ -89,7 +89,6 @@ Needs: req
 ## Ranger les contacts en groupes
 
 `feat~organisation-en-groupes~1`
-Status: draft
 
 Je veux ranger un contact dans plusieurs groupes, éventuellement imbriqués,
 et filtrer la liste par groupes.

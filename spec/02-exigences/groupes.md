@@ -1,15 +1,14 @@
 # Exigences — domaine groupes
 
-**Statut : PROPOSITION** — rédigé le 2026-11-14 depuis la spécification v0.1
-(§ 8) ; passe ACTIVE à l'ouverture de son lot, par une décision du registre. Hiérarchie des
-groupes : OQ-006 ; opérateur du filtre : OQ-003 (tranchées le 2026-11-14).
+**Statut : ACTIVE** — domaine acté le 2026-11-15 (D-2026-11-13) au lot 4,
+rédigé depuis la spécification v0.1 (§ 8). Hiérarchie des groupes : OQ-006 ;
+opérateur du filtre : OQ-003 (tranchées le 2026-11-14). Désignation des
+groupes par leur chemin : ADR-0012.
 
 ## Appartenance à plusieurs groupes
 
 `req~appartenance-multiple~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT permettre qu'une fiche appartienne à plusieurs groupes.
 
@@ -22,9 +21,7 @@ Needs: impl, utest
 ## Groupes hiérarchiques
 
 `req~groupes-hierarchiques~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Le système DOIT permettre de donner à un groupe un groupe parent facultatif,
 sans cycle.
@@ -46,9 +43,7 @@ Needs: impl, utest
 ## Filtrage par groupes
 
 `req~filtre-par-groupes~2`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand l'utilisateur filtre la liste par un ou plusieurs groupes, le système
 DOIT n'afficher que les fiches de l'un de ces groupes (union, par défaut) ou
@@ -75,9 +70,7 @@ Needs: impl, utest
 ## Groupes synchronisés en catégories
 
 `req~groupes-en-categories~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand une fiche est écrite vers une source vCard, le système DOIT porter ses
 groupes dans `CATEGORIES`, chaque groupe désigné par son chemin complet
@@ -98,9 +91,7 @@ Needs: impl, utest
 ## Renommage ou déplacement en une seule opération
 
 `req~renommage-groupe-operation-unique~1`
-Status: proposed
-
-**Statut : proposée**
+**Statut : approuvée**
 
 Quand un groupe parent est renommé ou déplacé, le système DOIT propager le
 changement aux fiches concernées comme une seule opération, sans créer de

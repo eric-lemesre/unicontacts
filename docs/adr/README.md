@@ -66,6 +66,7 @@ Proposé ──▶ Accepté ──▶ Déprécié
 | [ADR-0009](0009-construire-l-application-android-avec-gradle-cargo-ndk-et-uniffi.md) | Construire l'application Android avec Gradle, cargo-ndk et UniFFI | Accepté |
 | [ADR-0010](0010-chiffrer-les-identifiants-des-sources-par-le-keystore-android.md) | Chiffrer les identifiants des sources par le Keystore Android | Accepté |
 | [ADR-0011](0011-porter-relations-et-dates-dans-les-vcard.md) | Porter relations et dates dans les vCard : RELATED en 4.0, convention Apple en 3.0 | Accepté |
+| [ADR-0012](0012-designer-un-groupe-par-son-chemin.md) | Désigner un groupe par son chemin | Accepté |
 
 Les décisions fondatrices du gabarit alm-forge restent consultables dans son
 dépôt d'origine.
