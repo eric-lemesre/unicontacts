@@ -31,10 +31,10 @@ jugent pas avant leur lot.
 | `req~traitement-des-doublons~1` | conforme | `Referentiel::synchroniser` (import) : un doublon certain se rattache à la fiche existante et s'y fusionne, un probable donne une seconde fiche et une décision ; tests des deux critères |
 | `req~import-stockage-local~1` | écart | réalisée : `crates/core/src/import.rs` (source d'import en lecture seule, suppressions ignorées ; copie vCard 4.0 rapprochée par `synchroniser`), pont `importer` et `copies_liees`, `android/…/stockage/` et `SectionStockageLocal.kt` ; tests du cœur des trois critères (doublons, import rejoué, originaux retirés : fiches intactes et détachées), test du pont après réouverture, tests JVM de la traduction ; lecture et retrait dans le vrai stockage local à vérifier sur le Fairphone (`mtest~import-stockage-local-sur-l-appareil~1`) |
 | `req~source-sim-lecture-seule~1` | écart | réalisée : source d'import en lecture seule (`ajouter_source_import`), `android/…/stockage/CarteSim.kt` (`SimPhonebookContract`, ADN de chaque abonnement, source sautée sans annuaire lisible), relecture par `AdaptateurSynchro`, aucun code d'écriture ; tests du cœur des deux critères (entrée en fiche nom et numéro, fiche modifiée sans écriture), tests JVM de la traduction ; lecture de la vraie SIM à vérifier sur le Fairphone (`mtest~sim-en-lecture-seule-sur-l-appareil~1`) |
-| `req~source-google~1` | écart | à réaliser au lot 5 (ToDo-0006) : aucun code ni test livré |
+| `req~source-google~1` | écart | réalisée : `crates/carddav/src/oauth.rs` (PKCE S256, `state`, échange et renouvellement, `invalid_grant` distingué, jetons masqués au `Debug`), client CardDAV sous `Bearer` listant par `PROPFIND` puis `addressbook-multiget`, pont `synchroniser_google`, `RetourGoogle.kt` et `SectionGoogle.kt`, jeton de renouvellement chiffré par le coffre ; tests unitaires du deuxième critère contre un serveur local et du vecteur de la RFC 7636, test d'intégration du troisième contre Radicale ; premier critère à vérifier sur le Fairphone avec un vrai compte, après création du client OAuth par l'utilisateur (`mtest~google-sans-services-play~1`) |
 
 ## Écarts ouverts
 
 - `req~import-stockage-local~1` : procédure sur l'appareil à exécuter (ToDo-0006).
 - `req~source-sim-lecture-seule~1` : procédure sur l'appareil à exécuter (ToDo-0006).
-- `req~source-google~1` : à réaliser (ToDo-0006).
+- `req~source-google~1` : client OAuth à créer par l'utilisateur, puis procédure sur l'appareil (ToDo-0006).
