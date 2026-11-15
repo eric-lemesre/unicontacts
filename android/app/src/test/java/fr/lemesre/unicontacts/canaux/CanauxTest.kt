@@ -53,6 +53,24 @@ class CanauxTest {
     }
 
     @Test
+    fun unIdentifiantNeGlisseNiParametreNiFragmentDansLAdresse() {
+        val uris = listOf(
+            ActionsCanaux.uri("email", "camille@example.org?bcc=espion@example.org&body=x"),
+            ActionsCanaux.uri("matrix", "@camille:example.org#/!salle"),
+            ActionsCanaux.uri("telegram", "@camille/../?start=x"),
+        )
+
+        assertEquals(
+            listOf(
+                "mailto:camille@example.org%3Fbcc%3Despion@example.org%26body%3Dx",
+                "https://matrix.to/#/@camille:example.org%23%2F%21salle",
+                null,
+            ),
+            uris,
+        )
+    }
+
+    @Test
     fun uneMessagerieQuiADeclareUnNumeroDeLaFicheEstSuggeree() {
         val suggestions = DetectionCanaux.suggestions(
             fiche(listOf("06 39 98 00 00")),
