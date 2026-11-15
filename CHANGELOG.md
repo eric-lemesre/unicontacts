@@ -62,6 +62,10 @@ versionnement : [SemVer](https://semver.org/lang/fr/).
   par canal ; classements pro et perso par contact ; un bouton d'action par
   canal, préférés marqués ; filtre de la liste par canal. Schéma SQLite en
   version 4.
+- Lot 5, stockage local (ToDo-0006, D-2026-11-15, ADR-0015) : import des
+  contacts du téléphone rangés hors de tout compte, par la détection des
+  doublons, sans toucher aux originaux ; un nouvel import ne crée aucun
+  doublon. Retrait des originaux importés, distinct, annoncé puis confirmé.
 
 ## [0.1.0] - 2026-11-14
 
