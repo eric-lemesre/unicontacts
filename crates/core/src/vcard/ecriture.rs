@@ -2,7 +2,9 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use super::{Annuaire, Carte, Interpretee, Memoire, Parametre, Propriete, Version, relations};
+use super::{
+    Annuaire, Carte, Interpretee, Memoire, Parametre, Propriete, Version, dates, relations,
+};
 use crate::champ::{Champ, Valeur};
 use crate::fiche::Fiche;
 use crate::normalisation::{cle, composantes};
@@ -22,6 +24,7 @@ const fn est_texte(champ: Champ) -> bool {
             | Champ::Url
             | Champ::Relation
             | Champ::Groupes
+            | Champ::Dates
     )
 }
 
@@ -244,15 +247,20 @@ impl Carte {
                 continue;
             }
             for valeur in valeurs {
-                if champ == Champ::Relation {
-                    proprietes.extend(relations::produire(
+                match champ {
+                    Champ::Relation => proprietes.extend(relations::produire(
                         &valeur.texte,
                         version,
                         annuaire,
                         &mut groupe,
-                    ));
-                } else {
-                    proprietes.push(Propriete::produite(champ, valeur));
+                    )),
+                    Champ::Dates => {
+                        proprietes.extend(dates::produire(&valeur.texte, version, &mut groupe));
+                    }
+                    Champ::Anniversaire => {
+                        proprietes.push(dates::naissance_produite(&valeur.texte, version));
+                    }
+                    _ => proprietes.push(Propriete::produite(champ, valeur)),
                 }
             }
         }

@@ -66,10 +66,13 @@ fun libelle(champ: ChampFfi): String = when (champ) {
     ChampFfi.URL -> "Sites web (un par ligne)"
     ChampFfi.RELATION -> "Relations"
     ChampFfi.GROUPES -> "Groupes"
+    ChampFfi.DATES -> "Dates"
 }
 
-/** Champs édités comme du texte : tous, sauf relations et groupes. */
-val champsEditables: List<ChampFfi> = ChampFfi.entries.filter { it != ChampFfi.RELATION && it != ChampFfi.GROUPES }
+/** Champs édités comme du texte : tous, sauf ceux qui ont leur section (relations, groupes, dates). */
+val champsEditables: List<ChampFfi> = ChampFfi.entries.filter {
+    it !in setOf(ChampFfi.RELATION, ChampFfi.GROUPES, ChampFfi.DATES, ChampFfi.ANNIVERSAIRE)
+}
 
 /** Vrai pour un champ multivalué : une valeur par ligne. */
 fun multivalue(champ: ChampFfi): Boolean =
@@ -106,6 +109,7 @@ fun EcranListe(app: UnicontactsApp, ouvrir: (Ecran) -> Unit) {
                             BadgedBox(badge = { Badge { Text(decisions.toString()) } }) { Text("Décisions") }
                         }
                     }
+                    TextButton(onClick = { ouvrir(Ecran.AVenir) }) { Text("À venir") }
                     TextButton(onClick = { ouvrir(Ecran.Groupes) }) { Text("Groupes") }
                     TextButton(onClick = { ouvrir(Ecran.Sources) }) { Text("Sources") }
                 },
@@ -212,6 +216,7 @@ fun EcranFiche(app: UnicontactsApp, id: String, ouvrir: (Ecran) -> Unit, retour:
             }
             SectionRelations(app, lue, ouvrir, recharger = { charger() })
             SectionGroupes(app, lue, recharger = { charger() })
+            SectionDates(app, lue, recharger = { charger() })
             champsEditables.forEach { champ ->
                 OutlinedTextField(
                     value = saisies[champ].orEmpty(),

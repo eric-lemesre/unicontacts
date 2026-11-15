@@ -151,6 +151,16 @@ impl Fiche {
         }
     }
 
+    /// Remplace la valeur d'un champ par une seule : sans erreur possible.
+    pub(crate) fn definir_unique(&mut self, champ: Champ, valeur: Valeur) {
+        self.valeurs.insert(champ, vec![valeur]);
+    }
+
+    /// Vide un champ.
+    pub(crate) fn vider(&mut self, champ: Champ) {
+        self.valeurs.remove(&champ);
+    }
+
     /// Modifie un champ dans l'application : chaque valeur nouvelle prend
     /// pour provenance le référentiel, à la date donnée ; une valeur déjà
     /// présente à l'identique garde sa provenance et ses types.

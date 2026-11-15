@@ -10,6 +10,7 @@ use unicontacts_core::referentiel::Referentiel;
 use unicontacts_core::reglages::{Source, Sources};
 use unicontacts_core::vcard::Version;
 
+use unicontacts_core::dates::DateDeFiche;
 use unicontacts_core::groupes::{Combinaison, Filtre};
 use unicontacts_core::relations::{Relation, TypeRelation};
 use unicontacts_core::{Champ, Fiche, Origine, Valeur};
@@ -45,6 +46,9 @@ pub enum ChampFfi {
     Relation,
     /// Groupes, par leur chemin : présentés à part ([`FicheFfi::groupes`]).
     Groupes,
+    /// Dates autres que la naissance : présentées à part
+    /// ([`FicheFfi::dates`]).
+    Dates,
 }
 
 impl From<ChampFfi> for Champ {
@@ -62,6 +66,7 @@ impl From<ChampFfi> for Champ {
             ChampFfi::Url => Self::Url,
             ChampFfi::Relation => Self::Relation,
             ChampFfi::Groupes => Self::Groupes,
+            ChampFfi::Dates => Self::Dates,
         }
     }
 }
@@ -81,6 +86,7 @@ impl From<Champ> for ChampFfi {
             Champ::Url => Self::Url,
             Champ::Relation => Self::Relation,
             Champ::Groupes => Self::Groupes,
+            Champ::Dates => Self::Dates,
         }
     }
 }
@@ -124,6 +130,61 @@ pub struct FicheFfi {
     pub est_moi: bool,
     /// Groupes de la fiche, par leur chemin.
     pub groupes: Vec<String>,
+    /// Dates de la fiche, naissance comprise.
+    pub dates: Vec<DateFfi>,
+}
+
+/// Date d'une fiche.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct DateFfi {
+    /// Code du type : `naissance`, `mariage`, `fete`, ou le libellé d'une
+    /// date personnalisée.
+    pub code: String,
+    /// Libellé du type.
+    pub libelle: String,
+    /// Date : `AAAA-MM-JJ`, ou `--MM-JJ` sans année.
+    pub texte: String,
+    /// Année, si elle est connue.
+    pub annee: Option<i32>,
+    /// Mois, de 1 à 12.
+    pub mois: u8,
+    /// Jour, de 1 à 31.
+    pub jour: u8,
+}
+
+/// Date à venir d'une fiche.
+#[derive(Debug, Clone, PartialEq, Eq, uniffi::Record)]
+pub struct DateAVenirFfi {
+    /// Fiche concernée.
+    pub fiche_id: String,
+    /// Nom de la fiche.
+    pub nom: String,
+    /// Date.
+    pub date: DateFfi,
+    /// Jours d'ici la prochaine occurrence ; 0 : aujourd'hui.
+    pub dans_jours: u32,
+    /// Âge ou années atteintes à cette occurrence, si l'année est connue.
+    pub annees: Option<u32>,
+}
+
+/// Date traduite.
+pub(crate) fn date(date: &DateDeFiche) -> DateFfi {
+    DateFfi {
+        code: date.type_date.code().to_owned(),
+        libelle: date.type_date.libelle().to_owned(),
+        texte: date.date.texte(),
+        annee: date.date.annee,
+        mois: date.date.mois,
+        jour: date.date.jour,
+    }
+}
+
+/// Texte lisible d'une valeur du champ `Dates` : « Fête du prénom : --05-18 ».
+fn date_lisible(texte: &str) -> String {
+    DateDeFiche::depuis_texte(texte).map_or_else(
+        || texte.to_owned(),
+        |d| format!("{} : {}", d.type_date.libelle(), d.date.texte()),
+    )
 }
 
 /// Filtre de la liste des fiches.
@@ -418,7 +479,7 @@ pub(crate) fn fiche(fiche: &Fiche, referentiel: &Referentiel) -> FicheFfi {
         nom: nom(fiche),
         champs: fiche
             .champs()
-            .filter(|(champ, _)| !matches!(champ, Champ::Relation | Champ::Groupes))
+            .filter(|(champ, _)| !matches!(champ, Champ::Relation | Champ::Groupes | Champ::Dates))
             .map(|(champ, valeurs)| ChampValeursFfi {
                 champ: champ.into(),
                 valeurs: valeurs.iter().map(|v| valeur(v, sources)).collect(),
@@ -436,6 +497,7 @@ pub(crate) fn fiche(fiche: &Fiche, referentiel: &Referentiel) -> FicheFfi {
             .collect(),
         est_moi: referentiel.moi() == Some(fiche.id()),
         groupes: fiche.textes(Champ::Groupes),
+        dates: referentiel.dates(fiche.id()).iter().map(date).collect(),
     }
 }
 
@@ -527,18 +589,15 @@ pub(crate) fn decision(decision: &Decision, referentiel: &Referentiel) -> Decisi
         .source(decision.source)
         .map_or_else(|| decision.source.to_string(), |s| s.nom.clone());
     let fiche = referentiel.fiche(decision.fiche);
-    let relations = matches!(
-        decision.nature,
-        Nature::Divergence {
-            champ: Champ::Relation
-        }
-    );
-    let lisible = |texte: &str| {
-        if relations {
-            relation_lisible(texte, referentiel)
-        } else {
-            texte.to_owned()
-        }
+    let champ_divergent = match decision.nature {
+        Nature::Divergence { champ } => Some(champ),
+        _ => None,
+    };
+    let relations = champ_divergent == Some(Champ::Relation);
+    let lisible = |texte: &str| match champ_divergent {
+        Some(Champ::Relation) => relation_lisible(texte, referentiel),
+        Some(Champ::Dates) => date_lisible(texte),
+        _ => texte.to_owned(),
     };
     let recu = |textes: &[String], origine: &str| -> Vec<ValeurFfi> {
         textes

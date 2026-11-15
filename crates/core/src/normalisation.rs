@@ -24,6 +24,7 @@ pub fn cle(champ: Champ, texte: &str) -> String {
         Champ::NomAffiche | Champ::Fonction | Champ::Url => espaces(texte),
         Champ::Relation => texte.trim().to_owned(),
         Champ::Groupes => crate::groupes::chemin(texte),
+        Champ::Dates => texte.trim().to_owned(),
     }
 }
 

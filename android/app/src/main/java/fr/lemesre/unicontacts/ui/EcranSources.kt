@@ -78,6 +78,8 @@ fun EcranSources(app: UnicontactsApp, retour: () -> Unit) {
                 HorizontalDivider()
             }
             Button(onClick = { Compte.synchroniser() }, enabled = sources.isNotEmpty()) { Text("Synchroniser maintenant") }
+            SectionAgenda()
+            HorizontalDivider()
 
             Text("Ajouter un carnet CardDAV", style = MaterialTheme.typography.titleMedium)
             OutlinedTextField(nom, { nom = it }, label = { Text("Nom (Murena, Nextcloud…)") }, singleLine = true, modifier = Modifier.fillMaxWidth())

@@ -15,12 +15,13 @@ Exigences du lot 4 (D-2026-11-13), jugées sur le code de `crates/core`,
 
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-| `req~types-de-dates~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
-| `req~fete-du-prenom-proposee~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
-| `req~vue-a-venir~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
-| `req~synchronisation-dates~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
-| `req~dates-dans-l-agenda~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~types-de-dates~1` | conforme | naissance (`BDAY`), mariage, fête et dates personnalisées (champ `Dates`), année facultative, saisie validée (`crates/core/src/dates.rs`) ; un anniversaire sans année se relit sans année ; tests `dates::tests::types` |
+| `req~fete-du-prenom-proposee~1` | conforme | jours de fête proposés d'après le prénom (nom structuré, sinon nom affiché) quand la fiche n'en a pas, acceptés sur la fiche ; calendrier Wikidata vérifié par empreinte (ADR-0013) ; tests `dates::tests::fetes` |
+| `req~vue-a-venir~1` | écart | réalisée, vérification sur l'appareil à exécuter : `Referentiel::a_venir` (ordre, délai, années, filtre de groupes ; tests `dates::tests::a_venir`), écran « À venir » ; `mtest~a-venir-sur-l-appareil~1` |
+| `req~synchronisation-dates~1` | conforme | `BDAY`, `ANNIVERSARY` en 4.0, `X-ABDATE` étiquetées en 3.0 et pour fête et dates personnalisées, année omise selon la version (`vcard/dates.rs`, ADR-0011) ; champ « Événement » d'Android (`LignesContacts.evenement`) ; tests `synchronisation::tests::dates`, `LignesContactsTest` |
+| `req~dates-dans-l-agenda~1` | écart | réalisée, vérification sur l'appareil à exécuter : `agenda/AgendaDates.kt` (événements annuels récurrents dans l'agenda choisi, créés et retirés à chaque synchronisation), plan éprouvé sur la JVM (`EvenementsAgendaTest`) ; `mtest~dates-dans-l-agenda-sur-l-appareil~1` |
 
 ## Écarts ouverts
 
-- Exigences du domaine dates : à réaliser (ToDo-0005).
+- `req~vue-a-venir~1`, `req~dates-dans-l-agenda~1` : réalisées, à vérifier
+  sur le Fairphone (`docs/verification-manuelle/android.md`, ToDo-0005).

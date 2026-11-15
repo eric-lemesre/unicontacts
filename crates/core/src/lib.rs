@@ -8,6 +8,7 @@
 // [impl->req~coeur-independant-android~1]
 
 pub mod champ;
+pub mod dates;
 pub mod decisions;
 pub mod doublons;
 pub mod fiche;
