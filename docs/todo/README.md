@@ -9,5 +9,5 @@
 | [todo-0003-lot-2-connecteur-carddav.md](todo-0003-lot-2-connecteur-carddav.md) | ✅ soldé | ToDo-0003 — Lot 2 : connecteur CardDAV |
 | [todo-0004-lot-3-application-android.md](todo-0004-lot-3-application-android.md) | 🚧 en cours | ToDo-0004 — Lot 3 : application Android |
 | [todo-0005-lot-4-relations-groupes-dates-canaux.md](todo-0005-lot-4-relations-groupes-dates-canaux.md) | 🚧 en cours | ToDo-0005 — Lot 4 : relations, groupes, dates, canaux |
-| [todo-0006-lot-5-google-sim-import-local.md](todo-0006-lot-5-google-sim-import-local.md) | ⏳ à venir | ToDo-0006 — Lot 5 : Google, SIM, import local |
+| [todo-0006-lot-5-google-sim-import-local.md](todo-0006-lot-5-google-sim-import-local.md) | 🚧 en cours | ToDo-0006 — Lot 5 : Google, SIM, import local |
 | [todo-0007-lot-6-fournisseurs-de-photos.md](todo-0007-lot-6-fournisseurs-de-photos.md) | ⏳ à venir | ToDo-0007 — Lot 6 : fournisseurs de photos |

@@ -5,7 +5,7 @@ Procédures de vérification **manuelle assumée** (items `mtest`, méthode
 constatent que sur un téléphone : compte système, contacts d'Android,
 écrans. Elles ne sont pas mécanisées faute de tests instrumentés en CI
 (ADR-0009) ; chacune est reportée « à élever » dans la fiche de son lot
-(ToDo-0004, ToDo-0005).
+(ToDo-0004, ToDo-0005, ToDo-0006).
 
 **Appareil de référence** : Fairphone 6 sous /e/OS. **Cadence** : à chaque
 version publiée, et à chaque PR qui touche `android/` ou `crates/ffi/`.
@@ -165,6 +165,26 @@ Signal ; aucun réglage pro / perso global n'est demandé.
 
 Covers:
 - req~actions-triees-par-preference~2
+
+## Les contacts du téléphone s'importent, puis leurs originaux se retirent sur confirmation
+
+`mtest~import-stockage-local-sur-l-appareil~1`
+
+**Geste** — créer dans l'application Contacts du téléphone, hors de tout
+compte (« Téléphone » ou « Appareil »), deux contacts : l'un portant le même
+e-mail qu'une fiche existante, l'autre inconnu. Dans unicontacts, écran
+Sources, toucher « Importer les contacts du téléphone », puis une seconde
+fois ; toucher enfin « Retirer les originaux importés », annuler, recommencer
+et confirmer.
+
+**Critère** — le premier import annonce une fiche créée et une rattachée,
+et les deux contacts restent dans l'application Contacts ; le second import
+ne crée aucune fiche ; « Annuler » ne retire rien ; après confirmation, les
+deux contacts ont quitté le stockage local et les deux fiches demeurent dans
+unicontacts.
+
+Covers:
+- req~import-stockage-local~1
 
 ## Journal des exécutions
 
