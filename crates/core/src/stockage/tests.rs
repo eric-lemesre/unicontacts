@@ -24,7 +24,7 @@ fn copie(uid: &str, lignes: &[&str]) -> CopieDistante {
 /// Référentiel qui exerce chaque table : sources réglées et désignées,
 /// fiches aux valeurs de provenances diverses, liens, bases, propriétés
 /// inconnues, décisions de chaque statut, copies à supprimer et ignorées,
-/// relations et leur mémoire, fiche « moi », inverses déclarés.
+/// relations et leur mémoire, fiche « moi », inverses déclarés, groupes.
 fn referentiel_complet() -> Result<Referentiel, Box<dyn std::error::Error>> {
     let mut referentiel = Referentiel::new();
     let nextcloud = referentiel.sources_mut().ajouter("Nextcloud", Version::V4);
@@ -110,6 +110,8 @@ fn referentiel_complet() -> Result<Referentiel, Box<dyn std::error::Error>> {
         .inverses_mut()
         .declarer(&TypeRelation::Medecin, &patient)?;
     referentiel.lier(a, TypeRelation::Medecin, b, date(3))?;
+    referentiel.creer_groupe("Famille/Cousins")?;
+    referentiel.ranger(b, &["Travail/Clients"], date(3))?;
     let ouvertes: Vec<_> = referentiel.ouvertes().map(|d| (d.id, d.nature)).collect();
     for (id, nature) in ouvertes {
         match nature {
@@ -273,6 +275,20 @@ fn le_jeu_d_essai_exerce_relations_memoire_moi_et_inverses() -> Essai {
             referentiel.inverses().couples().count()
         ),
         (1, 3, true, 1)
+    );
+    Ok(())
+}
+
+#[test]
+fn les_groupes_crees_et_ceux_des_fiches_survivent_a_l_enregistrement() -> Essai {
+    let mut stockage = Stockage::en_memoire()?;
+    stockage.enregistrer(&referentiel_complet()?)?;
+
+    let groupes = stockage.charger()?.groupes();
+
+    assert_eq!(
+        groupes,
+        ["Famille", "Famille/Cousins", "Travail", "Travail/Clients"]
     );
     Ok(())
 }

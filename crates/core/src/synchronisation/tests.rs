@@ -926,3 +926,100 @@ mod relations {
         Ok(())
     }
 }
+
+mod groupes {
+    use super::*;
+
+    // [utest->req~groupes-en-categories~1]
+    #[test]
+    fn une_fiche_ecrit_ses_groupes_par_leur_chemin_complet() -> Resultat {
+        let copies = [copie("a", &["FN:Alix"])];
+        let (mut referentiel, source) = importe(Reglages::default(), &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        referentiel.ranger(a, &["Travail/Clients/Client X", "Famille, proche"], date(2))?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(
+            carte.contains("CATEGORIES:Travail/Clients/Client X,Famille\\, proche\r\n"),
+            "{carte}"
+        );
+        Ok(())
+    }
+
+    // [utest->req~groupes-en-categories~1]
+    #[test]
+    fn la_hierarchie_se_reconstruit_a_la_lecture() -> Resultat {
+        let (referentiel, source) = importe(
+            Reglages::default(),
+            &[copie(
+                "a",
+                &["FN:Alix", "CATEGORIES:Travail/Clients,Famille"],
+            )],
+        )?;
+        let a = fiche_de(&referentiel, source, "a")?;
+
+        assert_eq!(
+            (referentiel.groupes_de(a), referentiel.groupes()),
+            (
+                vec!["Travail/Clients".to_owned(), "Famille".to_owned()],
+                vec![
+                    "Famille".to_owned(),
+                    "Travail".to_owned(),
+                    "Travail/Clients".to_owned()
+                ]
+            )
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn des_categories_inchangees_sont_rendues_a_l_octet_pres() -> Resultat {
+        let ligne = "CATEGORIES:famille , Voisins";
+        let copies = [copie("a", &["FN:Alix", ligne])];
+        let (mut referentiel, source) = importe(Reglages::default(), &copies)?;
+        let a = fiche_de(&referentiel, source, "a")?;
+        referentiel.fiche_mut(a).ok_or("fiche attendue")?.modifier(
+            Champ::Note,
+            &["note"],
+            date(2),
+        )?;
+
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let carte = ecrit(&rapport, "a").ok_or("écriture de a attendue")?;
+        assert!(carte.contains(&format!("{ligne}\r\n")), "{carte}");
+        Ok(())
+    }
+
+    // [utest->req~renommage-groupe-operation-unique~1]
+    #[test]
+    fn renommer_un_parent_ne_cree_aucune_decision_et_reecrit_ses_quarante_fiches() -> Resultat {
+        let copies: Vec<CopieDistante> = (0..40)
+            .map(|i| {
+                let groupe = if i % 2 == 0 {
+                    "Travail/Clients"
+                } else {
+                    "Travail/Fournisseurs"
+                };
+                copie(
+                    &format!("f{i}"),
+                    &[&format!("FN:Fiche {i}"), &format!("CATEGORIES:{groupe}")],
+                )
+            })
+            .collect();
+        let (mut referentiel, source) = importe(Reglages::default(), &copies)?;
+
+        referentiel.renommer_groupe("Travail", "Boulot", date(2))?;
+        let rapport = referentiel.synchroniser(source, &copies, date(3))?;
+
+        let reecrites = rapport
+            .ecritures
+            .iter()
+            .filter(|e| matches!(e, Ecriture::Carte { contenu, .. } if contenu.contains("CATEGORIES:Boulot/")))
+            .count();
+        assert_eq!((rapport.decisions.len(), reecrites), (0, 40));
+        Ok(())
+    }
+}

@@ -13,8 +13,9 @@ Les fonctions qui font d'un carnet synchronisé un carnet utile
 - Relations : réalisées — fiche « moi », liens typés et réciproques,
   section « Proches », portage vCard et Android (ADR-0011), schéma SQLite 2 ;
   la section « Proches » reste à vérifier sur le Fairphone.
-- Groupes : appartenance multiple, hiérarchie, filtre, `CATEGORIES`,
-  renommage en une opération (ADR-0012).
+- Groupes : réalisés — appartenance multiple, hiérarchie, filtre et
+  recherche, `CATEGORIES`, renommage en une opération (ADR-0012), schéma
+  SQLite 3.
 - Dates : à ouvrir dans leur pull request ; calendrier des fêtes tiré de
   Wikidata (propriété P1750, France, CC0), export versionné avec sa requête
   et son empreinte.

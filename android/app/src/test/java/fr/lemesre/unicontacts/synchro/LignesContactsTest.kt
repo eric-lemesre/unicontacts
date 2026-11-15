@@ -22,6 +22,7 @@ class LignesContactsTest {
         sources = listOf("Nextcloud", "Google"),
         relations = emptyList(),
         estMoi = false,
+        groupes = emptyList(),
     )
 
     @Test

@@ -26,6 +26,7 @@ sealed interface Ecran {
     data object Liste : Ecran
     data class Fiche(val id: String) : Ecran
     data object Sources : Ecran
+    data object Groupes : Ecran
     data object Decisions : Ecran
     data class Decision(val id: String) : Ecran
 }
@@ -64,6 +65,7 @@ private fun Navigation(app: UnicontactsApp) {
         Ecran.Liste -> EcranListe(app, ouvrir)
         is Ecran.Fiche -> EcranFiche(app, ecran.id, ouvrir, retour)
         Ecran.Sources -> EcranSources(app, retour)
+        Ecran.Groupes -> EcranGroupes(app, retour)
         Ecran.Decisions -> EcranDecisions(app, ouvrir, retour)
         is Ecran.Decision -> EcranDecision(app, ecran.id, retour)
     }

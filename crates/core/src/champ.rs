@@ -31,11 +31,13 @@ pub enum Champ {
     Url,
     /// Relations vers d'autres fiches (`RELATED`, ADR-0011).
     Relation,
+    /// Groupes, par leur chemin (`CATEGORIES`, ADR-0012).
+    Groupes,
 }
 
 impl Champ {
     /// Tous les champs interprétés, dans l'ordre d'écriture.
-    pub const TOUS: [Self; 11] = [
+    pub const TOUS: [Self; 12] = [
         Self::NomAffiche,
         Self::NomStructure,
         Self::Organisation,
@@ -47,6 +49,7 @@ impl Champ {
         Self::Adresse,
         Self::Url,
         Self::Relation,
+        Self::Groupes,
     ];
 
     /// Vrai si le champ peut porter plusieurs valeurs.
@@ -54,7 +57,12 @@ impl Champ {
     pub const fn est_multivalue(self) -> bool {
         matches!(
             self,
-            Self::Telephone | Self::Email | Self::Adresse | Self::Url | Self::Relation
+            Self::Telephone
+                | Self::Email
+                | Self::Adresse
+                | Self::Url
+                | Self::Relation
+                | Self::Groupes
         )
     }
 
@@ -73,6 +81,7 @@ impl Champ {
             Self::Adresse => "ADR",
             Self::Url => "URL",
             Self::Relation => "RELATED",
+            Self::Groupes => "CATEGORIES",
         }
     }
 

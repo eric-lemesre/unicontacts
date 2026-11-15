@@ -64,6 +64,8 @@ pub struct Referentiel {
     pub(crate) moi: Option<FicheId>,
     /// Inverses déclarés des types de relation.
     pub(crate) inverses: Inverses,
+    /// Groupes créés dans l'application, par leur chemin (ADR-0012).
+    pub(crate) groupes: BTreeSet<String>,
 }
 
 impl Referentiel {

@@ -16,7 +16,12 @@ const LONGUEUR_MAX: usize = 75;
 const fn est_texte(champ: Champ) -> bool {
     !matches!(
         champ,
-        Champ::NomStructure | Champ::Adresse | Champ::Organisation | Champ::Url | Champ::Relation
+        Champ::NomStructure
+            | Champ::Adresse
+            | Champ::Organisation
+            | Champ::Url
+            | Champ::Relation
+            | Champ::Groupes
     )
 }
 
@@ -188,6 +193,7 @@ impl Carte {
     // [impl->req~conservation-proprietes-inconnues~1]
     // [impl->req~vcard-3-et-4~1]
     // [impl->req~synchronisation-relations~1]
+    // [impl->req~groupes-en-categories~1]
     #[must_use]
     pub fn reecrire_avec(
         precedente: Option<&Self>,
@@ -226,6 +232,17 @@ impl Carte {
         }
         let mut groupe = relations::dernier_groupe(proprietes.iter());
         for (champ, valeurs) in restantes {
+            if champ == Champ::Groupes {
+                if !valeurs.is_empty() {
+                    let chemins: Vec<&str> = valeurs.iter().map(|v| v.texte.as_str()).collect();
+                    proprietes.push(Propriete::nouvelle(
+                        "CATEGORIES",
+                        Vec::new(),
+                        ecrire_categories(&chemins),
+                    ));
+                }
+                continue;
+            }
             for valeur in valeurs {
                 if champ == Champ::Relation {
                     proprietes.extend(relations::produire(
@@ -263,8 +280,9 @@ impl Carte {
     }
 }
 
-/// Retire des valeurs restantes celle qu'écrit déjà la propriété
-/// interprétée, et dit si elle y était.
+/// Retire des valeurs restantes celles qu'écrit déjà la propriété
+/// interprétée, et dit si elle les y a toutes trouvées ; sinon les valeurs
+/// restantes sont inchangées.
 fn retirer_identique(
     restantes: &mut BTreeMap<Champ, Vec<&Valeur>>,
     interpretee: &Interpretee,
@@ -273,15 +291,62 @@ fn retirer_identique(
     let Some(valeurs) = restantes.get_mut(&champ) else {
         return false;
     };
-    let cle_ecrite = cle(champ, &interpretee.texte);
-    let Some(position) = valeurs
-        .iter()
-        .position(|v| cle(champ, &v.texte) == cle_ecrite && v.types == interpretee.types)
-    else {
-        return false;
-    };
-    valeurs.remove(position);
+    let mut reste = valeurs.clone();
+    for texte in &interpretee.textes {
+        let cle_ecrite = cle(champ, texte);
+        let Some(position) = reste
+            .iter()
+            .position(|v| cle(champ, &v.texte) == cle_ecrite && v.types == interpretee.types)
+        else {
+            return false;
+        };
+        reste.remove(position);
+    }
+    *valeurs = reste;
     true
+}
+
+/// Chemins de groupes d'une valeur `CATEGORIES` : une liste séparée par
+/// des virgules non échappées, chaque élément décodé et normalisé.
+// [impl->req~groupes-en-categories~1]
+pub(super) fn lire_categories(valeur: &str) -> Vec<String> {
+    let mut chemins = Vec::new();
+    let mut courant = String::new();
+    let mut caracteres = valeur.chars();
+    let fin = |courant: &mut String, chemins: &mut Vec<String>| {
+        let c = crate::groupes::chemin(courant);
+        if !c.is_empty() && !chemins.contains(&c) {
+            chemins.push(c);
+        }
+        courant.clear();
+    };
+    while let Some(c) = caracteres.next() {
+        match c {
+            '\\' => match caracteres.next() {
+                Some('n' | 'N') => courant.push(' '),
+                Some(autre) => courant.push(autre),
+                None => {}
+            },
+            ',' => fin(&mut courant, &mut chemins),
+            autre => courant.push(autre),
+        }
+    }
+    fin(&mut courant, &mut chemins);
+    chemins
+}
+
+/// Valeur `CATEGORIES` de chemins de groupes.
+// [impl->req~groupes-en-categories~1]
+pub(super) fn ecrire_categories(chemins: &[&str]) -> String {
+    chemins
+        .iter()
+        .map(|c| {
+            c.replace('\\', "\\\\")
+                .replace(',', "\\,")
+                .replace(';', "\\;")
+        })
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
 /// Nom affiché de repli d'une fiche qui n'en a pas : prénom et nom, sinon

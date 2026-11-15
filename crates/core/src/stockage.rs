@@ -28,10 +28,10 @@ use crate::temps::Horodatage;
 use crate::vcard::Version;
 
 /// Version du schéma que ce code écrit et sait lire.
-const VERSION_SCHEMA: i64 = 2;
+const VERSION_SCHEMA: i64 = 3;
 
 /// Migrations du schéma : chacune mène de la version précédente à la sienne.
-const MIGRATIONS: [(i64, &str); 2] = [(1, SCHEMA_1), (2, SCHEMA_2)];
+const MIGRATIONS: [(i64, &str); 3] = [(1, SCHEMA_1), (2, SCHEMA_2), (3, SCHEMA_3)];
 
 /// Schéma d'origine.
 const SCHEMA_1: &str = "
@@ -129,6 +129,13 @@ CREATE TABLE moi (
 CREATE TABLE inverses (
     type    TEXT PRIMARY KEY,
     inverse TEXT NOT NULL
+) STRICT;
+";
+
+/// Version 3 : groupes créés dans l'application, par leur chemin (lot 4).
+const SCHEMA_3: &str = "
+CREATE TABLE groupes (
+    chemin TEXT PRIMARY KEY
 ) STRICT;
 ";
 
@@ -246,7 +253,8 @@ impl Stockage {
 
 fn vider(transaction: &Transaction<'_>) -> Resultat<()> {
     transaction.execute_batch(
-        "DELETE FROM inverses;
+        "DELETE FROM groupes;
+         DELETE FROM inverses;
          DELETE FROM moi;
          DELETE FROM memoires;
          DELETE FROM ignorees;
@@ -353,6 +361,10 @@ fn ecrire_fiches(transaction: &Transaction<'_>, referentiel: &Referentiel) -> Re
         transaction.prepare_cached("INSERT INTO inverses (type, inverse) VALUES (?1, ?2)")?;
     for (a, b) in referentiel.inverses().couples() {
         inverse.execute(params![a, b])?;
+    }
+    let mut groupe = transaction.prepare_cached("INSERT INTO groupes (chemin) VALUES (?1)")?;
+    for chemin in &referentiel.groupes {
+        groupe.execute(params![chemin])?;
     }
     Ok(())
 }
@@ -604,6 +616,10 @@ fn lire_fiches(connexion: &Connection, referentiel: &mut Referentiel) -> Resulta
                 &TypeRelation::depuis_texte(&b),
             )
             .map_err(|_| illisible("inverses.type", &a))?;
+    }
+    let mut requete = connexion.prepare("SELECT chemin FROM groupes")?;
+    for chemin in requete.query_map([], |l| l.get::<_, String>(0))? {
+        referentiel.groupes.insert(chemin?);
     }
     Ok(())
 }
