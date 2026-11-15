@@ -9,11 +9,18 @@
 Miroir de [`spec/02-exigences/relations.md`](../../spec/02-exigences/relations.md).
 Verdicts admis : `conforme` · `écart` · `non examiné`.
 
+Exigences du lot 4 (D-2026-11-13), jugées sur le code de `crates/core`,
+`crates/ffi` et `android/`.
+
 | Exigence | Verdict | Preuve / écart |
 | --- | --- | --- |
-
-Aucune exigence approuvée à ce jour : le domaine est en proposition.
+| `req~fiche-moi~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~liens-types~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~reciproques-automatiques~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~lien-par-identifiant-maitre~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~section-proches~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
+| `req~synchronisation-relations~1` | écart | à réaliser au lot 4 (ToDo-0005) : aucun code ni test livré |
 
 ## Écarts ouverts
 
-- Aucun.
+- Exigences du domaine relations : à réaliser (ToDo-0005).

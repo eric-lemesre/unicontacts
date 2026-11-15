@@ -31,7 +31,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/LignesContacts.kt:4
   - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/synchro/LignesContactsTest.kt:2
   - `impl` — crates/ffi/src/lib.rs:11
-  - `impl` — crates/ffi/src/lib.rs:126
+  - `impl` — crates/ffi/src/lib.rs:127
 
 #### `req~synchronisation-directe~1`
 
@@ -45,7 +45,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — android/app/src/test/java/fr/lemesre/unicontacts/sources/ConfigurationsSourcesTest.kt:2
   - `impl` — crates/ffi/src/bin/uniffi-bindgen.rs:4
   - `impl` — crates/ffi/src/lib.rs:10
-  - `impl` — crates/ffi/src/lib.rs:355
+  - `impl` — crates/ffi/src/lib.rs:463
 
 ### spec/02-exigences/canaux.md
 
@@ -134,9 +134,9 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (5) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/ActivitePrincipale.kt:3
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransDecisions.kt:3
-  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:3
-  - `impl` — crates/ffi/src/lib.rs:264
-  - `impl` — crates/ffi/src/lib.rs:276
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:4
+  - `impl` — crates/ffi/src/lib.rs:372
+  - `impl` — crates/ffi/src/lib.rs:384
 
 #### `req~vue-comparee~1`
 
@@ -144,7 +144,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, mtest
 - Couvertures réelles (3) :
   - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransDecisions.kt:4
-  - `impl` — crates/ffi/src/lib.rs:277
+  - `impl` — crates/ffi/src/lib.rs:385
   - `impl` — crates/ffi/src/modele.rs:2
 
 #### `req~actions-de-resolution~1`
@@ -155,7 +155,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/decisions.rs:170
   - `utest` — crates/core/src/decisions.rs:261
   - `utest` — crates/core/src/decisions.rs:279
-  - `impl` — crates/core/src/referentiel.rs:269
+  - `impl` — crates/core/src/referentiel.rs:274
   - `utest` — crates/core/src/referentiel/tests.rs:141
   - `utest` — crates/core/src/synchronisation/tests.rs:344
 
@@ -164,7 +164,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (3) :
-  - `impl` — crates/core/src/referentiel.rs:188
+  - `impl` — crates/core/src/referentiel.rs:193
   - `utest` — crates/core/src/referentiel/tests.rs:91
   - `utest` — crates/core/src/referentiel/tests.rs:109
 
@@ -173,8 +173,8 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (4) :
-  - `impl` — crates/core/src/referentiel.rs:204
-  - `impl` — crates/core/src/referentiel.rs:251
+  - `impl` — crates/core/src/referentiel.rs:209
+  - `impl` — crates/core/src/referentiel.rs:256
   - `utest` — crates/core/src/referentiel/tests.rs:304
   - `utest` — crates/core/src/referentiel/tests.rs:314
 
@@ -185,9 +185,9 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (6) :
   - `impl` — crates/core/src/decisions.rs:171
   - `utest` — crates/core/src/decisions.rs:298
-  - `impl` — crates/core/src/referentiel.rs:320
+  - `impl` — crates/core/src/referentiel.rs:325
   - `utest` — crates/core/src/referentiel/tests.rs:362
-  - `impl` — crates/core/src/synchronisation.rs:394
+  - `impl` — crates/core/src/synchronisation.rs:428
   - `utest` — crates/core/src/synchronisation/tests.rs:403
 
 #### `req~portee-suppression-locale~1`
@@ -195,8 +195,8 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (3) :
-  - `impl` — crates/core/src/referentiel.rs:408
-  - `impl` — crates/core/src/referentiel.rs:433
+  - `impl` — crates/core/src/referentiel.rs:415
+  - `impl` — crates/core/src/referentiel.rs:440
   - `utest` — crates/core/src/referentiel/tests.rs:451
 
 ### spec/02-exigences/groupes.md
@@ -282,38 +282,39 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (9) :
-  - `impl` — crates/core/src/fiche.rs:71
-  - `impl` — crates/core/src/fiche.rs:192
-  - `utest` — crates/core/src/fiche.rs:210
+  - `impl` — crates/core/src/fiche.rs:75
+  - `impl` — crates/core/src/fiche.rs:206
   - `utest` — crates/core/src/fiche.rs:224
-  - `utest` — crates/core/src/fiche.rs:236
+  - `utest` — crates/core/src/fiche.rs:238
+  - `utest` — crates/core/src/fiche.rs:250
   - `impl` — crates/core/src/identifiants.rs:52
   - `utest` — crates/core/src/identifiants.rs:70
-  - `impl` — crates/core/src/stockage.rs:178
-  - `utest` — crates/core/src/stockage/tests.rs:131
+  - `impl` — crates/core/src/stockage.rs:212
+  - `utest` — crates/core/src/stockage/tests.rs:145
 
 #### `req~provenance-par-champ~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (8) :
-  - `impl` — crates/core/src/champ.rs:98
-  - `impl` — crates/core/src/fiche.rs:124
-  - `impl` — crates/core/src/fiche.rs:147
-  - `utest` — crates/core/src/fiche.rs:252
-  - `utest` — crates/core/src/fiche.rs:276
-  - `impl` — crates/core/src/stockage.rs:179
-  - `utest` — crates/core/src/stockage/tests.rs:132
+  - `impl` — crates/core/src/champ.rs:102
+  - `impl` — crates/core/src/fiche.rs:128
+  - `impl` — crates/core/src/fiche.rs:161
+  - `utest` — crates/core/src/fiche.rs:266
+  - `utest` — crates/core/src/fiche.rs:290
+  - `impl` — crates/core/src/stockage.rs:213
+  - `utest` — crates/core/src/stockage/tests.rs:146
   - `impl` — crates/core/src/temps.rs:11
 
 #### `req~conservation-proprietes-inconnues~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (5) :
-  - `impl` — crates/core/src/stockage.rs:180
-  - `utest` — crates/core/src/stockage/tests.rs:133
+- Couvertures réelles (6) :
+  - `impl` — crates/core/src/stockage.rs:214
+  - `utest` — crates/core/src/stockage/tests.rs:147
   - `impl` — crates/core/src/vcard/ecriture.rs:170
+  - `impl` — crates/core/src/vcard/ecriture.rs:188
   - `utest` — crates/core/src/vcard/tests.rs:363
   - `utest` — crates/core/src/vcard/tests.rs:381
 
@@ -321,9 +322,10 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles (7) :
+- Couvertures réelles (8) :
   - `impl` — crates/core/src/vcard/ecriture.rs:145
   - `impl` — crates/core/src/vcard/ecriture.rs:171
+  - `impl` — crates/core/src/vcard/ecriture.rs:189
   - `impl` — crates/core/src/vcard/lecture.rs:25
   - `impl` — crates/core/src/vcard/mod.rs:8
   - `utest` — crates/core/src/vcard/tests.rs:249
@@ -336,7 +338,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Needs: impl, utest
 - Couvertures réelles (2) :
   - `impl` — crates/core/src/lib.rs:8
-  - `utest` — crates/core/src/lib.rs:38
+  - `utest` — crates/core/src/lib.rs:39
 
 ### spec/02-exigences/relations.md
 
@@ -344,37 +346,57 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (1) :
+  - `impl` — crates/ffi/src/lib.rs:241
 
 #### `req~liens-types~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (1) :
+  - `impl` — crates/ffi/src/lib.rs:205
 
 #### `req~reciproques-automatiques~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — crates/ffi/src/lib.rs:206
+  - `impl` — crates/ffi/src/lib.rs:283
 
 #### `req~lien-par-identifiant-maitre~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (1) :
+  - `utest` — crates/core/src/synchronisation/tests.rs:853
 
 #### `req~section-proches~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, mtest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (2) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/ui/EcransFiches.kt:5
+  - `impl` — crates/ffi/src/lib.rs:256
 
 #### `req~synchronisation-relations~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
-- Couvertures réelles : — À COUVRIR
+- Couvertures réelles (13) :
+  - `impl` — android/app/src/main/java/fr/lemesre/unicontacts/synchro/LignesContacts.kt:5
+  - `utest` — android/app/src/test/java/fr/lemesre/unicontacts/synchro/LignesContactsTest.kt:3
+  - `impl` — crates/core/src/synchronisation.rs:516
+  - `utest` — crates/core/src/synchronisation/tests.rs:723
+  - `utest` — crates/core/src/synchronisation/tests.rs:747
+  - `utest` — crates/core/src/synchronisation/tests.rs:768
+  - `utest` — crates/core/src/synchronisation/tests.rs:799
+  - `utest` — crates/core/src/synchronisation/tests.rs:820
+  - `utest` — crates/core/src/synchronisation/tests.rs:852
+  - `utest` — crates/core/src/synchronisation/tests.rs:886
+  - `utest` — crates/core/src/synchronisation/tests.rs:909
+  - `impl` — crates/core/src/vcard/ecriture.rs:190
+  - `impl` — crates/ffi/src/modele.rs:406
 
 ### spec/02-exigences/synchronisation.md
 
@@ -429,7 +451,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/reglages.rs:56
   - `impl` — crates/core/src/reglages.rs:133
   - `utest` — crates/core/src/reglages.rs:301
-  - `impl` — crates/core/src/synchronisation.rs:229
+  - `impl` — crates/core/src/synchronisation.rs:249
   - `utest` — crates/core/src/synchronisation/tests.rs:244
 
 #### `req~autorite-par-champ~1`
@@ -492,7 +514,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Couvertures réelles (4) :
   - `impl` — crates/core/src/fusion.rs:82
   - `utest` — crates/core/src/fusion.rs:339
-  - `impl` — crates/core/src/synchronisation.rs:228
+  - `impl` — crates/core/src/synchronisation.rs:248
   - `utest` — crates/core/src/synchronisation/tests.rs:103
 
 #### `req~multivalues-par-valeur-normalisee~1`
@@ -503,14 +525,14 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
   - `impl` — crates/core/src/fusion.rs:140
   - `utest` — crates/core/src/fusion.rs:375
   - `impl` — crates/core/src/normalisation.rs:15
-  - `utest` — crates/core/src/normalisation.rs:120
+  - `utest` — crates/core/src/normalisation.rs:121
 
 #### `req~synchronisation-non-bloquante~1`
 
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (2) :
-  - `impl` — crates/core/src/synchronisation.rs:103
+  - `impl` — crates/core/src/synchronisation.rs:105
   - `utest` — crates/core/src/synchronisation/tests.rs:169
 
 #### `req~suppression-sans-destruction~1`
@@ -518,7 +540,7 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (2) :
-  - `impl` — crates/core/src/synchronisation.rs:393
+  - `impl` — crates/core/src/synchronisation.rs:427
   - `utest` — crates/core/src/synchronisation/tests.rs:381
 
 #### `req~detection-doublons~1`
@@ -536,13 +558,13 @@ Vue de synthèse, informative : elle n'ajoute aucun contrôle à `task trace` (O
 - Niveau normatif : DOIT
 - Needs: impl, utest
 - Couvertures réelles (3) :
-  - `impl` — crates/core/src/synchronisation.rs:331
+  - `impl` — crates/core/src/synchronisation.rs:362
   - `utest` — crates/core/src/synchronisation/tests.rs:488
   - `utest` — crates/core/src/synchronisation/tests.rs:541
 
 ### Bilan (couvertures réelles)
 
-29/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (47.5 %) — 32 à couvrir.
+35/61 exigence(s) testable(s) couverte(s) par au moins une trace réelle (57.4 %) — 26 à couvrir.
 
 ## 2. L'inverse — outillage sans exigence
 
